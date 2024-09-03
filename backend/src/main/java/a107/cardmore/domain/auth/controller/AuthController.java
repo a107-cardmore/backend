@@ -4,6 +4,7 @@ import a107.cardmore.domain.auth.dto.RegisterRequestDto;
 import a107.cardmore.domain.auth.dto.RegisterResponseDto;
 import a107.cardmore.domain.auth.service.AuthService;
 import a107.cardmore.domain.user.controller.UserService;
+import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

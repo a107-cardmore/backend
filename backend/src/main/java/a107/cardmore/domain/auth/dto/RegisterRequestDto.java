@@ -19,13 +19,12 @@ public class RegisterRequestDto {
     @NotNull
     private String password;
 
-    public User createUser(String password, String userKey) {
+    public User createUser(String password) {
         return User.builder()
                 .email(email)
                 .password(password)
                 .role("USER")
                 .name(name)
-                .userKey(userKey)
                 .build();
     }
 }

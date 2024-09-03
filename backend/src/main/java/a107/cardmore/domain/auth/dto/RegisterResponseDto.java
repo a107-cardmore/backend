@@ -7,6 +7,4 @@ import lombok.Getter;
 @Getter
 public class RegisterResponseDto {
     private String email;
-    private String name;
-    private String password;
 }
