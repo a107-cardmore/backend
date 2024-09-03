@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### info.properties ###
+src/main/resources/info.properties
