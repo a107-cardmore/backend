@@ -1,4 +1,4 @@
-package a107.cardmore.domain.bank.dto;
+package a107.cardmore.util.api.dto.card;
 
 import a107.cardmore.util.constant.CardCompany;
 import a107.cardmore.util.constant.MerchantCategory;
@@ -9,8 +9,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CreateCardProductRequestDto {
-    private CardCompany cardCompany;
+public class CreateCardProductRequestRestTemplateDto {
+    private String cardIssuerCode;
     private String cardName;
     private Long baseLinePerformance;
     private Long maxBenefitLimit;
@@ -22,5 +22,5 @@ public class CreateCardProductRequestDto {
 @Setter
 class CardBenefit{
     private MerchantCategory merchantCategory;
-    private Double discountRate;
+    private String categoryName;
 }

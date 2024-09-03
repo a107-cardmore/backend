@@ -1,14 +1,15 @@
 package a107.cardmore.domain.bank.controller;
 
+import a107.cardmore.domain.bank.dto.*;
 import a107.cardmore.domain.bank.service.BankService;
+import a107.cardmore.util.api.dto.card.*;
 import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/banks")
@@ -18,46 +19,58 @@ public class BankController {
 
     private final BankService bankService;
 
-    @PostMapping("/create/demanddeposit")
-    public BaseSuccessResponse<MerchantResponseRestTemplateDto> createDemandDeposit(@RequestBody CreateDemandDepositRequestBankDto requestBankDto){
+    @PostMapping("/create/merchant")
+    public BaseSuccessResponse<List<MerchantResponseRestTemplateDto>> createMerchant(@RequestBody CreateMerchantRequestDto requestDto){
         log.info("가맹점 등록 API");
-        return new BaseSuccessResponse<>(bankService.createMerchant(requestBankDto));
+        return new BaseSuccessResponse<>(bankService.createMerchant(requestDto));
     }
 
-    @GetMapping("/demanddeposit")
-    public BaseSuccessResponse<List<CreateDemandDepositResponseBankDto>> viewDemandDeposit(){
+    @GetMapping("/merchant")
+    public BaseSuccessResponse<List<MerchantResponseRestTemplateDto>> inquireMerchantList(){
         log.info("가맹점 조회 API");
-        return new BaseSuccessResponse<>(bankService.findAllDemandDeposit());
+        return new BaseSuccessResponse<>(bankService.inquireMerchant());
     }
 
-    @PostMapping("/create/deposit")
-    public BaseSuccessResponse<CreateDepositResponseBankDto> createDeposit(@RequestBody CreateDepositRequestBankDto requestBankDto){
+    @PostMapping("/create/creditCardProduct")
+    public BaseSuccessResponse<CardProductResponseRestTemplateDto> createCreditCardProduct(@RequestBody CreateCardProductRequestDto requestDto){
         log.info("카드 상품 등록 API");
-        return new BaseSuccessResponse<>(bankService.createDeposit(requestBankDto));
+        return new BaseSuccessResponse<>(bankService.createCreditCardProduct(requestDto));
     }
 
-    @GetMapping("/deposit")
-    public BaseSuccessResponse<List<CreateDepositResponseBankDto>> viewDeposit(){
+    @GetMapping("/creditCardProduct")
+    public BaseSuccessResponse<List<CardProductResponseRestTemplateDto>> inquireCreditCardProduct(){
         log.info("카드 상품 목록 조회 API");
-        return new BaseSuccessResponse<>(bankService.findAllDeposit());
+        return new BaseSuccessResponse<>(bankService.inquireCreditCardProduct());
     }
 
-    @PostMapping("/create/saving")
-    public BaseSuccessResponse<CreateSavingResponseBankDto> createSaving(@RequestBody CreateSavingRequestBankDto requestBankDto){
+    @PostMapping("/create/creditCard")
+    public BaseSuccessResponse<CardResponseRestTemplateDto> createCreditCard(@RequestBody CreateCardRequestDto requestBankDto){
+        log.info("카드 등록 API");
+        return new BaseSuccessResponse<>(bankService.createCreditCard(requestBankDto));
+    }
+
+    @GetMapping("/creditCard")
+    public BaseSuccessResponse<List<CardResponseRestTemplateDto>> inquireCreditCard(){
+        log.info("내 카드 목록 조회 API");
+        return new BaseSuccessResponse<>(bankService.inquireSignUpCreditCardList());
+    }
+
+    @PostMapping("/create/transaction")
+    public BaseSuccessResponse<CreateCreditCardTransactionResponseRestTemplateDto> createCreditCardTransaction(@RequestBody CreateCreditCardTransactionRequestDto requestBankDto){
         log.info("카드 결제 API");
-        return new BaseSuccessResponse<>(bankService.createSaving(requestBankDto));
+        return new BaseSuccessResponse<>(bankService.createCreditCardTransaction(requestBankDto));
     }
 
-    @GetMapping("/saving")
-    public BaseSuccessResponse<List<CreateSavingResponseBankDto>> viewSaving(){
+    @GetMapping("/transaction")
+    public BaseSuccessResponse<InquireCreditCardTransactionListResponseRestTemplateDto> viewSaving(@RequestBody InquireCreditCardTransactionListRequestDto requestDto){
         log.info("카드 결제 내역 조회 API");
-        return new BaseSuccessResponse<>(bankService.findAllSaving());
+        return new BaseSuccessResponse<>(bankService.inquireCreditCardTransactionList(requestDto));
     }
 
-    @PostMapping("/create/loan")
-    public BaseSuccessResponse<CreateLoanResponseBankDto> createLoan(@RequestBody CreateLoanRequestBankDto requestBankDto){
+    @PostMapping("/bill")
+    public BaseSuccessResponse<List<InquireBillingStatementsResponseRestTemplateDto>> createLoan(@RequestBody InquireBillingStatementsRequestDto requestBankDto){
         log.info("청구서 조회 API");
-        return new BaseSuccessResponse<>(bankService.createLoan(requestBankDto));
+        return new BaseSuccessResponse<>(bankService.inquireBillingStatements(requestBankDto));
     }
 }
 

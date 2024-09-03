@@ -6,11 +6,13 @@ import a107.cardmore.util.api.dto.account.InquireAccountBalanceResponseRestTempl
 import a107.cardmore.util.api.dto.auth.CheckAuthCodeResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.auth.OpenAccountAuthResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.*;
-import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.member.CreateMemberResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import a107.cardmore.util.api.template.header.RequestHeader;
 import a107.cardmore.util.api.template.response.RECListResponse;
 import a107.cardmore.util.api.template.response.RECResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -219,7 +221,7 @@ public class RestTemplateUtil {
     
     //카드
     //가맹점 등록
-    public List<MerchantResponseRestTemplateDto> createMerchant() {
+    public List<MerchantResponseRestTemplateDto> createMerchant(CreateMerchantRequestRestTemplateDto requestDto) {
         log.info("가맹점 등록 API");
 
         String uri = "edu/creditCard/createMerchant";
@@ -231,6 +233,8 @@ public class RestTemplateUtil {
         RequestHeader headers = requestHeader(name, null);
 
         requestBody.put("Header",headers);
+        requestBody.put("categoryId",requestDto.getCategoryId());
+        requestBody.put("merchantName",requestDto.getMerchantName());
 
         HttpEntity<Object> entity = new HttpEntity<>(requestBody);
 
@@ -248,7 +252,7 @@ public class RestTemplateUtil {
     }
 
     //카드 등록
-    public CardProductResponseRestTemplateDto createCreditCardProduct() {
+    public CardProductResponseRestTemplateDto createCreditCardProduct(CreateCardProductRequestRestTemplateDto requestDto) {
         log.info("카드 상품 등록 API");
 
         String uri = "edu/creditCard/createCreditCardProduct";
@@ -259,7 +263,25 @@ public class RestTemplateUtil {
 
         RequestHeader headers = requestHeader(name, null);
 
+        // ObjectMapper 인스턴스 생성
+        ObjectMapper objectMapper = new ObjectMapper();
+
         requestBody.put("Header",headers);
+        requestBody.put("cardIssuerCode",requestDto.getCardIssuerCode());
+        requestBody.put("cardName",requestDto.getCardName());
+        requestBody.put("baselinePerformance",requestDto.getBaseLinePerformance());
+        requestBody.put("maxBenefitLimit",requestDto.getMaxBenefitLimit());
+        requestBody.put("cardDescription",requestDto.getCardDescription());
+
+        // DTO를 JSON 문자열로 변환
+        try {
+            String cardBenefits = objectMapper.writeValueAsString(requestDto.getCardBenefits());
+            log.info(cardBenefits);
+
+            requestBody.put("cardBenefits",requestDto.getCardBenefits());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         HttpEntity<Object> entity = new HttpEntity<>(requestBody);
 
@@ -306,7 +328,7 @@ public class RestTemplateUtil {
     }
 
     //카드 등록
-    public CardResponseRestTemplateDto createCreditCard(String userKey) {
+    public CardResponseRestTemplateDto createCreditCard(String userKey, CreateCardRequestRestTemplateDto requestDto) {
         log.info("카드 생성 API");
 
         String uri = "edu/creditCard/createCreditCard";
@@ -318,6 +340,10 @@ public class RestTemplateUtil {
         RequestHeader headers = requestHeader(name, userKey);
 
         requestBody.put("Header",headers);
+        requestBody.put("cardUniqueNo",requestDto.getCardUniqueNo());
+        requestBody.put("withdrawAccountNo",requestDto.getWithdrawAccountNo());
+        requestBody.put("withdrawDate()",requestDto.getWithdrawDate());
+
 
         HttpEntity<Object> entity = new HttpEntity<>(requestBody);
 
@@ -462,7 +488,7 @@ public class RestTemplateUtil {
 
 
     //청구서 조회
-    public List<InquireBillingStatementsResponseRestTemplateDto> inquireBillingStatements(InquireBillingStatementsRequestRestTemplateDto request) {
+    public List<InquireBillingStatementsResponseRestTemplateDto> inquireBillingStatements(String userKey, InquireBillingStatementsRequestRestTemplateDto request) {
         log.info("청구서 조회 API");
 
         String uri = "edu/inquireBillingStatements";
@@ -471,7 +497,7 @@ public class RestTemplateUtil {
 
         Map<String,Object> requestBody = new HashMap<>();
 
-        RequestHeader headers = requestHeader(name, null);
+        RequestHeader headers = requestHeader(name, userKey);
 
         requestBody.put("Header",headers);
         requestBody.put("cardNo",request.getCardNo());
