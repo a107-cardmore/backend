@@ -40,7 +40,7 @@ public class BankService {
     }
 
     //카드 생성
-    public CardResponseRestTemplateDto createCreditCard(CreateCardRequestDto requestDto){
+    public CardResponseRestTemplateDto createCreditCard(Long userId, CreateCardRequestDto requestDto){
         //TODO userKey dto에 setter로 넣어야하나?
 
         String userKey = "";
@@ -48,7 +48,7 @@ public class BankService {
     }
 
     //내 카드 목록 조회
-    public List<CardResponseRestTemplateDto> inquireSignUpCreditCardList(){
+    public List<CardResponseRestTemplateDto> inquireSignUpCreditCardList(Long userId){
         //TODO userKey dto에 setter로 넣어야하나?
 
         String userKey = "";
@@ -56,7 +56,7 @@ public class BankService {
     }
 
     //카드 결제
-    public CreateCreditCardTransactionResponseRestTemplateDto createCreditCardTransaction(CreateCreditCardTransactionRequestDto requestDto){
+    public CreateCreditCardTransactionResponseRestTemplateDto createCreditCardTransaction(Long userId, CreateCreditCardTransactionRequestDto requestDto){
         //TODO userKey dto에 setter로 넣어야하나?
 
         String userKey = "";
@@ -64,7 +64,7 @@ public class BankService {
     }
 
     //카드 결제 내역 조회
-    public InquireCreditCardTransactionListResponseRestTemplateDto inquireCreditCardTransactionList(InquireCreditCardTransactionListRequestDto requestDto){
+    public InquireCreditCardTransactionListResponseRestTemplateDto inquireCreditCardTransactionList(Long userId, InquireCreditCardTransactionListRequestDto requestDto){
         //TODO userKey dto에 setter로 넣어야하나?
 
         String userKey = "";
@@ -72,7 +72,7 @@ public class BankService {
     }
 
     //청구서 조회
-    public List<InquireBillingStatementsResponseRestTemplateDto> inquireBillingStatements(InquireBillingStatementsRequestDto requestDto){
+    public List<InquireBillingStatementsResponseRestTemplateDto> inquireBillingStatements(Long userId, InquireBillingStatementsRequestDto requestDto){
         //TODO userKey dto에 setter로 넣어야하나?
 
         String userKey = "";

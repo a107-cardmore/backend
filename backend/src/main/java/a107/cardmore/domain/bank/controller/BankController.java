@@ -43,34 +43,34 @@ public class BankController {
         return new BaseSuccessResponse<>(bankService.inquireCreditCardProduct());
     }
 
-    @PostMapping("/create/creditCard")
-    public BaseSuccessResponse<CardResponseRestTemplateDto> createCreditCard(@RequestBody CreateCardRequestDto requestBankDto){
+    @PostMapping("/create/creditCard/{id}")
+    public BaseSuccessResponse<CardResponseRestTemplateDto> createCreditCard(@PathVariable("id") Long userId, @RequestBody CreateCardRequestDto requestBankDto){
         log.info("카드 등록 API");
-        return new BaseSuccessResponse<>(bankService.createCreditCard(requestBankDto));
+        return new BaseSuccessResponse<>(bankService.createCreditCard(userId,requestBankDto));
     }
 
-    @GetMapping("/creditCard")
-    public BaseSuccessResponse<List<CardResponseRestTemplateDto>> inquireCreditCard(){
+    @GetMapping("/creditCard/{id}")
+    public BaseSuccessResponse<List<CardResponseRestTemplateDto>> inquireCreditCard(@PathVariable("id") Long userId){
         log.info("내 카드 목록 조회 API");
-        return new BaseSuccessResponse<>(bankService.inquireSignUpCreditCardList());
+        return new BaseSuccessResponse<>(bankService.inquireSignUpCreditCardList(userId));
     }
 
-    @PostMapping("/create/transaction")
-    public BaseSuccessResponse<CreateCreditCardTransactionResponseRestTemplateDto> createCreditCardTransaction(@RequestBody CreateCreditCardTransactionRequestDto requestBankDto){
+    @PostMapping("/create/transaction/{id}")
+    public BaseSuccessResponse<CreateCreditCardTransactionResponseRestTemplateDto> createCreditCardTransaction(@PathVariable("id") Long userId,@RequestBody CreateCreditCardTransactionRequestDto requestBankDto){
         log.info("카드 결제 API");
-        return new BaseSuccessResponse<>(bankService.createCreditCardTransaction(requestBankDto));
+        return new BaseSuccessResponse<>(bankService.createCreditCardTransaction(userId,requestBankDto));
     }
 
-    @GetMapping("/transaction")
-    public BaseSuccessResponse<InquireCreditCardTransactionListResponseRestTemplateDto> viewSaving(@RequestBody InquireCreditCardTransactionListRequestDto requestDto){
+    @GetMapping("/transaction/{id}")
+    public BaseSuccessResponse<InquireCreditCardTransactionListResponseRestTemplateDto> viewSaving(@PathVariable("id") Long userId,@RequestBody InquireCreditCardTransactionListRequestDto requestDto){
         log.info("카드 결제 내역 조회 API");
-        return new BaseSuccessResponse<>(bankService.inquireCreditCardTransactionList(requestDto));
+        return new BaseSuccessResponse<>(bankService.inquireCreditCardTransactionList(userId,requestDto));
     }
 
-    @PostMapping("/bill")
-    public BaseSuccessResponse<List<InquireBillingStatementsResponseRestTemplateDto>> createLoan(@RequestBody InquireBillingStatementsRequestDto requestBankDto){
+    @PostMapping("/bill/{id}")
+    public BaseSuccessResponse<List<InquireBillingStatementsResponseRestTemplateDto>> createLoan(@PathVariable("id") Long userId,@RequestBody InquireBillingStatementsRequestDto requestBankDto){
         log.info("청구서 조회 API");
-        return new BaseSuccessResponse<>(bankService.inquireBillingStatements(requestBankDto));
+        return new BaseSuccessResponse<>(bankService.inquireBillingStatements(userId,requestBankDto));
     }
 }
 
