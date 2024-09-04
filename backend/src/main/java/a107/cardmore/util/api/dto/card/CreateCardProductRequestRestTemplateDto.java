@@ -1,7 +1,6 @@
 package a107.cardmore.util.api.dto.card;
 
-import a107.cardmore.util.constant.CardCompany;
-import a107.cardmore.util.constant.MerchantCategory;
+import a107.cardmore.domain.bank.dto.CardBenefit;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,11 +15,4 @@ public class CreateCardProductRequestRestTemplateDto {
     private Long maxBenefitLimit;
     private String cardDescription;
     private List<CardBenefit> cardBenefits;
-}
-
-@Getter
-@Setter
-class CardBenefit{
-    private MerchantCategory merchantCategory;
-    private String categoryName;
 }
