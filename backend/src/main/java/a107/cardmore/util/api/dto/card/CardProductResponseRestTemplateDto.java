@@ -2,6 +2,7 @@ package a107.cardmore.util.api.dto.card;
 
 import lombok.Getter;
 import lombok.Setter;
+//import a107.cardmore.util.api.dto.card.CardBenefitInfo;
 
 import java.util.List;
 
@@ -18,12 +19,4 @@ public class CardProductResponseRestTemplateDto {
     private Long maxBenefitLimit;
     private String cardDescription;
     private List<CardBenefitInfo> cardBenefitInfo;
-}
-
-@Getter
-@Setter
-class CardBenefitInfo {
-    private String categoryId;
-    private String categoryName;
-    private Double discountRate;
 }

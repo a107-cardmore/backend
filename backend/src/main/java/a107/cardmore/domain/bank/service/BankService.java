@@ -26,7 +26,7 @@ public class BankService {
 
     //가맹점 목록 조회
     public List<MerchantResponseRestTemplateDto> inquireMerchant(){
-        return restTemplateUtil.inquireMerChantList();
+        return restTemplateUtil.inquireMerchantList();
     }
 
     //카드 상품 등록

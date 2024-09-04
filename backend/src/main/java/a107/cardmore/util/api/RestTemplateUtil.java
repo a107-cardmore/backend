@@ -390,12 +390,12 @@ public class RestTemplateUtil {
     }
 
     //가맹점 목록 조회
-    public List<MerchantResponseRestTemplateDto> inquireMerChantList() {
+    public List<MerchantResponseRestTemplateDto> inquireMerchantList() {
         log.info("가맹점 목록 API");
 
-        String uri = "edu/inquireMerChantList";
+        String uri = "edu/creditCard/inquireMerchantList";
 
-        String name = "inquireMerChantList";
+        String name = "inquireMerchantList";
 
         Map<String,Object> requestBody = new HashMap<>();
 
