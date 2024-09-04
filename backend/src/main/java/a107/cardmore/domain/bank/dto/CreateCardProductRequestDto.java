@@ -17,10 +17,3 @@ public class CreateCardProductRequestDto {
     private String cardDescription;
     private List<CardBenefit> cardBenefits;
 }
-
-@Getter
-@Setter
-class CardBenefit{
-    private MerchantCategory merchantCategory;
-    private Double discountRate;
-}

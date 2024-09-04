@@ -8,10 +8,10 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BankMapper {
-    @Mapping(source = "merchantCategory", target = "categoryId", qualifiedByName = "getValue")
+    @Mapping(source = "merchantCategory.value", target = "categoryId")
     CreateMerchantRequestRestTemplateDto toCreateMerchantRequestRestTemplateDto(CreateMerchantRequestDto requestDto);
 
-    @Mapping(source = "cardCompany", target = "cardIssuerCode", qualifiedByName = "getValue")
+    @Mapping(source = "cardCompany.value", target = "cardIssuerCode")
     CreateCardProductRequestRestTemplateDto toCreateCardProductRequestDto(CreateCardProductRequestDto requestDto);
 
     CreateCardRequestRestTemplateDto toCreateCardRequestRestTemplateDto(CreateCardRequestDto requestDto);
