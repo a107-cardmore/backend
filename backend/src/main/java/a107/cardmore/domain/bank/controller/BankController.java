@@ -19,7 +19,7 @@ public class BankController {
 
     private final BankService bankService;
 
-    @PostMapping("/create/merchant")
+    @PostMapping("/merchant")
     public BaseSuccessResponse<List<MerchantResponseRestTemplateDto>> createMerchant(@RequestBody CreateMerchantRequestDto requestDto){
         log.info("가맹점 등록 API");
         return new BaseSuccessResponse<>(bankService.createMerchant(requestDto));
@@ -31,7 +31,7 @@ public class BankController {
         return new BaseSuccessResponse<>(bankService.inquireMerchant());
     }
 
-    @PostMapping("/create/creditCardProduct")
+    @PostMapping("/creditCardProduct")
     public BaseSuccessResponse<CardProductResponseRestTemplateDto> createCreditCardProduct(@RequestBody CreateCardProductRequestDto requestDto){
         log.info("카드 상품 등록 API");
         return new BaseSuccessResponse<>(bankService.createCreditCardProduct(requestDto));
@@ -43,7 +43,13 @@ public class BankController {
         return new BaseSuccessResponse<>(bankService.inquireCreditCardProduct());
     }
 
-    @PostMapping("/create/creditCard/{id}")
+    @GetMapping("/cardCompany")
+    public BaseSuccessResponse<List<CardIssuerCodesListResponseRestTemplateDto>> inquireCardIssuerCodesList(){
+        log.info("카드사 목록 조회 API");
+        return new BaseSuccessResponse<>(bankService.inquireCardIssuerCodesList());
+    }
+
+    @PostMapping("/creditCard/{id}")
     public BaseSuccessResponse<CardResponseRestTemplateDto> createCreditCard(@PathVariable("id") Long userId, @RequestBody CreateCardRequestDto requestBankDto){
         log.info("카드 등록 API");
         return new BaseSuccessResponse<>(bankService.createCreditCard(userId,requestBankDto));
@@ -55,20 +61,20 @@ public class BankController {
         return new BaseSuccessResponse<>(bankService.inquireSignUpCreditCardList(userId));
     }
 
-    @PostMapping("/create/transaction/{id}")
+    @PostMapping("/transaction/{id}")
     public BaseSuccessResponse<CreateCreditCardTransactionResponseRestTemplateDto> createCreditCardTransaction(@PathVariable("id") Long userId,@RequestBody CreateCreditCardTransactionRequestDto requestBankDto){
         log.info("카드 결제 API");
         return new BaseSuccessResponse<>(bankService.createCreditCardTransaction(userId,requestBankDto));
     }
 
     @GetMapping("/transaction/{id}")
-    public BaseSuccessResponse<InquireCreditCardTransactionListResponseRestTemplateDto> viewSaving(@PathVariable("id") Long userId,@RequestBody InquireCreditCardTransactionListRequestDto requestDto){
+    public BaseSuccessResponse<InquireCreditCardTransactionListResponseRestTemplateDto> inquireTransaction(@PathVariable("id") Long userId,@RequestBody InquireCreditCardTransactionListRequestDto requestDto){
         log.info("카드 결제 내역 조회 API");
         return new BaseSuccessResponse<>(bankService.inquireCreditCardTransactionList(userId,requestDto));
     }
 
-    @PostMapping("/bill/{id}")
-    public BaseSuccessResponse<List<InquireBillingStatementsResponseRestTemplateDto>> createLoan(@PathVariable("id") Long userId,@RequestBody InquireBillingStatementsRequestDto requestBankDto){
+    @GetMapping("/bill/{id}")
+    public BaseSuccessResponse<List<InquireBillingStatementsResponseRestTemplateDto>> inquireBilling(@PathVariable("id") Long userId,@RequestBody InquireBillingStatementsRequestDto requestBankDto){
         log.info("청구서 조회 API");
         return new BaseSuccessResponse<>(bankService.inquireBillingStatements(userId,requestBankDto));
     }

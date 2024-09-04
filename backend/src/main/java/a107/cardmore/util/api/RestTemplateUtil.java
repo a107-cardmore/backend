@@ -251,6 +251,35 @@ public class RestTemplateUtil {
         return response.getBody().getREC();
     }
 
+    //카드사 조회
+    public List<CardIssuerCodesListResponseRestTemplateDto> inquireCardIssuerCodesList() {
+        log.info("카드사 조회 API");
+
+        String uri = "edu/creditCard/inquireCardIssuerCodesList";
+
+        String name = "inquireCardIssuerCodesList";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, null);
+
+        requestBody.put("Header",headers);
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECListResponse<CardIssuerCodesListResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
     //카드 등록
     public CardProductResponseRestTemplateDto createCreditCardProduct(CreateCardProductRequestRestTemplateDto requestDto) {
         log.info("카드 상품 등록 API");
@@ -269,19 +298,21 @@ public class RestTemplateUtil {
         requestBody.put("Header",headers);
         requestBody.put("cardIssuerCode",requestDto.getCardIssuerCode());
         requestBody.put("cardName",requestDto.getCardName());
-        requestBody.put("baselinePerformance",requestDto.getBaseLinePerformance());
+        requestBody.put("baselinePerformance",requestDto.getBaselinePerformance());
         requestBody.put("maxBenefitLimit",requestDto.getMaxBenefitLimit());
         requestBody.put("cardDescription",requestDto.getCardDescription());
 
         // DTO를 JSON 문자열로 변환
         try {
             String cardBenefits = objectMapper.writeValueAsString(requestDto.getCardBenefits());
-            log.info(cardBenefits);
 
             requestBody.put("cardBenefits",requestDto.getCardBenefits());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+
+
+        log.info(requestBody.toString());
 
         HttpEntity<Object> entity = new HttpEntity<>(requestBody);
 
@@ -325,6 +356,16 @@ public class RestTemplateUtil {
         }
 
         return response.getBody().getREC();
+
+//        ResponseEntity<String> response
+//                = restTemplate.exchange(
+//                url + uri, HttpMethod.POST, entity,
+//                String.class
+//        );
+//
+//        log.info(response.getBody());
+//
+//        return null;
     }
 
     //카드 등록

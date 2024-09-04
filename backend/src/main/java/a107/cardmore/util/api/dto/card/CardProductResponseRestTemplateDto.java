@@ -1,5 +1,6 @@
 package a107.cardmore.util.api.dto.card;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 //import a107.cardmore.util.api.dto.card.CardBenefitInfo;
@@ -18,5 +19,5 @@ public class CardProductResponseRestTemplateDto {
     private Long baselinePerformance;
     private Long maxBenefitLimit;
     private String cardDescription;
-    private List<CardBenefitInfo> cardBenefitInfo;
+    private List<CardBenefitsInfo> cardBenefitsInfo;
 }

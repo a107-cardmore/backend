@@ -31,12 +31,18 @@ public class BankService {
 
     //카드 상품 등록
     public CardProductResponseRestTemplateDto createCreditCardProduct(CreateCardProductRequestDto requestDto){
-        return restTemplateUtil.createCreditCardProduct(bankMapper.toCreateCardProductRequestDto(requestDto));
+        log.info("Request -> {}",requestDto.toString());
+        return restTemplateUtil.createCreditCardProduct(bankMapper.toCreateCardProductRequestRestTemplateDto(requestDto));
     }
 
     //카드 상품 목록 조회
     public List<CardProductResponseRestTemplateDto> inquireCreditCardProduct(){
         return restTemplateUtil.inquireCreditCardList();
+    }
+    
+    //카드사 조회
+    public List<CardIssuerCodesListResponseRestTemplateDto> inquireCardIssuerCodesList(){
+        return restTemplateUtil.inquireCardIssuerCodesList();
     }
 
     //카드 생성

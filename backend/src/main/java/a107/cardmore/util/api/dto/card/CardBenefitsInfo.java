@@ -6,8 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Data
-public class CardBenefitInfo {
+public class CardBenefitsInfo {
     private String categoryId;
     private String categoryName;
     private Double discountRate;

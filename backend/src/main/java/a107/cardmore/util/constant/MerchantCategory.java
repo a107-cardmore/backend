@@ -1,13 +1,13 @@
 package a107.cardmore.util.constant;
 
 public enum MerchantCategory {
-    REFUELING("대외활동"),
-    MARKET("대형마트"),
-    TRAFFIC("교통"),
-    EDUCATION("기타"),
-    COMMUNICATION("통신"),
-    FOREIGN("해외"),
-    LIFE("생활");
+    REFUELING("CG-3fa85f6425e811e"),
+    MARKET("CG-4fa85f6425ad1d3"),
+    TRAFFIC("CG-4fa85f6455cad4a"),
+    EDUCATION("CG-6dd85f6425ez11o"),
+    COMMUNICATION("CG-7fa85f6425bc311"),
+    FOREIGN("CG-8fa85f6425e1123"),
+    LIFE("CG-9ca85f66311a23d");
 
     private final String value;
 
