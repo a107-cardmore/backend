@@ -1,4 +1,4 @@
-package a107.cardmore.domain.user.controller;
+package a107.cardmore.domain.user.service;
 
 import a107.cardmore.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

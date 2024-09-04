@@ -17,6 +17,7 @@ import java.util.List;
 public class BankService {
     private final RestTemplateUtil restTemplateUtil;
     private final BankMapper bankMapper;
+    private final BankModuleService bankModuleService;
 
     //가맹점 등록
     public List<MerchantResponseRestTemplateDto> createMerchant(CreateMerchantRequestDto requestDto){
@@ -46,42 +47,32 @@ public class BankService {
     }
 
     //카드 생성
-    public CardResponseRestTemplateDto createCreditCard(Long userId, CreateCardRequestDto requestDto){
-        //TODO userKey dto에 setter로 넣어야하나?
-
-        String userKey = "";
+    public CardResponseRestTemplateDto createCreditCard(String email, CreateCardRequestDto requestDto){
+        String userKey = bankModuleService.getUserKeyByEmail(email);
         return restTemplateUtil.createCreditCard(userKey,bankMapper.toCreateCardRequestRestTemplateDto(requestDto));
     }
 
     //내 카드 목록 조회
-    public List<CardResponseRestTemplateDto> inquireSignUpCreditCardList(Long userId){
-        //TODO userKey dto에 setter로 넣어야하나?
-
-        String userKey = "";
+    public List<CardResponseRestTemplateDto> inquireSignUpCreditCardList(String email){
+        String userKey = bankModuleService.getUserKeyByEmail(email);
         return restTemplateUtil.inquireSignUpCreditCardList(userKey);
     }
 
     //카드 결제
-    public CreateCreditCardTransactionResponseRestTemplateDto createCreditCardTransaction(Long userId, CreateCreditCardTransactionRequestDto requestDto){
-        //TODO userKey dto에 setter로 넣어야하나?
-
-        String userKey = "";
+    public CreateCreditCardTransactionResponseRestTemplateDto createCreditCardTransaction(String email, CreateCreditCardTransactionRequestDto requestDto){
+        String userKey = bankModuleService.getUserKeyByEmail(email);
         return restTemplateUtil.createCreditCardTransaction(userKey, bankMapper.toCreateCreditCardTransactionRequestRestTemplateDto(requestDto));
     }
 
     //카드 결제 내역 조회
-    public InquireCreditCardTransactionListResponseRestTemplateDto inquireCreditCardTransactionList(Long userId, InquireCreditCardTransactionListRequestDto requestDto){
-        //TODO userKey dto에 setter로 넣어야하나?
-
-        String userKey = "";
+    public InquireCreditCardTransactionListResponseRestTemplateDto inquireCreditCardTransactionList(String email, InquireCreditCardTransactionListRequestDto requestDto){
+        String userKey = bankModuleService.getUserKeyByEmail(email);
         return restTemplateUtil.inquireCreditCardTransactionList(userKey,bankMapper.toInquireCreditCardTransactionListRequestRestTemplateDto(requestDto));
     }
 
     //청구서 조회
-    public List<InquireBillingStatementsResponseRestTemplateDto> inquireBillingStatements(Long userId, InquireBillingStatementsRequestDto requestDto){
-        //TODO userKey dto에 setter로 넣어야하나?
-
-        String userKey = "";
+    public List<InquireBillingStatementsResponseRestTemplateDto> inquireBillingStatements(String email, InquireBillingStatementsRequestDto requestDto){
+        String userKey = bankModuleService.getUserKeyByEmail(email);
         return restTemplateUtil.inquireBillingStatements(userKey,  bankMapper.toInquireBillingStatementsRequestRestTemplateDto(requestDto));
     }
 
