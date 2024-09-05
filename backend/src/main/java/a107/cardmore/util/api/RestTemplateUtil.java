@@ -5,9 +5,14 @@ import a107.cardmore.util.api.dto.account.CreateAccountResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.account.InquireAccountBalanceResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.auth.CheckAuthCodeResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.auth.OpenAccountAuthResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.*;
 import a107.cardmore.util.api.dto.member.CreateMemberResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import a107.cardmore.util.api.template.header.RequestHeader;
+import a107.cardmore.util.api.template.response.RECListResponse;
 import a107.cardmore.util.api.template.response.RECResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -212,4 +218,350 @@ public class RestTemplateUtil {
 
         return response.getBody().getREC();
     }
+    
+    //카드
+    //가맹점 등록
+    public List<MerchantResponseRestTemplateDto> createMerchant(CreateMerchantRequestRestTemplateDto requestDto) {
+        log.info("가맹점 등록 API");
+
+        String uri = "edu/creditCard/createMerchant";
+
+        String name = "createMerchant";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, null);
+
+        requestBody.put("Header",headers);
+        requestBody.put("categoryId",requestDto.getCategoryId());
+        requestBody.put("merchantName",requestDto.getMerchantName());
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECListResponse<MerchantResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+    //카드사 조회
+    public List<CardIssuerCodesListResponseRestTemplateDto> inquireCardIssuerCodesList() {
+        log.info("카드사 조회 API");
+
+        String uri = "edu/creditCard/inquireCardIssuerCodesList";
+
+        String name = "inquireCardIssuerCodesList";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, null);
+
+        requestBody.put("Header",headers);
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECListResponse<CardIssuerCodesListResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+    //카드 등록
+    public CardProductResponseRestTemplateDto createCreditCardProduct(CreateCardProductRequestRestTemplateDto requestDto) {
+        log.info("카드 상품 등록 API");
+
+        String uri = "edu/creditCard/createCreditCardProduct";
+
+        String name = "createCreditCardProduct";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, null);
+
+        // ObjectMapper 인스턴스 생성
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        requestBody.put("Header",headers);
+        requestBody.put("cardIssuerCode",requestDto.getCardIssuerCode());
+        requestBody.put("cardName",requestDto.getCardName());
+        requestBody.put("baselinePerformance",requestDto.getBaselinePerformance());
+        requestBody.put("maxBenefitLimit",requestDto.getMaxBenefitLimit());
+        requestBody.put("cardDescription",requestDto.getCardDescription());
+
+        // DTO를 JSON 문자열로 변환
+        try {
+            String cardBenefits = objectMapper.writeValueAsString(requestDto.getCardBenefits());
+
+            requestBody.put("cardBenefits",requestDto.getCardBenefits());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        log.info(requestBody.toString());
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECResponse<CardProductResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+    //카드 상품 조회
+    public List<CardProductResponseRestTemplateDto> inquireCreditCardList() {
+        log.info("카드 상품 조회 API");
+
+        String uri = "edu/creditCard/inquireCreditCardList";
+
+        String name = "inquireCreditCardList";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, null);
+
+        requestBody.put("Header",headers);
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECListResponse<CardProductResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+
+//        ResponseEntity<String> response
+//                = restTemplate.exchange(
+//                url + uri, HttpMethod.POST, entity,
+//                String.class
+//        );
+//
+//        log.info(response.getBody());
+//
+//        return null;
+    }
+
+    //카드 등록
+    public CardResponseRestTemplateDto createCreditCard(String userKey, CreateCardRequestRestTemplateDto requestDto) {
+        log.info("카드 생성 API");
+
+        String uri = "edu/creditCard/createCreditCard";
+
+        String name = "createCreditCard";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, userKey);
+
+        requestBody.put("Header",headers);
+        requestBody.put("cardUniqueNo",requestDto.getCardUniqueNo());
+        requestBody.put("withdrawAccountNo",requestDto.getWithdrawAccountNo());
+        requestBody.put("withdrawDate()",requestDto.getWithdrawDate());
+
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECResponse<CardResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+    //내 카드 목록 조회
+    public List<CardResponseRestTemplateDto> inquireSignUpCreditCardList(String userKey) {
+        log.info("내 카드 목록 API");
+
+        String uri = "edu/inquireSignUpCreditCardList";
+
+        String name = "inquireSignUpCreditCardList";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, userKey);
+
+        requestBody.put("Header",headers);
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECListResponse<CardResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+    //가맹점 목록 조회
+    public List<MerchantResponseRestTemplateDto> inquireMerchantList() {
+        log.info("가맹점 목록 API");
+
+        String uri = "edu/creditCard/inquireMerchantList";
+
+        String name = "inquireMerchantList";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, null);
+
+        requestBody.put("Header",headers);
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECListResponse<MerchantResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+    //카드 결제
+    public CreateCreditCardTransactionResponseRestTemplateDto createCreditCardTransaction(String userKey,CreateCreditCardTransactionRequestRestTemplateDto request) {
+        log.info("카드 결제 API");
+
+        String uri = "edu/createCreditCardTransaction";
+
+        String name = "createCreditCardTransaction";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, userKey);
+
+        requestBody.put("Header",headers);
+        requestBody.put("cardNo",request.getCardNo());
+        requestBody.put("cvc",request.getCvc());
+        requestBody.put("merchantId",request.getMerchantId());
+        requestBody.put("paymentBalance",request.getPaymentBalance());
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECResponse<CreateCreditCardTransactionResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+    //카드 결제 내역 조회
+    public InquireCreditCardTransactionListResponseRestTemplateDto inquireCreditCardTransactionList(String userKey, InquireCreditCardTransactionListRequestRestTemplateDto request) {
+        log.info("카드 결제 내역 조회 API");
+
+        String uri = "edu/inquireCreditCardTransactionList";
+
+        String name = "inquireCreditCardTransactionList";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, userKey);
+
+        requestBody.put("Header",headers);
+        requestBody.put("cardNo",request.getCardNo());
+        requestBody.put("cvc",request.getCvc());
+
+        //TODO LocalDate to String 변환 바뀌는 거 Util 빼야 하는지
+        requestBody.put("startMonth",request.getStartDate());
+        requestBody.put("endMonth",request.getEndDate());
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECResponse<InquireCreditCardTransactionListResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+
+    //청구서 조회
+    public List<InquireBillingStatementsResponseRestTemplateDto> inquireBillingStatements(String userKey, InquireBillingStatementsRequestRestTemplateDto request) {
+        log.info("청구서 조회 API");
+
+        String uri = "edu/inquireBillingStatements";
+
+        String name = "inquireBillingStatements";
+
+        Map<String,Object> requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, userKey);
+
+        requestBody.put("Header",headers);
+        requestBody.put("cardNo",request.getCardNo());
+        requestBody.put("cvc",request.getCvc());
+
+        //TODO LocalDate to String 변환 바뀌는 거 Util 빼야 하는지
+        requestBody.put("startMonth",request.getStartMonth());
+        requestBody.put("endMonth",request.getEndMonth());
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<RECListResponse<InquireBillingStatementsResponseRestTemplateDto>> response
+                = restTemplate.exchange(
+                url + uri, HttpMethod.POST, entity,
+                new ParameterizedTypeReference<>(){}
+        );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody().getREC();
+    }
+
+
 }
