@@ -27,6 +27,7 @@ public class RegisterRequestDto {
                 .password(password)
                 .nickName(nickName)
                 .role("USER")
+                .userKey("")
                 .name(name)
                 .build();
     }

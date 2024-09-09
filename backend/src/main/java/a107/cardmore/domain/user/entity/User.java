@@ -32,14 +32,14 @@ public class User {
     @Column(length = 100)
     private String accountNo;
 
-    @Column
+    @Column(nullable = false)
     private String nickName;
 
     @Column(nullable = false, length = 10)
     private String role;
 
     @Column(nullable = false)
-    private String nickName;
+    private String userKey;
 
     @Column(nullable = false)
     @Builder.Default
