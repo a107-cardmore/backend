@@ -1,6 +1,7 @@
 package a107.cardmore.domain.bank.service;
 
 import a107.cardmore.domain.bank.dto.*;
+import a107.cardmore.domain.bank.entity.Bank;
 import a107.cardmore.domain.bank.mapper.BankMapper;
 import a107.cardmore.util.api.RestTemplateUtil;
 import a107.cardmore.util.api.dto.card.*;
@@ -22,9 +23,12 @@ public class BankService {
 
     //사용자 등록
     public CreateMemberResponseRestTemplateDto createUser(CreateUserRequestDto requestDto){
+        //귬융 API 등록
         CreateMemberResponseRestTemplateDto responseDto = restTemplateUtil.createMember(bankMapper.toCreateMemberRequestRestTemplateDto(requestDto));
-
-        bankModuleService.saveBank(responseDto.getUserId(), responseDto.getUserKey());
+        //수시입출금 계좌 추가
+        String accountNo = restTemplateUtil.createAccount(responseDto.getUserKey(),"001-1-dcbb072360ee4e").getAccountNo();
+        //Bank Table 추가
+        bankModuleService.saveBank(responseDto.getUserId(), responseDto.getUserKey(), accountNo);
 
         return responseDto;
     }
@@ -56,10 +60,15 @@ public class BankService {
         return restTemplateUtil.inquireCardIssuerCodesList();
     }
 
-    //카드 생성
+    //내 카드 등록하기
     public CardResponseRestTemplateDto createCreditCard(String email, CreateCardRequestDto requestDto){
-        String userKey = bankModuleService.getUserKeyByEmail(email);
-        return restTemplateUtil.createCreditCard(userKey,bankMapper.toCreateCardRequestRestTemplateDto(requestDto));
+        Bank user = bankModuleService.getUser(email);
+
+        requestDto.setWithdrawalAccountNo(user.getAccountNo());
+
+        log.info("계좌번호 -> {}",requestDto.getWithdrawalAccountNo());
+
+        return restTemplateUtil.createCreditCard(user.getUserKey(),bankMapper.toCreateCardRequestRestTemplateDto(requestDto));
     }
 
     //내 카드 목록 조회

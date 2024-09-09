@@ -26,6 +26,9 @@ public class Bank {
     private String userKey;
 
     @Column(nullable = false)
+    private String accountNo;
+
+    @Column(nullable = false)
     @Builder.Default
     private Boolean isDeleted = false;
 }
