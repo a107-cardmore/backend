@@ -18,11 +18,14 @@ public class RegisterRequestDto {
     private String email;
     @NotNull
     private String password;
+    @NotNull
+    private String nickName;
 
     public User createUser(String password) {
         return User.builder()
                 .email(email)
                 .password(password)
+                .nickName(nickName)
                 .role("USER")
                 .name(name)
                 .build();

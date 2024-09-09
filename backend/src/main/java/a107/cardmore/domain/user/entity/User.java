@@ -39,6 +39,9 @@ public class User {
     private String role;
 
     @Column(nullable = false)
+    private String nickName;
+
+    @Column(nullable = false)
     @Builder.Default
     private Boolean isDeleted = false;
 
