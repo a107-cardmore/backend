@@ -1,0 +1,9 @@
+.App {
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative; /* 메뉴바를 이동시키기 위해 상대적 위치로 설정 */
+  overflow: hidden; /* 스크롤바를 숨김 */
+}
