@@ -4,6 +4,7 @@ import a107.cardmore.domain.bank.dto.*;
 import a107.cardmore.domain.bank.mapper.BankMapper;
 import a107.cardmore.util.api.RestTemplateUtil;
 import a107.cardmore.util.api.dto.card.*;
+import a107.cardmore.util.api.dto.member.CreateMemberResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,15 @@ public class BankService {
     private final RestTemplateUtil restTemplateUtil;
     private final BankMapper bankMapper;
     private final BankModuleService bankModuleService;
+
+    //사용자 등록
+    public CreateMemberResponseRestTemplateDto createUser(CreateUserRequestDto requestDto){
+        CreateMemberResponseRestTemplateDto responseDto = restTemplateUtil.createMember(bankMapper.toCreateMemberRequestRestTemplateDto(requestDto));
+
+        bankModuleService.saveBank(responseDto.getUserId(), responseDto.getUserKey());
+
+        return responseDto;
+    }
 
     //가맹점 등록
     public List<MerchantResponseRestTemplateDto> createMerchant(CreateMerchantRequestDto requestDto){
@@ -55,6 +65,7 @@ public class BankService {
     //내 카드 목록 조회
     public List<CardResponseRestTemplateDto> inquireSignUpCreditCardList(String email){
         String userKey = bankModuleService.getUserKeyByEmail(email);
+        log.info("userKey->{}",userKey);
         return restTemplateUtil.inquireSignUpCreditCardList(userKey);
     }
 

@@ -2,6 +2,8 @@ package a107.cardmore.domain.bank.mapper;
 
 import a107.cardmore.domain.bank.dto.*;
 import a107.cardmore.util.api.dto.card.*;
+import a107.cardmore.util.api.dto.member.CreateMemberRequestRestTemplateDto;
+import a107.cardmore.util.api.dto.member.CreateMemberResponseRestTemplateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -25,4 +27,6 @@ public interface BankMapper {
     CreateCreditCardTransactionRequestRestTemplateDto toCreateCreditCardTransactionRequestRestTemplateDto(CreateCreditCardTransactionRequestDto requestDto);
     InquireCreditCardTransactionListRequestRestTemplateDto toInquireCreditCardTransactionListRequestRestTemplateDto(InquireCreditCardTransactionListRequestDto requestDto);
     InquireBillingStatementsRequestRestTemplateDto toInquireBillingStatementsRequestRestTemplateDto(InquireBillingStatementsRequestDto requestDto);
+
+    CreateMemberRequestRestTemplateDto toCreateMemberRequestRestTemplateDto(CreateUserRequestDto requestDto);
 }
