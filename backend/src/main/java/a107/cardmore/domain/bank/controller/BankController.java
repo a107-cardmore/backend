@@ -3,6 +3,7 @@ package a107.cardmore.domain.bank.controller;
 import a107.cardmore.domain.bank.dto.*;
 import a107.cardmore.domain.bank.service.BankService;
 import a107.cardmore.util.api.dto.card.*;
+import a107.cardmore.util.api.dto.member.CreateMemberResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,12 @@ import java.util.List;
 public class BankController {
 
     private final BankService bankService;
+
+    @PostMapping("/user")
+    public BaseSuccessResponse<CreateMemberResponseRestTemplateDto> createUser(@RequestBody CreateUserRequestDto requestDto) {
+        log.info("사용자 등록 API");
+        return new BaseSuccessResponse<>(bankService.createUser(requestDto));
+    }
 
     @PostMapping("/merchant")
     public BaseSuccessResponse<List<MerchantResponseRestTemplateDto>> createMerchant(@RequestBody CreateMerchantRequestDto requestDto){

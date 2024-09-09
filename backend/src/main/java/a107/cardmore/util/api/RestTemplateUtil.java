@@ -1,11 +1,13 @@
 package a107.cardmore.util.api;
 
+import a107.cardmore.domain.bank.dto.CreateUserRequestDto;
 import a107.cardmore.global.exception.BadRequestException;
 import a107.cardmore.util.api.dto.account.CreateAccountResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.account.InquireAccountBalanceResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.auth.CheckAuthCodeResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.auth.OpenAccountAuthResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.*;
+import a107.cardmore.util.api.dto.member.CreateMemberRequestRestTemplateDto;
 import a107.cardmore.util.api.dto.member.CreateMemberResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import a107.cardmore.util.api.template.header.RequestHeader;
@@ -78,14 +80,16 @@ public class RestTemplateUtil {
 
     // 사용자 로그인 API
     // 사용자 생성
-    public CreateMemberResponseRestTemplateDto createMember(String userId) {
+    public CreateMemberResponseRestTemplateDto createMember(CreateMemberRequestRestTemplateDto requestDto) {
         log.info("금융 API 사용자 생성 ");
         String uri = "member";
 
+        String email = requestDto.getEmail();
+
         Map<String,Object>requestBody = new HashMap<>();
 
-        requestBody.put("apiKey","fda96747b542462caf0826cedcebd984");
-        requestBody.put("userId",userId);
+        requestBody.put("apiKey",apiKey);
+        requestBody.put("userId",email);
 
         HttpEntity<Object> entity = new HttpEntity<>(requestBody);
 
@@ -280,7 +284,7 @@ public class RestTemplateUtil {
         return response.getBody().getREC();
     }
 
-    //카드 등록
+    //카드 상품 등록
     public CardProductResponseRestTemplateDto createCreditCardProduct(CreateCardProductRequestRestTemplateDto requestDto) {
         log.info("카드 상품 등록 API");
 
@@ -356,16 +360,6 @@ public class RestTemplateUtil {
         }
 
         return response.getBody().getREC();
-
-//        ResponseEntity<String> response
-//                = restTemplate.exchange(
-//                url + uri, HttpMethod.POST, entity,
-//                String.class
-//        );
-//
-//        log.info(response.getBody());
-//
-//        return null;
     }
 
     //카드 등록
@@ -404,8 +398,9 @@ public class RestTemplateUtil {
     //내 카드 목록 조회
     public List<CardResponseRestTemplateDto> inquireSignUpCreditCardList(String userKey) {
         log.info("내 카드 목록 API");
+        log.info("userKey->{}",userKey);
 
-        String uri = "edu/inquireSignUpCreditCardList";
+        String uri = "edu/creditCard/inquireSignUpCreditCardList";
 
         String name = "inquireSignUpCreditCardList";
 
