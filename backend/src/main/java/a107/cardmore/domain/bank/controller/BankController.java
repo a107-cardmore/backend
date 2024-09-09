@@ -73,7 +73,7 @@ public class BankController {
         return new BaseSuccessResponse<>(bankService.inquireCreditCardTransactionList(email,requestDto));
     }
 
-    @GetMapping("/bill/{email}")
+    @GetMapping("/billing/{email}")
     public BaseSuccessResponse<List<InquireBillingStatementsResponseRestTemplateDto>> inquireBilling(@PathVariable("email") String email,@RequestBody InquireBillingStatementsRequestDto requestBankDto){
         log.info("청구서 조회 API");
         return new BaseSuccessResponse<>(bankService.inquireBillingStatements(email,requestBankDto));
