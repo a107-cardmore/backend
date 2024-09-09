@@ -32,8 +32,8 @@ public class User {
     @Column(length = 100)
     private String accountNo;
 
-//    @Column(nullable = false, length = 100)
-//    private String userKey;
+    @Column
+    private String nickName;
 
     @Column(nullable = false, length = 10)
     private String role;
