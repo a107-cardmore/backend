@@ -16,7 +16,7 @@ InquireCreditCardTransactionListResponseRestTemplateDto {
     private String cardName;
     private String cardNo;
     private String cvc;
-    private Long estimateBalance;
+    private Long estimatedBalance;
     private List<Transaction>transactionList;
 }
 

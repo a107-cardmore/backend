@@ -10,6 +10,6 @@ import java.time.LocalDate;
 public class InquireBillingStatementsRequestRestTemplateDto {
     private String cardNo;
     private String cvc;
-    private LocalDate startMonth;
-    private LocalDate endMonth;
+    private String startMonth;
+    private String endMonth;
 }

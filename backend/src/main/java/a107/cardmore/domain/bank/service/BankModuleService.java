@@ -14,15 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class BankModuleService {
     private final BankRepository bankRepository;
 
+    public Bank getUser(String email){
+        return bankRepository.findByEmail(email).orElseThrow(()->new BadRequestException("존재하지 않는 이메일입니다."));
+    }
+
     public String getUserKeyByEmail(String email){
         return bankRepository.findByEmail(email).orElseThrow(()->new BadRequestException("존재하지 않는 이메일입니다.")).getUserKey();
     }
 
     @Transactional
-    public void saveBank(String email, String userKey){
+    public void saveBank(String email, String userKey, String accountNo){
         Bank bank = Bank.builder()
                 .email(email)
                 .userKey(userKey)
+                .accountNo(accountNo)
                 .build();
         bankRepository.save(bank);
     }

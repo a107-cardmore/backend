@@ -376,8 +376,8 @@ public class RestTemplateUtil {
 
         requestBody.put("Header",headers);
         requestBody.put("cardUniqueNo",requestDto.getCardUniqueNo());
-        requestBody.put("withdrawAccountNo",requestDto.getWithdrawAccountNo());
-        requestBody.put("withdrawDate()",requestDto.getWithdrawDate());
+        requestBody.put("withdrawalAccountNo",requestDto.getWithdrawalAccountNo());
+        requestBody.put("withdrawalDate",requestDto.getWithdrawalDate());
 
 
         HttpEntity<Object> entity = new HttpEntity<>(requestBody);
@@ -458,7 +458,7 @@ public class RestTemplateUtil {
     public CreateCreditCardTransactionResponseRestTemplateDto createCreditCardTransaction(String userKey,CreateCreditCardTransactionRequestRestTemplateDto request) {
         log.info("카드 결제 API");
 
-        String uri = "edu/createCreditCardTransaction";
+        String uri = "edu/creditCard/createCreditCardTransaction";
 
         String name = "createCreditCardTransaction";
 
@@ -491,7 +491,7 @@ public class RestTemplateUtil {
     public InquireCreditCardTransactionListResponseRestTemplateDto inquireCreditCardTransactionList(String userKey, InquireCreditCardTransactionListRequestRestTemplateDto request) {
         log.info("카드 결제 내역 조회 API");
 
-        String uri = "edu/inquireCreditCardTransactionList";
+        String uri = "edu/creditCard/inquireCreditCardTransactionList";
 
         String name = "inquireCreditCardTransactionList";
 
@@ -503,9 +503,9 @@ public class RestTemplateUtil {
         requestBody.put("cardNo",request.getCardNo());
         requestBody.put("cvc",request.getCvc());
 
-        //TODO LocalDate to String 변환 바뀌는 거 Util 빼야 하는지
-        requestBody.put("startMonth",request.getStartDate());
-        requestBody.put("endMonth",request.getEndDate());
+        log.info("시잘 일자->{}",request.getStartDate());
+        requestBody.put("startDate",request.getStartDate());
+        requestBody.put("endDate",request.getEndDate());
 
         HttpEntity<Object> entity = new HttpEntity<>(requestBody);
 
@@ -527,7 +527,7 @@ public class RestTemplateUtil {
     public List<InquireBillingStatementsResponseRestTemplateDto> inquireBillingStatements(String userKey, InquireBillingStatementsRequestRestTemplateDto request) {
         log.info("청구서 조회 API");
 
-        String uri = "edu/inquireBillingStatements";
+        String uri = "edu/creditCard/inquireBillingStatements";
 
         String name = "inquireBillingStatements";
 
@@ -539,7 +539,6 @@ public class RestTemplateUtil {
         requestBody.put("cardNo",request.getCardNo());
         requestBody.put("cvc",request.getCvc());
 
-        //TODO LocalDate to String 변환 바뀌는 거 Util 빼야 하는지
         requestBody.put("startMonth",request.getStartMonth());
         requestBody.put("endMonth",request.getEndMonth());
 
