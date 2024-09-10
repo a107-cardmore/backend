@@ -1,9 +1,8 @@
 package a107.cardmore.domain.card.controller;
 
-import a107.cardmore.domain.card.dto.CardResponseDto;
+import a107.cardmore.domain.card.dto.CompanyCardListResponseDto;
 import a107.cardmore.domain.card.service.CardService;
 import a107.cardmore.util.base.BaseSuccessResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,9 +20,12 @@ public class CardController {
     private final CardService cardService;
 
     @GetMapping()
-    public BaseSuccessResponse<List<CardResponseDto>> getUserAllCardInfo(){
+    public BaseSuccessResponse<List<CompanyCardListResponseDto>> getUserAllCardInfo(){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-
         return new BaseSuccessResponse<>(cardService.getUserAllCardInfo(userEmail));
     }
+
+
+
+
 }
