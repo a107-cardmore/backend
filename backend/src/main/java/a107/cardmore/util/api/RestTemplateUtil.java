@@ -533,7 +533,6 @@ public class RestTemplateUtil {
         requestBody.put("cardNo",request.getCardNo());
         requestBody.put("cvc",request.getCvc());
 
-        log.info("시잘 일자->{}",request.getStartDate());
         requestBody.put("startDate",request.getStartDate());
         requestBody.put("endDate",request.getEndDate());
 
