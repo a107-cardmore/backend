@@ -10,7 +10,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE user SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE bank SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 @Table(name = "bank")
 @ToString
@@ -24,4 +24,11 @@ public class Bank {
 
     @Column(nullable = false, length = 100)
     private String userKey;
+
+    @Column(nullable = false)
+    private String accountNo;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isDeleted = false;
 }

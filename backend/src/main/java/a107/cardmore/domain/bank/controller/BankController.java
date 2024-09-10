@@ -1,8 +1,10 @@
 package a107.cardmore.domain.bank.controller;
 
 import a107.cardmore.domain.bank.dto.*;
+import a107.cardmore.domain.bank.service.BankModuleService;
 import a107.cardmore.domain.bank.service.BankService;
 import a107.cardmore.util.api.dto.card.*;
+import a107.cardmore.util.api.dto.member.CreateMemberResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,12 @@ import java.util.List;
 public class BankController {
 
     private final BankService bankService;
+
+    @PostMapping("/user")
+    public BaseSuccessResponse<CreateMemberResponseRestTemplateDto> createUser(@RequestBody CreateUserRequestDto requestDto) {
+        log.info("사용자 등록 API");
+        return new BaseSuccessResponse<>(bankService.createUser(requestDto));
+    }
 
     @PostMapping("/merchant")
     public BaseSuccessResponse<List<MerchantResponseRestTemplateDto>> createMerchant(@RequestBody CreateMerchantRequestDto requestDto){
@@ -52,6 +60,7 @@ public class BankController {
     @PostMapping("/creditCard/{email}")
     public BaseSuccessResponse<CardResponseRestTemplateDto> createCreditCard(@PathVariable("email") String email, @RequestBody CreateCardRequestDto requestBankDto){
         log.info("카드 등록 API");
+
         return new BaseSuccessResponse<>(bankService.createCreditCard(email,requestBankDto));
     }
 
@@ -67,13 +76,13 @@ public class BankController {
         return new BaseSuccessResponse<>(bankService.createCreditCardTransaction(email,requestBankDto));
     }
 
-    @GetMapping("/transaction/{email}")
+    @PostMapping("/transaction/{email}/inquire")
     public BaseSuccessResponse<InquireCreditCardTransactionListResponseRestTemplateDto> inquireTransaction(@PathVariable("email") String email,@RequestBody InquireCreditCardTransactionListRequestDto requestDto){
         log.info("카드 결제 내역 조회 API");
         return new BaseSuccessResponse<>(bankService.inquireCreditCardTransactionList(email,requestDto));
     }
 
-    @GetMapping("/bill/{email}")
+    @PostMapping("/billing/{email}")
     public BaseSuccessResponse<List<InquireBillingStatementsResponseRestTemplateDto>> inquireBilling(@PathVariable("email") String email,@RequestBody InquireBillingStatementsRequestDto requestBankDto){
         log.info("청구서 조회 API");
         return new BaseSuccessResponse<>(bankService.inquireBillingStatements(email,requestBankDto));

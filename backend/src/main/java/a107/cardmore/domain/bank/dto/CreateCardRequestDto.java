@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class CreateCardRequestDto {
     private String cardUniqueNo;
-    private String withdrawAccountNo;
-    private String withdrawDate;
+    private String withdrawalAccountNo;
+    private String withdrawalDate;
 }

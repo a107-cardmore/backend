@@ -10,6 +10,6 @@ import java.time.LocalDate;
 public class InquireCreditCardTransactionListRequestRestTemplateDto {
     private String cardNo;
     private String cvc;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
 }
