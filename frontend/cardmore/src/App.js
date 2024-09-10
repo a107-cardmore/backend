@@ -4,6 +4,8 @@ import MainPage from "./pages/MainPage";
 import IndexPage from "./pages/IndexPage";
 import MapPage from "./pages/MapPage";
 import LoginPage from "./pages/LoginPage"
+import SignInPage from "./pages/SignInPage";
+import MyDataAgree from "./pages/MyDataAgree";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <Route path="/" element={<MainPage />}></Route>
         <Route path="/map" element={<MapPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/signin" element={<SignInPage />}></Route>
+        <Route path="/mydata" element={<MyDataAgree />}></Route>
         {/*<Route path="/" element={<Page3 />}></Route> */}
       </Routes>
     </div>
