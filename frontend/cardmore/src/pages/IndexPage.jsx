@@ -9,6 +9,9 @@ function IndexPage() {
       <button onClick={() => navigate("/map")}>page1</button>
       <button onClick={() => navigate("/main")}>main</button>
       <button onClick={() => navigate("/login")}>login</button>
+      <button onClick={() => navigate("/map")}>map</button>
+      <button onClick={() => navigate("/signin")}>signin</button>
+      <button onClick={() => navigate("/mydata")}>mydata</button>
     </div>
   );
 }
