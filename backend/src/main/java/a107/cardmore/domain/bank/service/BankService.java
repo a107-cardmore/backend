@@ -27,6 +27,8 @@ public class BankService {
         CreateMemberResponseRestTemplateDto responseDto = restTemplateUtil.createMember(bankMapper.toCreateMemberRequestRestTemplateDto(requestDto));
         //수시입출금 계좌 추가
         String accountNo = restTemplateUtil.createAccount(responseDto.getUserKey(),"001-1-dcbb072360ee4e").getAccountNo();
+        //초기 자금 입금
+        restTemplateUtil.updateDemandDepositAccountDeposit(responseDto.getUserKey(),accountNo,1000000L,"초기자금");
         //Bank Table 추가
         bankModuleService.saveBank(responseDto.getUserId(), responseDto.getUserKey(), accountNo);
 

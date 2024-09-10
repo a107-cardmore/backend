@@ -159,6 +159,36 @@ public class RestTemplateUtil {
         return response.getBody().getREC();
     }
 
+    // 수시입출금 계좌 입금
+    public void updateDemandDepositAccountDeposit(String userKey, String accountNo, Long transactionBalance, String transactionSummary){
+        final String name = "updateDemandDepositAccountDeposit";
+        log.info("수시입출금 입금 API");
+
+        String uri = "edu/demandDeposit/updateDemandDepositAccountDeposit";
+
+        Map<String,Object>requestBody = new HashMap<>();
+
+        RequestHeader headers = requestHeader(name, userKey);
+
+        requestBody.put("Header",headers);
+        requestBody.put("accountNo",accountNo);
+        requestBody.put("transactionBalance",transactionBalance);
+        requestBody.put("transactionSummary",transactionSummary);
+
+        HttpEntity<Object> entity = new HttpEntity<>(requestBody);
+
+        ResponseEntity<String> response =
+                restTemplate.exchange(
+                        url + uri,HttpMethod.POST ,entity,
+                        String.class
+                );
+
+        if(response.getBody() == null){
+            throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
+        }
+
+    }
+
     //1원 인증 API
     //1원 송금
     public OpenAccountAuthResponseRestTemplateDto openAccountAuth(String userKey, String accountNo) {
