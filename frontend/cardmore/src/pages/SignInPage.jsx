@@ -3,7 +3,7 @@ import InfoInput from "../components/InfoInput";
 import SquareButton from "../components/Button/SquareButton";
 import { useNavigate } from "react-router-dom";
 
-function LoginPage() {
+function SignInPage() {
   const navigate = useNavigate();
   return (
     <div
@@ -19,30 +19,13 @@ function LoginPage() {
     >
       <div
         className={css`
-          height: 40vh;
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        `}
-      >
-        <img
-          className={css`
-            width: 60%;
-          `}
-          src="/Logo.svg"
-          alt=""
-        />
-      </div>
-      <div
-        className={css`
           position: absolute;
           display: flex;
           flex-direction: column;
           align-items: center;
           bottom: 0;
           width: 100%;
-          height: 55%;
+          height: 90%;
           background-color: white;
           border-top-left-radius: 2rem;
           border-top-right-radius: 2rem;
@@ -52,47 +35,30 @@ function LoginPage() {
         `}
       >
         <InfoInput
-          title={"User Id"}
-          type={"text"}
-          placeholder={"아이디 입력"}
+          title={"Email"}
+          type={"email"}
+          placeholder={"email@example.com"}
         />
         <InfoInput
           title={"Password"}
           type={"password"}
           placeholder={"비밀번호 입력"}
         />
+        <InfoInput
+          title={"Password Check"}
+          type={"password"}
+          placeholder={"비밀번호 확인"}
+        />
+        <InfoInput title={"Name"} type={"text"} placeholder={"이름"} />
+        <InfoInput title={"Nickname"} type={"text"} placeholder={"닉네임"} />
         <SquareButton
-          name={"로그인하기"}
+          name={"완료"}
           onClick={() => {
-            navigate("/");
+            navigate("/mydata");
           }}
         />
-        <div
-          className={css`
-            margin-top: 1rem;
-            color: #959595;
-            font-size: 0.8rem;
-          `}
-        >
-          아직 회원이 아니신가요?{" "}
-          <span
-            className={css`
-              text-decoration: underline;
-              cursor: pointer;
-              &:hover {
-                color: #b0ffa3;
-              }
-            `}
-            onClick={() => {
-              navigate("/signin");
-            }}
-          >
-            회원가입
-          </span>
-        </div>
       </div>
     </div>
   );
 }
-
-export default LoginPage;
+export default SignInPage;
