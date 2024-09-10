@@ -2,6 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
+import IndexPage from "./pages/IndexPage";
 import MapPage from "./pages/MapPage";
 
 function App() {
@@ -9,8 +10,9 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MainPage />}></Route>
+          <Route path="/" element={<IndexPage />}></Route>
           <Route path="/map" element={<MapPage />}></Route>
+          <Route path="/main" element={<MainPage />}></Route>
 
           {/*<Route path="/" element={<Page3 />}></Route> */}
         </Routes>

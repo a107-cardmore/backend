@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import "../App.css"; // 스타일을 위한 CSS 파일
 import KakaoMap from "../components/KakaoMap";
 import styled from "styled-components";
+import NavBar from "../components/NavBar";
+
 const MapPageStyle = styled.div`
   height: 100vh;
   display: flex;
@@ -195,8 +197,7 @@ const MapPage = () => {
           <CategoryTag>{text}</CategoryTag>
         ))}
       </CategoryContainer>
-
-      <KakaoMap onloadMap={handleMapLoad} />
+      <KakaoMap onMapLoad={handleMapLoad} />
       <MenuBar
         position={position}
         onMouseDown={handleMouseDown}
@@ -207,6 +208,7 @@ const MapPage = () => {
           <p>Menu Bar</p>
         </MenuContent>
       </MenuBar>
+      <NavBar />
     </MapPageStyle>
   );
 };
