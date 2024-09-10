@@ -21,13 +21,14 @@ public class RegisterRequestDto {
     @NotNull
     private String nickName;
 
-    public User createUser(String password) {
+    public User createUser(String password, String userKey, String accountNo) {
         return User.builder()
                 .email(email)
                 .password(password)
                 .nickName(nickName)
                 .role("USER")
-                .userKey("")
+                .userKey(userKey)
+                .accountNo(accountNo)
                 .name(name)
                 .build();
     }

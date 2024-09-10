@@ -25,11 +25,8 @@ public class CardService {
 
         // 카드 정보 저장
         for(CardResponseRestTemplateDto cardResponseRestTemplateDto : cardResponseInfos){
-
             restTemplateUtil.inquireCreditCardList();
-
             CardResponseDto cardResponseDto = new CardResponseDto();
-
             cardResponseDtos.add(cardResponseDto);
         }
 

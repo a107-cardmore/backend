@@ -38,6 +38,7 @@ public class Card {
     private String cardNo;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isSelected = false;
 
     @Column(nullable = false)
@@ -47,5 +48,6 @@ public class Card {
     private Long performanceRemaining;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isDeleted = false;
 }

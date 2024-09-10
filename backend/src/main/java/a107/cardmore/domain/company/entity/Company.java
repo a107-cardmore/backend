@@ -41,9 +41,11 @@ public class Company {
     private String name;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isSelected = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isDeleted = false;
 
 }
