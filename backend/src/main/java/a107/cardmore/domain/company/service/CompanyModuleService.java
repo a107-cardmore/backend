@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -36,5 +37,9 @@ public class CompanyModuleService {
     public Company findUserCompany(String companyNumber, User user) {
         return companyRepository.findByUserAndCompanyNo(user, companyNumber)
                 .orElseThrow(() -> new BadRequestException("사용자와 맞는 카드사 정보가 없습니다."));
+    }
+
+    public List<Company> findUserCompanies(User user) {
+        return companyRepository.findAllByUser(user);
     }
 }
