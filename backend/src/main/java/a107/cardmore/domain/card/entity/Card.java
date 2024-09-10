@@ -35,7 +35,10 @@ public class Card {
     private Company company;
 
     @Column(nullable = false)
-    private String cardNo;
+    private String cardNo; // user 카드 식별
+
+    @Column(nullable = false)
+    private String cardUniqueNo; // 상품 식별
 
     @Column(nullable = false)
     @Builder.Default

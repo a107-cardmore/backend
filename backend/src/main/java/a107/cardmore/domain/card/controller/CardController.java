@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,19 @@ import java.util.List;
 public class CardController {
     private final CardService cardService;
 
-    @GetMapping()
+    @GetMapping("")
+    public BaseSuccessResponse<List<CompanyCardListResponseDto>> getUserSelectedCardInfo(){
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new BaseSuccessResponse<>(cardService.getUserAllCardInfo(userEmail));
+    }
+
+    @PostMapping("")
+    public BaseSuccessResponse<List<CompanyCardListResponseDto>> postUserSelectedCardInfo(){
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new BaseSuccessResponse<>(cardService.getUserAllCardInfo(userEmail));
+    }
+
+    @GetMapping("/all")
     public BaseSuccessResponse<List<CompanyCardListResponseDto>> getUserAllCardInfo(){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         return new BaseSuccessResponse<>(cardService.getUserAllCardInfo(userEmail));

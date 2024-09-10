@@ -50,8 +50,7 @@ public class AuthService {
         List<CardResponseRestTemplateDto> cardResponseInfos = restTemplateUtil.inquireSignUpCreditCardList(user.getUserKey());
         cardResponseInfos.forEach(cardResponseInfo -> {
             Company company = companyModuleService.findUserCompany(cardResponseInfo.getCardIssuerCode(), user);
-            cardModuleService.saveCard(company, cardResponseInfo.getCardNo(), cardResponseInfo.getMaxBenefitLimit(),
-                    cardResponseInfo.getBaselinePerformance());
+            cardModuleService.saveCard(company, cardResponseInfo);
         });
 
         return authMapper.toRegisterResponseDto(user);
