@@ -53,4 +53,8 @@ public class Card {
     @Column(nullable = false)
     @Builder.Default
     private Boolean isDeleted = false;
+
+    public void updateIsSelected(Boolean isSelected) {
+        this.isSelected = isSelected;
+    }
 }

@@ -5,12 +5,14 @@ import a107.cardmore.domain.card.repository.CardRepository;
 import a107.cardmore.domain.company.entity.Company;
 import a107.cardmore.domain.company.repository.CompanyRepository;
 import a107.cardmore.domain.user.entity.User;
+import a107.cardmore.global.exception.BadRequestException;
 import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +32,10 @@ public class CardModuleService {
 
     public List<Card> findCardByUser(User user){
         List<Company> companies = companyRepository.findAllByUser(user);
-        List<Card> myCards = new ArrayList<>();
-        for(Company company : companies){
-            myCards.addAll(cardRepository.findAllByCompany(company));
-        }
-        return myCards;
+        return companies.stream().flatMap(company -> cardRepository.findAllByCompany(company).stream()).collect(Collectors.toList());
     }
 
+    public Card findCardById(Long id){
+        return cardRepository.findById(id).orElseThrow(() -> new BadRequestException("Card not found"));
+    }
 }

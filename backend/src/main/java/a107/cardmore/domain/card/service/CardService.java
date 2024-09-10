@@ -1,6 +1,8 @@
 package a107.cardmore.domain.card.service;
 
 import a107.cardmore.domain.card.dto.CompanyCardListResponseDto;
+import a107.cardmore.domain.card.dto.SelectedInfo;
+import a107.cardmore.domain.card.dto.SelectedResponseDto;
 import a107.cardmore.domain.card.entity.Card;
 import a107.cardmore.domain.company.entity.Company;
 import a107.cardmore.domain.company.service.CompanyModuleService;
@@ -31,7 +33,7 @@ public class CardService {
         List<CardProductResponseRestTemplateDto> cards = restTemplateUtil.inquireCreditCardList();
 
         // myCards와 Card Repository update
-        updateUserCards(myCards, cardModuleService.findCardByUser(user));
+        updateUserCards(myCards, cardModuleService.findCardByUser(user), user);
 
         // 카드사 정보 list로 만들어 놓기
         List<Card> userCards = cardModuleService.findCardByUser(user);
@@ -51,7 +53,7 @@ public class CardService {
         return companyCards;
     }
 
-    private void updateUserCards(List<CardResponseRestTemplateDto> myCards, List<Card> userCards){
+    private void updateUserCards(List<CardResponseRestTemplateDto> myCards, List<Card> userCards, User user){
         System.out.println("userCards : " +  userCards.toString());
         System.out.println("myCards : " +  myCards.toString());
 
@@ -63,16 +65,18 @@ public class CardService {
                 .filter(myCard -> !existingCardNos.contains(myCard.getCardNo()))
                 .forEach(myCard -> {
                     // userCards에서 myCard의 cardNo와 같은 값을 가진 Company 찾기
-                    Company company = userCards.stream()
-                            .filter(userCard -> userCard.getCardNo().equals(myCard.getCardNo()))
-                            .map(Card::getCompany)
-                            .findFirst()
-                            .orElse(null); // 해당 cardNo에 맞는 회사가 없으면 null 반환
-
-                    if (company != null) {
-                        System.out.println("in:" + myCard.getCardNo());
-                        cardModuleService.saveCard(company, myCard);
-                    }
+                    System.out.println("myCard : " + myCard.getCardNo());
+                    Company company = companyModuleService.findUserCompany(myCard.getCardIssuerCode(), user);
+                    cardModuleService.saveCard(company, myCard);
                 });
+    }
+
+    public void updateUserSelectedCard(List<SelectedInfo> selectedCards) {
+        selectedCards.forEach(selectedInfo -> {
+            Card card = cardModuleService.findCardById(selectedInfo.getId());
+            card.updateIsSelected(selectedInfo.getIsSelected());
+        });
+
+
     }
 }
