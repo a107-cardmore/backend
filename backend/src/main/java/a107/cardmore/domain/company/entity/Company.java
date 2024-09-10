@@ -35,12 +35,17 @@ public class Company {
     private User user;
 
     @Column(nullable = false)
+    private String companyNo;
+
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isSelected = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isDeleted = false;
 
 }
