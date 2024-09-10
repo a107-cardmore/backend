@@ -11,7 +11,7 @@ function App() {
         <Route path="/" element={<MainPage />}></Route>
         <Route path="/map" element={<MapPage />}></Route>
 
-        {/*<Route path="/" element={<Page3 />}></Route> */}
+        {/* <Route path="/" element={<Page3 />}></Route> */}
       </Routes>
     </div>
   );
