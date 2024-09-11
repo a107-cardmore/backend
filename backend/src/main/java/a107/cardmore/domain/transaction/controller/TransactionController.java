@@ -26,14 +26,11 @@ public class TransactionController {
         return transactionService.getTransactionList(email);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping
     public CreateCreditCardTransactionResponseDto createCreditCardTransaction(
-            @PathVariable("id") String cardNo,
             @RequestBody CreateCreditCardTransactionRequestDto requestDto)
     {
         log.info("결제 요청 API");
-
-        requestDto.setCardNo(cardNo);
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         String userKey = userModuleService.getUserByEmail(email).getUserKey();

@@ -88,7 +88,9 @@ public class TransactionService {
             }
             else{
                 transactionList = inquireTransactionResponse.getTransactionList().get(0).stream().filter(s->s.getCategoryName().equals(companyName)).toList();
+                inquireTransactionResponse.getTransactionList().add(transactionList);
             }
+
 
             List<CategoryDto> categoryList = new ArrayList<>();
             for(MerchantCategory category: MerchantCategory.values()) {
@@ -109,6 +111,7 @@ public class TransactionService {
     }
 
     public CreateCreditCardTransactionResponseDto createCreditCardTransaction(String userKey, CreateCreditCardTransactionRequestDto requestDto){
+        log.info("Service cardNo->{}", requestDto.getCardNo());
         return transactionMapper.toCreateCreditCardTransactionResponseDto(restTemplateUtil.createCreditCardTransaction(userKey,transactionMapper.toCreateCreditCardTransactionRequestRestTemplateDto(requestDto)));
     }
 

@@ -511,6 +511,7 @@ public class RestTemplateUtil {
         );
 
         if(response.getBody() == null){
+            log.info("Error -> {}",response.getBody().toString());
             throw new BadRequestException("API 요청 중 오류가 발생했습니다.");
         }
 
