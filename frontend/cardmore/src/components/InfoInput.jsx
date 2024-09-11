@@ -1,5 +1,5 @@
 import { css } from "@emotion/css";
-function InfoInput({ title, type, placeholder }) {
+function InfoInput({ title, type, placeholder, onChange }) {
   return (
     <div
       className={css`
@@ -24,19 +24,20 @@ function InfoInput({ title, type, placeholder }) {
           padding-top: 1rem;
           padding-bottom: 0.3rem;
           font-weight: 600;
-          outline: none; 
+          outline: none;
           color: #959595;
           font-size: 0.95rem;
-          &:focus{
-            border-bottom: solid #B0FFA3;
+          &:focus {
+            border-bottom: solid #b0ffa3;
           }
-          &::placeholder{
+          &::placeholder {
             font-weight: 600;
             color: #c6c6c6;
           }
         `}
         type={type}
         placeholder={placeholder}
+        onChange={onChange}
       />
     </div>
   );

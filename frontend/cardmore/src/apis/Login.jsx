@@ -6,6 +6,7 @@ export const Login = async (form) => {
     const response = await axios.post("/login", form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+    console.log(response);
     const accessToken = response.headers.authorization.split(" ");
     if (accessToken) {
       sessionStorage.setItem("accessToken", accessToken[1]);
@@ -22,5 +23,5 @@ export const Login = async (form) => {
 
 // 로그아웃
 export const logout = async () => {
-    sessionStorage.removeItem("accessToken");
-  };
+  sessionStorage.removeItem("accessToken");
+};
