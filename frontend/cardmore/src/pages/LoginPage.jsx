@@ -2,9 +2,37 @@ import { css } from "@emotion/css";
 import InfoInput from "../components/InfoInput";
 import SquareButton from "../components/Button/SquareButton";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Login } from "../apis/Login";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [userId, setUserId] = useState();
+  const [password, setPassword] = useState();
+  const [loginFail, setLoginFail] = useState();
+
+  const handelUserIdChange = (e) => {
+    setUserId(e.target.value);
+  };
+
+  const handelPasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const login = async () => {
+    const form = new FormData();
+    form.append("username", userId);
+    form.append("password", password);
+    const response = await Login(form).then((res) => {
+      return res;
+    });
+    if (response) {
+      navigate("/main");
+    } else {
+      setLoginFail(true);
+    }
+  };
+
   return (
     <div
       className={css`
@@ -55,17 +83,40 @@ function LoginPage() {
           title={"User Id"}
           type={"text"}
           placeholder={"아이디 입력"}
+          onChange={handelUserIdChange}
         />
         <InfoInput
           title={"Password"}
           type={"password"}
           placeholder={"비밀번호 입력"}
+          onChange={handelPasswordChange}
         />
+        {loginFail ? (
+          <div
+            className={css`
+              color: #ec0101;
+              font-size: 0.8rem;
+              font-weight: 400;
+              margin-top: 3rem;
+              margin-bottom: 0.5rem;
+            `}
+          >
+            로그인 실패
+          </div>
+        ) : (
+          <div
+            className={css`
+              margin-top: 3rem;
+              margin-bottom: 0.5rem;
+            `}
+          ></div>
+        )}
         <SquareButton
-          marginTop={"3rem"}
           name={"로그인하기"}
           onClick={() => {
-            navigate("/");
+            console.log("UserId:", userId, "Password:", password);
+            login();
+            // navigate("/");
           }}
         />
         <div

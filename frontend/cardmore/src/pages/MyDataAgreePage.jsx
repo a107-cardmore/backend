@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import SquareButton from "../components/Button/SquareButton";
 import { useNavigate } from "react-router-dom";
 
-
-function MyDataAgree() {
+function MyDataAgreePage() {
   const [selected, setSelected] = useState(false);
-  useEffect(() => { }, [setSelected]);
+  useEffect(() => {}, [setSelected]);
   const navigate = useNavigate();
   return (
     <div
@@ -142,9 +141,15 @@ function MyDataAgree() {
             </div>
           </div>
         </div>
-        <SquareButton name={"다음"} onClick={()=>{navigate("/company-select")}} marginTop={"1rem"} />
+        <SquareButton
+          name={"다음"}
+          onClick={() => {
+            navigate("/company-select");
+          }}
+          marginTop={"1rem"}
+        />
       </div>
     </div>
   );
 }
-export default MyDataAgree;
+export default MyDataAgreePage;
