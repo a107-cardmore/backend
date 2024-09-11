@@ -62,6 +62,7 @@ function LoginPage() {
           placeholder={"비밀번호 입력"}
         />
         <SquareButton
+          marginTop={"3rem"}
           name={"로그인하기"}
           onClick={() => {
             navigate("/");
