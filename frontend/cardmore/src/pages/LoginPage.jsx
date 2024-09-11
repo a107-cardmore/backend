@@ -9,6 +9,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState();
   const [password, setPassword] = useState();
+  const [loginFail, setLoginFail] = useState();
 
   const handelUserIdChange = (e) => {
     setUserId(e.target.value);
@@ -23,10 +24,13 @@ function LoginPage() {
     form.append("username", userId);
     form.append("password", password);
     const response = await Login(form).then((res) => {
-      console.log(res);
+      return res;
     });
-    console.log(response);
-    return response;
+    if (response) {
+      navigate("/main");
+    } else {
+      setLoginFail(true);
+    }
   };
 
   return (
@@ -87,8 +91,27 @@ function LoginPage() {
           placeholder={"비밀번호 입력"}
           onChange={handelPasswordChange}
         />
+        {loginFail ? (
+          <div
+            className={css`
+              color: #ec0101;
+              font-size: 0.8rem;
+              font-weight: 400;
+              margin-top: 3rem;
+              margin-bottom: 0.5rem;
+            `}
+          >
+            로그인 실패
+          </div>
+        ) : (
+          <div
+            className={css`
+              margin-top: 3rem;
+              margin-bottom: 0.5rem;
+            `}
+          ></div>
+        )}
         <SquareButton
-          marginTop={"3rem"}
           name={"로그인하기"}
           onClick={() => {
             console.log("UserId:", userId, "Password:", password);
