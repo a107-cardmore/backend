@@ -537,6 +537,8 @@ public class RestTemplateUtil {
         requestBody.put("startDate",request.getStartDate());
         requestBody.put("endDate",request.getEndDate());
 
+        log.info("일자 -> {}",request.getStartDate());
+
         HttpEntity<Object> entity = new HttpEntity<>(requestBody);
 
         ResponseEntity<RECResponse<InquireCreditCardTransactionListResponseRestTemplateDto>> response

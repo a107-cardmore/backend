@@ -8,14 +8,29 @@ import a107.cardmore.util.api.dto.card.CreateCreditCardTransactionRequestRestTem
 import a107.cardmore.util.api.dto.card.CreateCreditCardTransactionResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListRequestRestTemplateDto;
 import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListResponseRestTemplateDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TransactionMapper {
     CreateCreditCardTransactionRequestRestTemplateDto toCreateCreditCardTransactionRequestRestTemplateDto(CreateCreditCardTransactionRequestDto requestDto);
     CreateCreditCardTransactionResponseDto toCreateCreditCardTransactionResponseDto(CreateCreditCardTransactionResponseRestTemplateDto responseDto);
+
+    @Mappings({
+            @Mapping(source = "startDate", target = "startDate", qualifiedByName = "localDateToStringWithoutHyphen"),
+            @Mapping(source = "endDate", target = "endDate", qualifiedByName = "localDateToStringWithoutHyphen")
+    })
     InquireCreditCardTransactionListRequestRestTemplateDto toInquireCreditCardTransactionListRequestRestTemplateDto(InquireCreditCardTransactionListRequestDto requestDto);
     TransactionDto toTransactionDto(InquireCreditCardTransactionListResponseRestTemplateDto responseDto);
+
+    // LocalDate -> String 변환 메서드 정의
+    @Named("localDateToStringWithoutHyphen")
+    default String localDateToStringWithoutHyphen(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        return date.format(DateTimeFormatter.BASIC_ISO_DATE); // 기본적인 yyyyMMdd 포맷으로 변환
+    }
 }

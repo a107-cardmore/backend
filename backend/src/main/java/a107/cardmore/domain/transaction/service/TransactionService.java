@@ -36,16 +36,22 @@ public class TransactionService {
 
     public InquireTransactionResponseDto getTransactionList(String email) {
 
+        //ResponseDto
         InquireTransactionResponseDto inquireTransactionResponse = new InquireTransactionResponseDto();
 
+        //User
         User user = userModuleService.getUserByEmail(email);
 
+        //기업명
         List<Company> companyList = companyModuleService.findUserCompanies(user);
+        //기업명 추가
         inquireTransactionResponse.getCompanyNameList().addAll(companyList.stream().map(Company::getName).toList());
 
+        //내 카드 목록
         List<Card> myCardList = cardModuleService.findCardsByUser(user);
         List<CardResponseRestTemplateDto> inquireCardList = restTemplateUtil.inquireSignUpCreditCardList(user.getUserKey());
 
+        //추가한 카드 목록
         List<CardResponseRestTemplateDto> cardList = new ArrayList<>();
 
         for(CardResponseRestTemplateDto cardDto : inquireCardList) {
@@ -57,8 +63,10 @@ public class TransactionService {
             }
         }
 
+        //결제 내역 요청을 위한 Response Dto
         InquireCreditCardTransactionListRequestDto requestDto = new InquireCreditCardTransactionListRequestDto();
 
+        //기본 날짜 추가
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate endDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
@@ -66,6 +74,7 @@ public class TransactionService {
         requestDto.setStartDate(startDate);
         requestDto.setEndDate(endDate);
 
+        //카드별로 결제 내역 가져오기
         for(CardResponseRestTemplateDto card : cardList) {
             requestDto.setCardNo(card.getCardNo());
             requestDto.setCvc(card.getCvc());
@@ -112,6 +121,7 @@ public class TransactionService {
 
     public CreateCreditCardTransactionResponseDto createCreditCardTransaction(String userKey, CreateCreditCardTransactionRequestDto requestDto){
         log.info("Service cardNo->{}", requestDto.getCardNo());
+
         return transactionMapper.toCreateCreditCardTransactionResponseDto(restTemplateUtil.createCreditCardTransaction(userKey,transactionMapper.toCreateCreditCardTransactionRequestRestTemplateDto(requestDto)));
     }
 

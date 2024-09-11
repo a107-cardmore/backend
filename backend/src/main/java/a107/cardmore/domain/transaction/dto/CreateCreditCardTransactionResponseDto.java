@@ -6,4 +6,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateCreditCardTransactionResponseDto {
+    private Long transactionUniqueNo;
+    private String categoryId;
+    private String categoryName;
+    private Long merchantId;
+    private String merchantName;
+    private String transactionDate;
+    private String transactionTime;
+    private Long paymentBalance;
 }
