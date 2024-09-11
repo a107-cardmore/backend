@@ -2,9 +2,33 @@ import { css } from "@emotion/css";
 import InfoInput from "../components/InfoInput";
 import SquareButton from "../components/Button/SquareButton";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Login } from "../apis/Login";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [userId, setUserId] = useState();
+  const [password, setPassword] = useState();
+
+  const handelUserIdChange = (e) => {
+    setUserId(e.target.value);
+  };
+
+  const handelPasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const login = async () => {
+    const form = new FormData();
+    form.append("username", userId);
+    form.append("password", password);
+    const response = await Login(form).then((res) => {
+      console.log(res);
+    });
+    console.log(response);
+    return response;
+  };
+
   return (
     <div
       className={css`
@@ -55,17 +79,21 @@ function LoginPage() {
           title={"User Id"}
           type={"text"}
           placeholder={"아이디 입력"}
+          onChange={handelUserIdChange}
         />
         <InfoInput
           title={"Password"}
           type={"password"}
           placeholder={"비밀번호 입력"}
+          onChange={handelPasswordChange}
         />
         <SquareButton
           marginTop={"3rem"}
           name={"로그인하기"}
           onClick={() => {
-            navigate("/");
+            console.log("UserId:", userId, "Password:", password);
+            login();
+            // navigate("/");
           }}
         />
         <div

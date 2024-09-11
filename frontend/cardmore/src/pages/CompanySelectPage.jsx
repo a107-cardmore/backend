@@ -1,27 +1,44 @@
 import { css } from "@emotion/css";
 import { useEffect, useState } from "react";
+import SquareButton from "../components/Button/SquareButton";
+import { useNavigate } from "react-router-dom";
 
 function CompanySelectPage() {
-  const [selectAll, setSelectAll] = useState(false);
-  const [kb, setKb] = useState(false);
-  const [samsung, setSamsung] = useState(false);
-  const [shinhan, setShinhan] = useState(false);
-  const [hyundai, setHyundai] = useState(false);
-  const [hana, setHana] = useState(false);
-  useEffect(() => {
-    setAll();
-  }, [setSelectAll]);
+  const navigate = useNavigate();
 
-  useEffect(() => {}, [setKb, setSamsung, setShinhan, setHyundai, setHana]);
-  const setAll = () => {
-    if (selectAll) {
-      setKb(true);
-      setSamsung(true);
-      setShinhan(true);
-      setHyundai(true);
-      setHana(true);
+  const [selectAll, setSelectAll] = useState(false);
+
+  const [companies, setCompanies] = useState([
+    { name: "KB 국민", selected: false, logo: "/KB.svg" },
+    { name: "삼성", selected: false, logo: "/Samsung.svg" },
+    { name: "신한", selected: false, logo: "/Shinhan.svg" },
+    { name: "현대", selected: false, logo: "/Hyundai.svg" },
+    { name: "하나", selected: false, logo: "/Hana.svg" },
+  ]);
+
+  useEffect(() => {
+    const selectedCount = companies.filter(
+      (company) => company.selected
+    ).length;
+    if (companies.length !== selectedCount) {
+      setSelectAll(false);
     }
+  }, [companies]);
+
+  useEffect(() => {
+    setCompanies((prevCompanies) =>
+      prevCompanies.map((company) => ({ ...company, selected: selectAll }))
+    );
+  }, [selectAll]);
+
+  const companySelect = (index) => {
+    setCompanies((prevCompanies) =>
+      prevCompanies.map((company, i) =>
+        i === index ? { ...company, selected: !company.selected } : company
+      )
+    );
   };
+
   return (
     <div
       className={css`
@@ -96,41 +113,65 @@ function CompanySelectPage() {
             />
           )}
         </div>
-        <div
-          className={css`
-            width: 100%;
-            display: flex;
-            align-items: center;
-            color: #959595;
-            font-size: 1rem;
-          `}
-        >
-          <img src="/KB.svg" alt="" />
-          KB 국민
-          {selectAll ? (
+        {companies.map((company, index) => (
+          <div
+            key={index}
+            className={css`
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              color: #959595;
+              font-size: 1.3rem;
+              margin-bottom: 0.5rem;
+            `}
+          >
             <img
               className={css`
-                margin: 0.5rem;
+                width: 10%;
               `}
-              onClick={() => {
-                setSelectAll(false);
-              }}
-              src="/Selected.svg"
+              src={company.logo}
               alt=""
             />
-          ) : (
-            <img
+            <div
               className={css`
-                margin: 0.5rem;
+                width: 70%;
               `}
-              onClick={() => {
-                setSelectAll(true);
-              }}
-              src="/Unselected.svg"
-              alt=""
-            />
-          )}
-        </div>
+            >
+              {company.name}
+            </div>
+            {company.selected ? (
+              <img
+                className={css`
+                  margin: 0.5rem;
+                `}
+                onClick={() => {
+                  companySelect(index);
+                }}
+                src="/Selected.svg"
+                alt=""
+              />
+            ) : (
+              <img
+                className={css`
+                  margin: 0.5rem;
+                `}
+                onClick={() => {
+                  companySelect(index);
+                }}
+                src="/Unselected.svg"
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+        <SquareButton
+          name={"다음"}
+          marginTop={"3rem"}
+          onClick={() => {
+            navigate("/card-select");
+          }}
+        />
       </div>
     </div>
   );
