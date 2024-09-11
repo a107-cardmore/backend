@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import SignInPage from "./pages/SignInPage";
 import MyDataAgree from "./pages/MyDataAgree";
 import CompanySelectPage from "./pages/CompanySelectPage";
+import MyPage from "./pages/MyPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/signin" element={<SignInPage />}></Route>
         <Route path="/mydata" element={<MyDataAgree />}></Route>
+        <Route path="/mypage" element={<MyPage />}></Route>
         <Route path="/company-select" element={<CompanySelectPage />}></Route>
         {/*<Route path="/" element={<Page3 />}></Route> */}
       </Routes>
