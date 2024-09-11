@@ -1,15 +1,15 @@
 package a107.cardmore.domain.card.controller;
 
+import a107.cardmore.domain.card.dto.CardResponseDto;
 import a107.cardmore.domain.card.dto.CompanyCardListResponseDto;
+import a107.cardmore.domain.card.dto.SelectedResponseDto;
 import a107.cardmore.domain.card.service.CardService;
+import a107.cardmore.domain.company.service.CompanyService;
 import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,17 +19,22 @@ import java.util.List;
 @Slf4j
 public class CardController {
     private final CardService cardService;
+    private final CompanyService companyService;
 
     @GetMapping("")
-    public BaseSuccessResponse<List<CompanyCardListResponseDto>> getUserSelectedCardInfo(){
+    public BaseSuccessResponse<List<CardResponseDto>> getUserSelectedCardInfo(){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new BaseSuccessResponse<>(cardService.getUserAllCardInfo(userEmail));
+        return new BaseSuccessResponse<>(cardService.getUserSelectedCardInfo(userEmail));
     }
 
     @PostMapping("")
-    public BaseSuccessResponse<List<CompanyCardListResponseDto>> postUserSelectedCardInfo(){
+    public BaseSuccessResponse<Void> updateUserSelectedCard(@RequestBody SelectedResponseDto selectedResponseDto){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new BaseSuccessResponse<>(cardService.getUserAllCardInfo(userEmail));
+
+        companyService.updateUserSelectedCompany(userEmail, selectedResponseDto.getCompaniesSelectedInfos());
+        cardService.updateUserSelectedCard(selectedResponseDto.getCardsSelectedInfos());
+
+        return new BaseSuccessResponse<>(null);
     }
 
     @GetMapping("/all")

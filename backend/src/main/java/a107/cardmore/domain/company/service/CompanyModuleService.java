@@ -39,6 +39,11 @@ public class CompanyModuleService {
                 .orElseThrow(() -> new BadRequestException("사용자와 맞는 카드사 정보가 없습니다."));
     }
 
+    public Company findCompany(Long companyId, User user){
+        return companyRepository.findByIdAndUser(companyId, user)
+                .orElseThrow(() -> new BadRequestException("사용자와 맞는 카드사 정보가 없습니다."));
+    }
+
     public List<Company> findUserCompanies(User user) {
         return companyRepository.findAllByUser(user);
     }
