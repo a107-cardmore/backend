@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 
 function Card({ bgColor, inColor, data }) {
-  console.log(inColor);
+  // console.log(inColor);
   return (
     <div
       className={css`
