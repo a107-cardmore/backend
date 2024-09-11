@@ -52,6 +52,7 @@ function SignInPage() {
         <InfoInput title={"Name"} type={"text"} placeholder={"이름"} />
         <InfoInput title={"Nickname"} type={"text"} placeholder={"닉네임"} />
         <SquareButton
+          marginTop={"3rem"}
           name={"완료"}
           onClick={() => {
             navigate("/mydata");
