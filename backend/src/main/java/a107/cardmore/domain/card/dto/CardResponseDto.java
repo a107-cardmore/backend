@@ -22,7 +22,11 @@ public class CardResponseDto {
     private String cardNo;
     private String cardName;
     private String cardUniqueNo;
+    private String cvc;
+    private String cardExpiryDate;
     private String cardDescription;
+    private String colorBackground;
+    private String colorTitle;
     private Boolean isSelected;
     private Long limitRemaining;
     private Long performanceRemaining;
@@ -34,8 +38,12 @@ public class CardResponseDto {
         this.companyName = card.getCompany().getName();
         this.cardNo = card.getCardNo();
         this.cardUniqueNo = card.getCardUniqueNo();
+        this.cvc = card.getCvc();
+        this.cardExpiryDate = card.getCardExpiryDate();
         this.cardName = cardProduct.getCardName();
         this.cardDescription = cardProduct.getCardDescription();
+        this.colorBackground = card.getColorBackground();
+        this.colorTitle = card.getColorTitle();
         this.isSelected = card.getIsSelected();
         this.limitRemaining = card.getLimitRemaining();
         this.performanceRemaining = card.getPerformanceRemaining();
