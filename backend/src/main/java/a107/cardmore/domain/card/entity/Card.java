@@ -41,14 +41,26 @@ public class Card {
     private String cardUniqueNo; // 상품 식별
 
     @Column(nullable = false)
-    @Builder.Default
-    private Boolean isSelected = false;
+    private String cvc;
+
+    @Column(nullable = false)
+    private String cardExpiryDate;
 
     @Column(nullable = false)
     private Long limitRemaining;
 
     @Column(nullable = false)
     private Long performanceRemaining;
+
+    @Column
+    private String colorBackground;
+
+    @Column
+    private String colorTitle;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isSelected = false;
 
     @Column(nullable = false)
     @Builder.Default
