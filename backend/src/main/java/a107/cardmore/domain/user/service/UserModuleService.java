@@ -16,4 +16,12 @@ public class UserModuleService {
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow(() -> new BadRequestException("일치하는 회원이 없습니다."));
     }
+
+    public Long getUserIdByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(() -> new BadRequestException("일치하는 회원이 없습니다.")).getId();
+    }
+
+    public String getUserKeyByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(() -> new BadRequestException("일치하는 회원이 없습니다.")).getUserKey();
+    }
 }

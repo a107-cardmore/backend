@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findByUserAndCompanyNo (User user, String companyNumber);
-
     List<Company> findAllByUser(User user);
+    Optional<Company> findByIdAndUser(Long companyId, User user);
 }

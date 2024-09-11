@@ -1,6 +1,8 @@
 package a107.cardmore.domain.card.service;
 
+import a107.cardmore.domain.card.dto.CardResponseDto;
 import a107.cardmore.domain.card.dto.CompanyCardListResponseDto;
+import a107.cardmore.domain.card.dto.SelectedInfo;
 import a107.cardmore.domain.card.entity.Card;
 import a107.cardmore.domain.company.entity.Company;
 import a107.cardmore.domain.company.service.CompanyModuleService;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -31,10 +32,10 @@ public class CardService {
         List<CardProductResponseRestTemplateDto> cards = restTemplateUtil.inquireCreditCardList();
 
         // myCards와 Card Repository update
-        updateUserCards(myCards, cardModuleService.findCardByUser(user));
+        updateUserCards(myCards, cardModuleService.findCardsByUser(user), user);
 
         // 카드사 정보 list로 만들어 놓기
-        List<Card> userCards = cardModuleService.findCardByUser(user);
+        List<Card> userCards = cardModuleService.findCardsByUser(user);
         List<CompanyCardListResponseDto> companyCards = new ArrayList<>();
 
         for(Company company : companyModuleService.findUserCompanies(user)){
@@ -51,10 +52,37 @@ public class CardService {
         return companyCards;
     }
 
-    private void updateUserCards(List<CardResponseRestTemplateDto> myCards, List<Card> userCards){
-        System.out.println("userCards : " +  userCards.toString());
-        System.out.println("myCards : " +  myCards.toString());
+    public void updateUserSelectedCard(List<SelectedInfo> selectedCards) {
+        selectedCards.forEach(selectedInfo -> {
+            Card card = cardModuleService.findCardById(selectedInfo.getId());
+            System.out.println(selectedInfo.getIsSelected());
+            card.changeIsSelected(selectedInfo.getIsSelected());
+        });
 
+
+    }
+
+    public List<CardResponseDto> getUserSelectedCardInfo(String email) {
+        User user  = userModuleService.getUserByEmail(email);
+
+        List<Card> userCard = cardModuleService.findCardsByUser(user);
+        List<CardProductResponseRestTemplateDto> cards = restTemplateUtil.inquireCreditCardList();
+
+        List<CardResponseDto> mySelectedCards = new ArrayList<>();
+
+        for(Card card : userCard){
+            if(!card.getIsSelected()) continue;
+            for(CardProductResponseRestTemplateDto restCard : cards){
+                if(restCard.getCardUniqueNo().equals(card.getCardUniqueNo())){
+                    mySelectedCards.add(new CardResponseDto(card, restCard));
+                }
+            }
+        }
+
+        return mySelectedCards;
+    }
+
+    private void updateUserCards(List<CardResponseRestTemplateDto> myCards, List<Card> userCards, User user){
         List<String> existingCardNos = userCards.stream()
                 .map(Card::getCardNo)
                 .collect(Collectors.toList());
@@ -63,16 +91,9 @@ public class CardService {
                 .filter(myCard -> !existingCardNos.contains(myCard.getCardNo()))
                 .forEach(myCard -> {
                     // userCards에서 myCard의 cardNo와 같은 값을 가진 Company 찾기
-                    Company company = userCards.stream()
-                            .filter(userCard -> userCard.getCardNo().equals(myCard.getCardNo()))
-                            .map(Card::getCompany)
-                            .findFirst()
-                            .orElse(null); // 해당 cardNo에 맞는 회사가 없으면 null 반환
-
-                    if (company != null) {
-                        System.out.println("in:" + myCard.getCardNo());
-                        cardModuleService.saveCard(company, myCard);
-                    }
+                    System.out.println("myCard : " + myCard.getCardNo());
+                    Company company = companyModuleService.findUserCompany(myCard.getCardIssuerCode(), user);
+                    cardModuleService.saveCard(company, myCard);
                 });
     }
 }
