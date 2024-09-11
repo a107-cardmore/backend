@@ -2,16 +2,13 @@ package a107.cardmore.domain.transaction.controller;
 
 import a107.cardmore.domain.transaction.dto.CreateCreditCardTransactionRequestDto;
 import a107.cardmore.domain.transaction.dto.CreateCreditCardTransactionResponseDto;
-import a107.cardmore.domain.transaction.dto.TransactionResponseDto;
+import a107.cardmore.domain.transaction.dto.InquireTransactionResponseDto;
 import a107.cardmore.domain.transaction.service.TransactionService;
 import a107.cardmore.domain.user.service.UserModuleService;
-import a107.cardmore.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
@@ -22,15 +19,14 @@ public class TransactionController {
     private final UserModuleService userModuleService;
 
     @GetMapping
-    public List<TransactionResponseDto> getTransactionList(){
+    public InquireTransactionResponseDto getTransactionList(){
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return transactionService.getTransactionList(email);
     }
 
-    @PostMapping
-    @RequestMapping("/{id}")
+    @PostMapping("/{id}")
     public CreateCreditCardTransactionResponseDto createCreditCardTransaction(
             @PathVariable("id") String cardNo,
             @RequestBody CreateCreditCardTransactionRequestDto requestDto)

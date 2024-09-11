@@ -5,5 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TransactionResponseDto {
+public class CategoryDto {
+    private String name;
+    private Long balance;
 }
