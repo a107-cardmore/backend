@@ -21,7 +21,7 @@ public class RecommendController {
     private final UserModuleService userModuleService;
 
     @GetMapping("/discount")
-    public BaseSuccessResponse<Map<MapRequestDto, List<CardProductResponseRestTemplateDto>>> discount(@RequestBody MapRequestWrapperDto mapRequestWrapperDto) {
+    public BaseSuccessResponse<List<MapResponseDto>> discount(@RequestBody MapRequestWrapperDto mapRequestWrapperDto) {
         Long userId = userModuleService.getUserIdByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return new BaseSuccessResponse<>(recommendService.discountCardRecommend(mapRequestWrapperDto.getMapRequestDtos(), userId));
     }
