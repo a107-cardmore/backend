@@ -11,7 +11,6 @@ import a107.cardmore.domain.user.entity.User;
 import a107.cardmore.domain.user.service.UserModuleService;
 import a107.cardmore.util.api.RestTemplateUtil;
 import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
-import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListResponseRestTemplateDto;
 import a107.cardmore.util.constant.MerchantCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +43,7 @@ public class TransactionService {
         List<Company> companyList = companyModuleService.findUserCompanies(user);
         inquireTransactionResponse.getCompanyNameList().addAll(companyList.stream().map(Company::getName).toList());
 
-        List<Card> myCardList = cardModuleService.findCardByUser(user);
+        List<Card> myCardList = cardModuleService.findCardsByUser(user);
         List<CardResponseRestTemplateDto> inquireCardList = restTemplateUtil.inquireSignUpCreditCardList(user.getUserKey());
 
         List<CardResponseRestTemplateDto> cardList = new ArrayList<>();
