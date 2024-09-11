@@ -1,5 +1,5 @@
 import { css } from "@emotion/css";
-function SquareButton({ name, onClick }) {
+function SquareButton({ name, onClick, marginTop }) {
   return (
     <button
       className={css`
@@ -9,7 +9,6 @@ function SquareButton({ name, onClick }) {
         border: none;
         width: 50%;
         height: 2.6rem;
-        margin-top: 3rem;
         font-size: 1rem;
         font-weight: bold;
         box-shadow: 0 0 10px rgb(0 0 0 / 20%);
@@ -17,6 +16,7 @@ function SquareButton({ name, onClick }) {
           color: black;
           background-color: #b0ffa3;
         }
+        margin-top: ${marginTop};
       `}
       onClick={onClick}
     >
