@@ -13,6 +13,7 @@ import a107.cardmore.util.api.dto.card.CardProductResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class CardService {
     private final RestTemplateUtil restTemplateUtil;
     private final UserModuleService userModuleService;
@@ -53,13 +55,10 @@ public class CardService {
     }
 
     public void updateUserSelectedCard(List<SelectedInfo> selectedCards) {
-        selectedCards.forEach(selectedInfo -> {
+        for (SelectedInfo selectedInfo : selectedCards) {
             Card card = cardModuleService.findCardById(selectedInfo.getId());
-            System.out.println(selectedInfo.getIsSelected());
             card.changeIsSelected(selectedInfo.getIsSelected());
-        });
-
-
+        }
     }
 
     public List<CardResponseDto> getUserSelectedCardInfo(String email) {
