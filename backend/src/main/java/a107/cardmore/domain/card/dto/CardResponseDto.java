@@ -17,6 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CardResponseDto {
     private Long cardId;
+    private String companyId;
+    private String companyName;
     private String cardNo;
     private String cardName;
     private String cardUniqueNo;
@@ -28,6 +30,8 @@ public class CardResponseDto {
 
     public CardResponseDto(Card card, CardProductResponseRestTemplateDto cardProduct) {
         this.cardId = card.getId();
+        this.companyId = card.getCompany().getCompanyNo();
+        this.companyName = card.getCompany().getName();
         this.cardNo = card.getCardNo();
         this.cardUniqueNo = card.getCardUniqueNo();
         this.cardName = cardProduct.getCardName();

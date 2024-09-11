@@ -10,7 +10,6 @@ import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,7 @@ public class CardModuleService {
                 .build());
     }
 
-    public List<Card> findCardByUser(User user){
+    public List<Card> findCardsByUser(User user){
         List<Company> companies = companyRepository.findAllByUser(user);
         return companies.stream().flatMap(company -> cardRepository.findAllByCompany(company).stream()).collect(Collectors.toList());
     }

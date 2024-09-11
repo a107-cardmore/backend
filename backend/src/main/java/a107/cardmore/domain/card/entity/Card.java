@@ -54,7 +54,7 @@ public class Card {
     @Builder.Default
     private Boolean isDeleted = false;
 
-    public void updateIsSelected(Boolean isSelected) {
+    public void changeIsSelected(Boolean isSelected) {
         this.isSelected = isSelected;
     }
 }
