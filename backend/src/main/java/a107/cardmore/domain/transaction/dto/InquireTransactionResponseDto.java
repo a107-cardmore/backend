@@ -19,5 +19,6 @@ public class InquireTransactionResponseDto {
         transactionList = new ArrayList<>();
 
         companyNameList.add("전체");
+        transactionList.add(new ArrayList<>());
     }
 }

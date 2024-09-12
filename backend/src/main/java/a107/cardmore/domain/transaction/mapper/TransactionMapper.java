@@ -4,10 +4,7 @@ import a107.cardmore.domain.bank.dto.InquireCreditCardTransactionListRequestDto;
 import a107.cardmore.domain.transaction.dto.CreateCreditCardTransactionRequestDto;
 import a107.cardmore.domain.transaction.dto.CreateCreditCardTransactionResponseDto;
 import a107.cardmore.domain.transaction.dto.TransactionDto;
-import a107.cardmore.util.api.dto.card.CreateCreditCardTransactionRequestRestTemplateDto;
-import a107.cardmore.util.api.dto.card.CreateCreditCardTransactionResponseRestTemplateDto;
-import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListRequestRestTemplateDto;
-import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.*;
 import org.mapstruct.*;
 
 import java.time.LocalDate;
@@ -23,7 +20,7 @@ public interface TransactionMapper {
             @Mapping(source = "endDate", target = "endDate", qualifiedByName = "localDateToStringWithoutHyphen")
     })
     InquireCreditCardTransactionListRequestRestTemplateDto toInquireCreditCardTransactionListRequestRestTemplateDto(InquireCreditCardTransactionListRequestDto requestDto);
-    TransactionDto toTransactionDto(InquireCreditCardTransactionListResponseRestTemplateDto responseDto);
+    TransactionDto toTransactionDto(Transaction responseDto);
 
     // LocalDate -> String 변환 메서드 정의
     @Named("localDateToStringWithoutHyphen")
