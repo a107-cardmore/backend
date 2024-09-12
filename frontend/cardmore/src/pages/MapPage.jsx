@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import "../App.css"; // 스타일을 위한 CSS 파일
 import KakaoMap from "../components/KakaoMap";
 import styled from "styled-components";
@@ -79,16 +79,12 @@ const { kakao } = window;
 
 const MapPage = () => {
   const [position, setPosition] = useState(0); // 메뉴바의 초기 위치
+  // useEffect(() => {
+  //   console.log("position", position);
+  // }, [position]);
   const isDragging = useRef(false);
   const offsetY = useRef(0); // 클릭한 지점과 menubar의 bottom 차이를 저장
   const animationFrame = useRef(null); // 애니메이션 프레임 저장
-  const [keyword, setKeyword] = useState("");
-  const [categoryTags, setCategoryTags] = useState([
-    "카페",
-    "음식점",
-    "편의점",
-    "주유소",
-  ]);
 
   useEffect(() => {
     const initialPosition = -window.innerHeight * 0.8;
@@ -109,85 +105,97 @@ const MapPage = () => {
     };
   }, []);
 
-  const handleMouseDown = (e) => {
-    isDragging.current = true;
-    offsetY.current = window.innerHeight - e.clientY - position; // 클릭한 위치와 메뉴바 하단 간의 차이 계산
-  };
+  const handleMouseDown = useCallback(
+    (e) => {
+      isDragging.current = true;
+      offsetY.current = window.innerHeight - e.clientY - position; // 클릭한 위치와 메뉴바 하단 간의 차이 계산
+      // console.log("newPosition", position);
+    },
+    [position]
+  );
 
-  const handleMouseMove = (e) => {
-    if (isDragging.current) {
-      cancelAnimationFrame(animationFrame.current); // 이전 애니메이션을 취소
+  const handleMouseMove = useCallback(
+    (e) => {
+      if (isDragging.current) {
+        cancelAnimationFrame(animationFrame.current); // 이전 애니메이션을 취소
 
-      animationFrame.current = requestAnimationFrame(() => {
-        let newPosition = window.innerHeight - e.clientY - offsetY.current;
+        animationFrame.current = requestAnimationFrame(() => {
+          let newPosition = window.innerHeight - e.clientY - offsetY.current;
+          // 메뉴바가 화면 아래로 내려가는 것을 방지 (bottom이 0 이상일 때)
+          if (newPosition > 0) {
+            newPosition = 0;
+          }
 
-        // 메뉴바가 화면 아래로 내려가는 것을 방지 (bottom이 0 이상일 때)
-        if (newPosition > 0) {
-          newPosition = 0;
-        }
+          // 메뉴바가 화면의 가장 위로 올라올 수 있도록 제한
+          if (newPosition < -window.innerHeight + 100) {
+            newPosition = -window.innerHeight + 100;
+          }
 
-        // 메뉴바가 화면의 가장 위로 올라올 수 있도록 제한
-        if (newPosition < -window.innerHeight + 100) {
-          newPosition = -window.innerHeight + 100;
-        }
+          setPosition(newPosition);
+        });
+      }
+    },
+    [position]
+  );
 
-        setPosition(newPosition);
-      });
-    }
-  };
-
-  const handleTouchStart = (e) => {
+  const handleTouchStart = useCallback((e) => {
     isDragging.current = true;
     offsetY.current = window.innerHeight - e.touches[0].clientY - position; // 터치 시작 위치와 메뉴바 하단 간의 차이 계산
-  };
+  }, []);
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = useCallback((e) => {
     if (isDragging.current) {
       cancelAnimationFrame(animationFrame.current); // 이전 애니메이션을 취소
 
       animationFrame.current = requestAnimationFrame(() => {
         let newPosition =
           window.innerHeight - e.touches[0].clientY - offsetY.current;
-
         // 메뉴바가 화면 아래로 내려가는 것을 방지
         if (newPosition > 0) {
           newPosition = 0;
         }
-
         // 메뉴바가 화면의 가장 위로 올라올 수 있도록 제한
         if (newPosition < -window.innerHeight + 100) {
           newPosition = -window.innerHeight + 100;
         }
-
         setPosition(newPosition);
       });
     }
-  };
+  }, []);
+
+  //------------ 여기까지 MenuBar 관련 함수 -----------------
+  const [keyword, setKeyword] = useState("");
+  const [categoryTags, setCategoryTags] = useState([
+    "카페",
+    "음식점",
+    "편의점",
+    "주유소",
+  ]);
 
   const handleKeyword = (e) => {
-    console.log(e.target.value);
     setKeyword(e.target.value);
   };
 
+  //------------ 여기까지 Keyword 관련 함수 -----------------
+
   const getSearchResult = () => {
-    var ps = new kakao.maps.services.Places(document.getElementById("map"));
-    console.log("pspsps", ps);
+    // var ps = new kakao.maps.services.Places(document.getElementById("map"));
   };
 
   const [map, setMap] = useState(null);
 
-  const handleMapLoad = (loadedMap) => {
+  const handleMapLoad = useCallback((loadedMap) => {
     setMap(loadedMap); // 맵 객체를 상태로 저장
     console.log("loadedMap", loadedMap);
-  };
+  }, []);
 
-  useEffect(() => {
-    console.log("map", map);
-    if (map) {
-      console.log("in map", map);
-      getSearchResult();
-    }
-  }, [map]);
+  // useEffect(() => {
+  //   console.log("map", map);
+  //   if (map) {
+  //     console.log("in map", map);
+  //     getSearchResult();
+  //   }
+  // }, [map]);
 
   return (
     <MapPageStyle onMouseMove={handleMouseMove} onTouchMove={handleTouchMove}>
@@ -213,4 +221,4 @@ const MapPage = () => {
   );
 };
 
-export default MapPage;
+export default React.memo(MapPage);
