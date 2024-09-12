@@ -69,4 +69,8 @@ public class Card {
     public void changeIsSelected(Boolean isSelected) {
         this.isSelected = isSelected;
     }
+
+    public void changeLimitRemaining(Long limitRemaining) {
+        this.limitRemaining = limitRemaining;
+    }
 }

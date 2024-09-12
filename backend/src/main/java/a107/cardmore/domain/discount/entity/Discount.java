@@ -37,10 +37,13 @@ public class Discount {
     @JoinColumn(nullable = false)
     private Card card;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MerchantCategory merchantCategory;
+    private String categoryId;
 
     @Column(nullable = false)
     private Long price;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isDeleted = false;
 }
