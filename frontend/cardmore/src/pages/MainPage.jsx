@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/css";
 import Card from "../components/Card";
 import NavBar from "../components/NavBar";
+import CardModal from "../components/CardModal";
 // import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 
 const cardlist = [
@@ -214,7 +215,12 @@ function MainPage() {
             `}
             onClick={() => _showCard(data.key)}
           >
-            <Card bgColor={data.bgColor} inColor={data.inColor} />
+            <Card
+              bgColor={data.bgColor}
+              inColor={data.inColor}
+              setShowModal={setShowModal}
+              isSelected={isSelected}
+            />
           </div>
         ))}
       </div>
@@ -284,15 +290,12 @@ function MainPage() {
         </div>
       </div>
       <NavBar />
-      {showModal && (
-        <div
-          className={css`
-            position: absolute;
-            background-color: rgb(0, 0, 0, 0.1);
-            width: 100%;
-            height: 100vh;
-          `}
-        ></div>
+      {isSelected && showModal && (
+        <CardModal
+          inColor={"#fe4437"}
+          bgColor={"#FFE6DC"}
+          setShowModal={setShowModal}
+        ></CardModal>
       )}
     </div>
   );
