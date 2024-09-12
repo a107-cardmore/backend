@@ -2,9 +2,12 @@ package a107.cardmore.util.api.dto.card;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+//TEST
+@ToString
 public class CardResponseRestTemplateDto {
     private String cardNo;
     private String cvc;
