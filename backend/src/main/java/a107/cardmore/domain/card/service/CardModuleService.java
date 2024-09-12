@@ -63,4 +63,8 @@ public class CardModuleService {
     public Card findCardById(Long id){
         return cardRepository.findById(id).orElseThrow(() -> new BadRequestException("Card not found"));
     }
+
+    public Card findCardByCardNo(String cardNo){
+        return cardRepository.findByCardNo(cardNo).orElseThrow(() -> new BadRequestException("Card not found"));
+    }
 }
