@@ -1,7 +1,11 @@
 import { css } from "@emotion/css";
 
-function Card({ bgColor, inColor, data }) {
-  // console.log(inColor);
+function Card({ bgColor, inColor, data, setShowModal, isSelected }) {
+  const _clickArrow = () => {
+    if (isSelected) {
+      setShowModal(true);
+    }
+  };
   return (
     <div
       className={css`
@@ -40,6 +44,7 @@ function Card({ bgColor, inColor, data }) {
           viewBox="0 0 32 32"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          onClick={_clickArrow}
         >
           <circle
             cx="15.75"
