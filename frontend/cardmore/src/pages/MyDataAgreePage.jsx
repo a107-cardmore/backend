@@ -3,11 +3,29 @@ import MydataText from "../components/MydataText";
 import { useEffect, useState } from "react";
 import SquareButton from "../components/Button/SquareButton";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 function MyDataAgreePage() {
   const [selected, setSelected] = useState(false);
+
   useEffect(() => {}, [setSelected]);
+
   const navigate = useNavigate();
+
+  const agreeCheck = () => {
+    if (!selected) {
+      toast("마이데이터 이용에 동의해주세요", {
+        style: {
+          borderRadius: "10px",
+          background: "#000000",
+          color: "#fff",
+        },
+        duration: 2000,
+      });
+    } else {
+      navigate("/company-select");
+    }
+  };
   return (
     <div
       className={css`
@@ -141,10 +159,11 @@ function MyDataAgreePage() {
             </div>
           </div>
         </div>
+        <Toaster position="bottom-center" reverseOrder={false} />
         <SquareButton
           name={"다음"}
           onClick={() => {
-            navigate("/company-select");
+            agreeCheck();
           }}
           marginTop={"1rem"}
         />

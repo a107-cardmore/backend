@@ -2,40 +2,79 @@ import { css } from "@emotion/css";
 import { useEffect, useState } from "react";
 import SquareButton from "../components/Button/SquareButton";
 import { useNavigate } from "react-router-dom";
+import { getCardAll } from "../apis/Mydata";
 
 function CompanySelectPage() {
   const navigate = useNavigate();
 
   const [selectAll, setSelectAll] = useState(false);
 
-  const [companies, setCompanies] = useState([
-    { name: "KB 국민", selected: false, logo: "/KB.svg" },
-    { name: "삼성", selected: false, logo: "/Samsung.svg" },
-    { name: "신한", selected: false, logo: "/Shinhan.svg" },
-    { name: "현대", selected: false, logo: "/Hyundai.svg" },
-    { name: "하나", selected: false, logo: "/Hana.svg" },
+  const [companies, setCompanies] = useState([]);
+
+  const [logos, setLogos] = useState([
+    {
+      companyNo: 1009,
+      logoUrl: "/Hana.svg",
+    },
+    {
+      companyNo: 1005,
+      logoUrl: "/Shinhan.svg",
+    },
+    {
+      companyNo: 1001,
+      logoUrl: "/KB.svg",
+    },
+    {
+      companyNo: 1006,
+      logoUrl: "/Hyundai.svg",
+    },
+    {
+      companyNo: 1002,
+      logoUrl: "/Samsung.svg",
+    },
   ]);
 
-  useEffect(() => {
-    const selectedCount = companies.filter(
-      (company) => company.selected
-    ).length;
-    if (companies.length !== selectedCount) {
-      setSelectAll(false);
-    }
-  }, [companies]);
+  const selectAllToggle = () => {
+    setSelectAll((prevSelectAll) => {
+      const newSelectAll = !prevSelectAll;
+      setCompanies((prevCompanies) =>
+        prevCompanies.map((company) => ({
+          ...company,
+          isSelected: newSelectAll,
+        }))
+      );
+      return newSelectAll;
+    });
+  };
 
   useEffect(() => {
-    setCompanies((prevCompanies) =>
-      prevCompanies.map((company) => ({ ...company, selected: selectAll }))
-    );
-  }, [selectAll]);
+    getCompanyList();
+  }, []);
 
   const companySelect = (index) => {
-    setCompanies((prevCompanies) =>
-      prevCompanies.map((company, i) =>
-        i === index ? { ...company, selected: !company.selected } : company
-      )
+    setCompanies((prevCompanies) => {
+      const updatedCompanies = prevCompanies.map((company, i) =>
+        i === index ? { ...company, isSelected: !company.isSelected } : company
+      );
+
+      const allSelected = updatedCompanies.every((company) => company.selected);
+      setSelectAll(allSelected);
+      return updatedCompanies;
+    });
+  };
+
+  const getCompanyList = async () => {
+    const response = await getCardAll().then((res) => {
+      return res;
+    });
+    console.log(response.result);
+    setCompanies(
+      response.result.map((company) => {
+        const logo = logos.find(
+          (logo) => logo.companyNo === Number(company.companyNo)
+        );
+        return { ...company, logoUrl: logo ? logo.logoUrl : "" };
+      })
     );
   };
 
@@ -94,9 +133,7 @@ function CompanySelectPage() {
               className={css`
                 margin: 0.5rem;
               `}
-              onClick={() => {
-                setSelectAll(false);
-              }}
+              onClick={selectAllToggle}
               src="/Selected.svg"
               alt=""
             />
@@ -105,9 +142,7 @@ function CompanySelectPage() {
               className={css`
                 margin: 0.5rem;
               `}
-              onClick={() => {
-                setSelectAll(true);
-              }}
+              onClick={selectAllToggle}
               src="/Unselected.svg"
               alt=""
             />
@@ -130,7 +165,7 @@ function CompanySelectPage() {
               className={css`
                 width: 10%;
               `}
-              src={company.logo}
+              src={company.logoUrl}
               alt=""
             />
             <div
@@ -138,9 +173,9 @@ function CompanySelectPage() {
                 width: 70%;
               `}
             >
-              {company.name}
+              {company.companyName}
             </div>
-            {company.selected ? (
+            {company.isSelected ? (
               <img
                 className={css`
                   margin: 0.5rem;
