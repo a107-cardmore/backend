@@ -20,7 +20,7 @@ public class CompanyModuleService {
         Map<String, String> companyMap = new HashMap<>(Map.of(
                 "신한카드", "1005",
                 "하나카드", "1009",
-                "국민카드", "1001",
+                "KB국민카드", "1001",
                 "현대카드", "1006",
                 "삼성카드", "1002"
         ));
