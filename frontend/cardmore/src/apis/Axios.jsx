@@ -8,6 +8,7 @@ export const axios = Axios.create({
 
 axios.interceptors.request.use(
   (config) => {
+
     const accessToken = sessionStorage.getItem("accessToke");
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
