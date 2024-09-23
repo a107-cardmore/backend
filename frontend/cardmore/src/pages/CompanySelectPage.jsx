@@ -2,13 +2,12 @@ import { css } from "@emotion/css";
 import { useEffect, useState } from "react";
 import SquareButton from "../components/Button/SquareButton";
 import { useNavigate } from "react-router-dom";
-import { getCardAll } from "../apis/Mydata";
+import { getCardAll, sendCompany } from "../apis/Mydata";
 
 function CompanySelectPage() {
   const navigate = useNavigate();
 
   const [selectAll, setSelectAll] = useState(false);
-
   const [companies, setCompanies] = useState([]);
 
   const [logos, setLogos] = useState([
@@ -76,6 +75,24 @@ function CompanySelectPage() {
         return { ...company, logoUrl: logo ? logo.logoUrl : "" };
       })
     );
+  };
+
+  const selectedCompany = () => {
+    const companiesSelected = companies.map((company) => {
+      return { id: company.companyId, isSelected: company.isSelected };
+    });
+    const data = {
+      companiesSelectedInfos: companiesSelected,
+    };
+    console.log(data);
+    const response = sendCompany(data).then((res) => {
+      console.log(res.success);
+      return res.success;
+    });
+    console.log(response);
+    if (response) {
+      navigate("/card-select");
+    }
   };
 
   return (
@@ -204,7 +221,7 @@ function CompanySelectPage() {
           name={"다음"}
           marginTop={"3rem"}
           onClick={() => {
-            navigate("/card-select");
+            selectedCompany();
           }}
         />
       </div>

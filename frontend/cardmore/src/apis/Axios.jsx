@@ -4,7 +4,7 @@ const DHurl = "http://70.12.246.233:8080/api";
 const DYurl = "http://70.12.108.65:8080/api";
 
 const axios = Axios.create({
-  baseURL: DYurl,
+  baseURL: DHurl,
 });
 
 axios.interceptors.request.use(
