@@ -60,7 +60,7 @@ function MyPage() {
           display: flex;
           float: left;
           font-size: 2.5rem;
-          padding-top: 10%;
+          padding-top: 5%;
           padding-right: 40%;
           font-weight: bold;
       `}>My Page</div>
@@ -86,7 +86,7 @@ function MyPage() {
       </div>
       <div className={css`
           position: absolute;
-          top: 12vh;
+          top: 8.5vh;
           display: flex;
           flex-direction: column;
           align-items: flex-end;
