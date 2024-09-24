@@ -2,7 +2,8 @@ package a107.cardmore.domain.card.controller;
 
 import a107.cardmore.domain.card.dto.CardResponseDto;
 import a107.cardmore.domain.card.dto.CompanyCardListResponseDto;
-import a107.cardmore.domain.card.dto.SelectedResponseDto;
+import a107.cardmore.domain.card.dto.SelectedCompanyResponseDto;
+import a107.cardmore.domain.card.dto.SelectedCardResponseDto;
 import a107.cardmore.domain.card.service.CardService;
 import a107.cardmore.domain.company.service.CompanyService;
 import a107.cardmore.util.base.BaseSuccessResponse;
@@ -27,12 +28,20 @@ public class CardController {
         return new BaseSuccessResponse<>(cardService.getUserSelectedCardInfo(userEmail));
     }
 
-    @PostMapping("")
-    public BaseSuccessResponse<Void> updateUserSelectedCard(@RequestBody SelectedResponseDto selectedResponseDto){
+    @PostMapping("/company")
+    public BaseSuccessResponse<Void> updateUserSelectedCompany(@RequestBody SelectedCompanyResponseDto selectedCompanyResponseDto){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        companyService.updateUserSelectedCompany(userEmail, selectedResponseDto.getCompaniesSelectedInfos());
-        cardService.updateUserSelectedCard(selectedResponseDto.getCardsSelectedInfos());
+        companyService.updateUserSelectedCompany(userEmail, selectedCompanyResponseDto.getCompaniesSelectedInfos());
+
+        return new BaseSuccessResponse<>(null);
+    }
+
+    @PostMapping("/card")
+    public BaseSuccessResponse<Void> updateUserSelectedCard(@RequestBody SelectedCardResponseDto selectedCardResponseDto){
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        cardService.updateUserSelectedCard(selectedCardResponseDto.getCardsSelectedInfos());
 
         return new BaseSuccessResponse<>(null);
     }
