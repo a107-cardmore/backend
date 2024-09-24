@@ -42,15 +42,16 @@ public class CardModuleService {
         Map<String, CardColorInfo> cardColorMap = new HashMap<>();
 
         // cardUniqueNo와 해당 색상 정보를 매핑
+        cardColorMap.put("1001-0c2e8ecd0c434e4", new CardColorInfo("#D3CA9F", "#844301"));
+        cardColorMap.put("1001-1c74d779dade4ea", new CardColorInfo("#CDB3FA", "#5B2188"));
         cardColorMap.put("1005-77f96d3e1d414df", new CardColorInfo("#FBB89D", "#FE4437"));
         cardColorMap.put("1005-ee7910828020409", new CardColorInfo("#7497F6", "#0543EC"));
         cardColorMap.put("1009-4c87cbe6fbef4e8", new CardColorInfo("#D8F068", "#00B451"));
-        cardColorMap.put("1001-0c2e8ecd0c434e4", new CardColorInfo("#D3CA9F", "#844301"));
-        cardColorMap.put("1001-1c74d779dade4ea", new CardColorInfo("#CDB3FA", "#5B2188"));
         cardColorMap.put("1006-473ecfa048ea400", new CardColorInfo("#014886", "#6BCEF5"));
         cardColorMap.put("1006-0a6bdfbd4a034f8", new CardColorInfo("#FEF33F", "#F8BF00"));
         cardColorMap.put("1002-20c63ccd7f9044e", new CardColorInfo("#01563F", "#5B208A"));
         cardColorMap.put("1002-3a9d4cf6ecce433", new CardColorInfo("#F8BF00", "#DC8A02"));
+
 
         return cardColorMap.get(cardUniqueNo);
     }

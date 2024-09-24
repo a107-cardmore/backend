@@ -14,6 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class BankModuleService {
     private final BankRepository bankRepository;
 
+    public Boolean checkUser(String email){
+        return bankRepository.findByEmail(email).isPresent();
+    }
+
     public Bank getUser(String email){
         return bankRepository.findByEmail(email).orElseThrow(()->new BadRequestException("존재하지 않는 이메일입니다."));
     }
