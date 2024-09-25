@@ -5,12 +5,14 @@ import NavBar from "../components/NavBar";
 import CardModal from "../components/CardModal";
 import { getCards } from "../apis/Main";
 import { useNavigate } from "react-router-dom";
+import { discountAll } from "../apis/Discount";
 
 function MainPage() {
   const [isSelected, setIsSelected] = useState(10000);
   const [showModal, setShowModal] = useState(false);
   const [startIndex, setStartIndex] = useState(1);
   const [cards, setCards] = useState();
+  const [discount, setDiscount] = useState();
   const [selectedIndex, setSelectedIndex] = useState();
 
   const navigate = useNavigate();
@@ -61,11 +63,16 @@ function MainPage() {
   }, []);
 
   const getInfo = async () => {
-    const response = await getCards().then((res) => {
-      console.log("[Main Page]", res.result);
+    const cardResponse = await getCards().then((res) => {
+      console.log("[Main Page] card response", res.result);
       return res.result;
     });
-    setCards(response.map((card, index) => ({ ...card, key: index + 1 })));
+    const discountResponse = await discountAll().then((res) => {
+      console.log("[Main Page] discount response : ", res.result);
+      return res.result;
+    });
+    setCards(cardResponse.map((card, index) => ({ ...card, key: index + 1 })));
+    setDiscount(discountResponse);
   };
 
   return (
@@ -261,7 +268,7 @@ function MainPage() {
             margin-top: 1rem;
           `}
         >
-          총 100,000원
+          총 {discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
         </div>
       </div>
       <NavBar isSelected={"Home"} />
@@ -270,7 +277,7 @@ function MainPage() {
           inColor={"#fe4437"}
           bgColor={"#FFE6DC"}
           setShowModal={setShowModal}
-          data = {cards[selectedIndex-1]}
+          data={cards[selectedIndex - 1]}
         ></CardModal>
       )}
     </div>
