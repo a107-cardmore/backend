@@ -6,7 +6,6 @@ import a107.cardmore.domain.company.entity.Company;
 import a107.cardmore.domain.company.mapper.CompanyMapper;
 import a107.cardmore.domain.user.entity.User;
 import a107.cardmore.domain.user.service.UserModuleService;
-import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

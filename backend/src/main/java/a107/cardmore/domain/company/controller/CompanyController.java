@@ -2,7 +2,6 @@ package a107.cardmore.domain.company.controller;
 
 import a107.cardmore.domain.card.dto.SelectedInfo;
 import a107.cardmore.domain.company.dto.InquireCompanyResponseDto;
-import a107.cardmore.domain.company.dto.UpdateCompanyRequestDto;
 import a107.cardmore.domain.company.service.CompanyService;
 import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
