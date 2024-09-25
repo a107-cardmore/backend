@@ -208,7 +208,7 @@ const MapPage = () => {
           <p>Menu Bar</p>
         </MenuContent>
       </MenuBar>
-      <NavBar />
+      <NavBar isSelected={"Map"} />
     </MapPageStyle>
   );
 };

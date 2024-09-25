@@ -70,7 +70,7 @@ function CardSelectPage() {
       )
     );
     const data = {
-      companiesSelectedInfos: cardsSelected,
+      cardsSelectedInfos: cardsSelected,
     };
     console.log(data);
     const response = sendCard(data).then((res) => {

@@ -2,6 +2,7 @@ import { css } from "@emotion/css";
 import { useEffect, useState, useRef } from "react";
 import Chart from 'chart.js/auto';
 import ExpenditureCard from "../components/ExpenditureCard";
+import NavBar from "../components/NavBar";
 
 function MyPage() {
   const chartRef = useRef(null);
@@ -181,6 +182,7 @@ function MyPage() {
           {/* 더 많은 ExpenditureCard 추가 */}
         </div>
       </div>
+      <NavBar isSelected={"User"}/>
     </div>
   );
 }
