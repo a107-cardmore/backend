@@ -1,13 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/css";
+import { useNavigate } from "react-router-dom";
 
 // const BarComponent = styled.div`
 //   background-color: black;
 //   border-radius: 2rem;
 // `;
 
-function NavBar() {
-  const [isSelected, setIsSelected] = useState("Home");
+function NavBar({isSelected}) {
+  // const [isSelected, setIsSelected] = useState("Home");
+  const navigate = useNavigate();
+
+  const goToMyPage = () => {
+    // setIsSelected("User");
+    navigate("/mypage");
+  };
+
+  const goToHome = () => {
+    // setIsSelected("Home");
+    navigate("/main");
+  };
+
+  const goToMap = () => {
+    // setIsSelected("Map");
+    navigate("/map");
+  };
 
   return (
     <div
@@ -44,7 +61,7 @@ function NavBar() {
           justify-content: center;
           align-items: center;
         `}
-        onClick={() => setIsSelected("User")}
+        onClick={() => goToMyPage()}
       >
         {isSelected === "User" ? (
           <img src="/User_white.svg" alt="" />
@@ -67,7 +84,7 @@ function NavBar() {
           justify-content: center;
           align-items: center;
         `}
-        onClick={() => setIsSelected("Home")}
+        onClick={() => goToHome()}
       >
         {isSelected === "Home" ? (
           <img src="/Home_white.svg" alt="" />
@@ -91,7 +108,7 @@ function NavBar() {
           justify-content: center;
           align-items: center;
         `}
-        onClick={() => setIsSelected("Map")}
+        onClick={() => goToMap()}
       >
         {isSelected === "Map" ? (
           <img src="/Map_white.svg" alt="" />
