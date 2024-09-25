@@ -7,6 +7,38 @@ function CardModal({ setShowModal, data }) {
     event.stopPropagation(); // 스크롤 이벤트 전파 중단
   };
 
+  const lightenColor = (hex, percent) => {
+    // HEX를 RGB로 변환
+    const hexToRgb = (hex) => {
+      hex = hex.replace("#", "");
+      const bigint = parseInt(hex, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r, g, b];
+    };
+
+    // RGB 값을 HEX로 변환
+    const rgbToHex = (r, g, b) => {
+      const componentToHex = (c) => {
+        const hex = c.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      };
+      return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
+    };
+
+    // 색상을 밝게 만드는 함수
+    const [r, g, b] = hexToRgb(hex);
+    const newR = Math.min(255, r + (255 - r) * percent);
+    const newG = Math.min(255, g + (255 - g) * percent);
+    const newB = Math.min(255, b + (255 - b) * percent);
+
+    // 밝아진 색을 다시 HEX로 변환하여 반환
+    return rgbToHex(Math.round(newR), Math.round(newG), Math.round(newB));
+  };
+
+  const lighterColor = lightenColor(data.colorBackground, 0.5);
+
   return (
     <div
       className={css`
@@ -32,7 +64,7 @@ function CardModal({ setShowModal, data }) {
           padding: 0 2rem;
           height: 13.627rem;
           border-radius: 1rem;
-          background-color: ${data.colorBackground};
+          background-color: ${lighterColor};
           color: ${data.colorTitle};
           display: flex;
           flex-direction: column;
@@ -102,16 +134,9 @@ function CardModal({ setShowModal, data }) {
           `}
           onWheel={handleScroll}
         >
-          {/* <img
-            className={css`
-              margin-top: 0.5rem;
-            `}
-            src="/Barcode.svg"
-            alt=""
-          /> */}
           <BarcodeItem
             barcodeNumber={data.cardNo}
-            bgColor={data.colorBackground}
+            bgColor={lighterColor}
             colorText={data.colorTitle}
           />
           <div
