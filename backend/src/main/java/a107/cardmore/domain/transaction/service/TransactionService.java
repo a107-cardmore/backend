@@ -15,6 +15,7 @@ import a107.cardmore.global.exception.BadRequestException;
 import a107.cardmore.util.api.RestTemplateUtil;
 import a107.cardmore.util.api.dto.card.CardProductResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.Transaction;
 import a107.cardmore.util.api.dto.merchant.MerchantResponseRestTemplateDto;
 import a107.cardmore.util.constant.MerchantCategory;
 import lombok.RequiredArgsConstructor;
@@ -83,18 +84,24 @@ public class TransactionService {
             requestDto.setCardNo(card.getCardNo());
             requestDto.setCvc(card.getCvc());
 
-            List<TransactionDto> transactionList = restTemplateUtil.inquireCreditCardTransactionList(
+            List<Transaction> transactions = restTemplateUtil.inquireCreditCardTransactionList(
                     user.getUserKey(),
                     transactionMapper.toInquireCreditCardTransactionListRequestRestTemplateDto(requestDto)
-            ).getTransactionList().stream()
-                    .map(
-                            s->{
-                                TransactionDto t = transactionMapper.toTransactionDto(s);
-                                t.setCompanyName(card.getCardIssuerName());
-                                return t;
-                            }
-                    )
-                    .toList();
+            ).getTransactionList();
+
+            List<TransactionDto> transactionList = new ArrayList<>();
+
+            if(transactions != null) {
+                transactionList.addAll(transactions.stream()
+                        .map(
+                                s->{
+                                    TransactionDto t = transactionMapper.toTransactionDto(s);
+                                    t.setCompanyName(card.getCardIssuerName());
+                                    return t;
+                                }
+                        )
+                        .toList());
+            }
 
             inquireTransactionResponse.getTransactionList().get(0).addAll(transactionList);
         }

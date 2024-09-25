@@ -5,6 +5,7 @@ import a107.cardmore.domain.transaction.dto.CreateCreditCardTransactionResponseD
 import a107.cardmore.domain.transaction.dto.InquireTransactionResponseDto;
 import a107.cardmore.domain.transaction.service.TransactionService;
 import a107.cardmore.domain.user.service.UserModuleService;
+import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,15 +20,15 @@ public class TransactionController {
     private final UserModuleService userModuleService;
 
     @GetMapping
-    public InquireTransactionResponseDto getTransactionList(){
+    public BaseSuccessResponse<InquireTransactionResponseDto> getTransactionList(){
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        return transactionService.getTransactionList(email);
+        return new BaseSuccessResponse<>(transactionService.getTransactionList(email));
     }
 
     @PostMapping
-    public CreateCreditCardTransactionResponseDto createCreditCardTransaction(
+    public BaseSuccessResponse<CreateCreditCardTransactionResponseDto> createCreditCardTransaction(
             @RequestBody CreateCreditCardTransactionRequestDto requestDto)
     {
         log.info("결제 요청 API");
@@ -35,7 +36,7 @@ public class TransactionController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         String userKey = userModuleService.getUserByEmail(email).getUserKey();
 
-        return transactionService.createCreditCardTransaction(userKey,requestDto);
+        return new BaseSuccessResponse<>(transactionService.createCreditCardTransaction(userKey,requestDto));
     }
 
 }
