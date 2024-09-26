@@ -8,7 +8,7 @@ function DiscountPage() {
   const [discount, setDiscount] = useState();
   const chartRef = useRef(null);
 
-  const labels = ["주유", "대형마트", "교통", "교육", "통신", "해외", "생활"];
+  const labels = ["주유", "대형마트", "교통", "해외", "생활"];
 
   const data = {
     labels: labels,
@@ -21,8 +21,6 @@ function DiscountPage() {
           "rgba(255, 205, 86, 0.2)",
           "rgba(75, 192, 192, 0.2)",
           "rgba(54, 162, 235, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(201, 203, 207, 0.2)",
         ],
         borderColor: [
           "rgb(255, 99, 132)",
@@ -30,8 +28,6 @@ function DiscountPage() {
           "rgb(255, 205, 86)",
           "rgb(75, 192, 192)",
           "rgb(54, 162, 235)",
-          "rgb(153, 102, 255)",
-          "rgb(201, 203, 207)",
         ],
         borderWidth: 1,
         scales: {
@@ -260,10 +256,9 @@ function DiscountPage() {
       >
         <canvas
           ref={chartRef}
-
           className={css`
             width: 310px;
-            height: 260px;
+            /* height: 400px; */
           `}
         />
       </div>

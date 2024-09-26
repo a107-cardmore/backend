@@ -10,15 +10,17 @@ function Card({ data, setShowModal, isSelected }) {
   return (
     <div
       className={css`
-        width: 17.56rem;
-        padding: 0 2rem;
-        height: 13.627rem;
+        width: 21rem;
+        padding: 0 1.5rem;
+        height: 13rem;
         border-radius: 1rem;
         background-color: ${data.colorBackground};
         color: ${data.colorTitle};
         display: flex;
         flex-direction: column;
         align-items: center;
+        box-shadow: 0 0 5px rgb(0, 0, 0, 0.15);
+        box-sizing: border-box;
       `}
     >
       <div
@@ -29,12 +31,13 @@ function Card({ data, setShowModal, isSelected }) {
           justify-content: space-between;
           width: 100%;
           border-bottom: solid 0.2rem ${data.colorTitle};
-          padding: 1rem 0;
+          padding: 0.9rem 0;
         `}
       >
         <div
           className={css`
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
           `}
         >
           {data.cardName}
@@ -65,10 +68,13 @@ function Card({ data, setShowModal, isSelected }) {
       </div>
       <div
         className={css`
-          font-size: 1.2rem;
+          font-size: 1.3rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
           text-align: end;
           width: 100%;
-          margin-top: 1rem;
+          height: 35%;
         `}
       >
         {data.cardNo.slice(0, 4)} {data.cardNo.slice(4, 8)}{" "}
@@ -76,20 +82,19 @@ function Card({ data, setShowModal, isSelected }) {
       </div>
       <div
         className={css`
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           width: 100%;
           text-align: end;
-          margin-top: 1.5rem;
         `}
       >
         CVC {data.cvc}
       </div>
       <div
         className={css`
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           width: 100%;
           text-align: end;
-          margin-top: 0.3rem;
+          margin-top: 0.5rem;
         `}
       >
         End Date {data.cardExpiryDate.slice(4, 6)}/
