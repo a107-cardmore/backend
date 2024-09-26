@@ -43,10 +43,6 @@ public class TransactionService {
     private final DiscountModuleService discountModuleService;
 
     public InquireTransactionResponseDto getTransactionList(String email) {
-
-        //TODO 카테고리 이상함
-        //TODO 결제 카드 별로 비교
-
         //ResponseDto
         InquireTransactionResponseDto inquireTransactionResponse = new InquireTransactionResponseDto();
 
@@ -113,8 +109,11 @@ public class TransactionService {
                         .toList());
             }
 
-            inquireTransactionResponse.getTransactionList().get(0).addAll(transactionList);
-            inquireTransactionResponse.getTransactionList().add(transactionList);
+            if(!transactionList.isEmpty()){
+                inquireTransactionResponse.getTransactionList().get(0).addAll(transactionList);
+                inquireTransactionResponse.getTransactionList().add(transactionList);
+            }
+
         }
 
         Map<String, Long> categoryBalanceMap = inquireTransactionResponse.getTransactionList().get(0).stream()
