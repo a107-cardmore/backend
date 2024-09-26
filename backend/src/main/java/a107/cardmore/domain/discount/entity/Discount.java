@@ -1,6 +1,7 @@
 package a107.cardmore.domain.discount.entity;
 
 import a107.cardmore.domain.card.entity.Card;
+import a107.cardmore.domain.user.entity.User;
 import a107.cardmore.util.constant.MerchantCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +19,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -37,11 +40,21 @@ public class Discount {
     @JoinColumn(nullable = false)
     private Card card;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User user;
+
     @Column(nullable = false)
     private String categoryId;
 
     @Column(nullable = false)
+    private String merchantCategory;
+
+    @Column(nullable = false)
     private Long price;
+
+    @Column(nullable = false)
+    private LocalDate paymentDate;
 
     @Column(nullable = false)
     @Builder.Default
