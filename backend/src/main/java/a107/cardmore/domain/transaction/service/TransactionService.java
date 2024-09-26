@@ -1,6 +1,7 @@
 package a107.cardmore.domain.transaction.service;
 
 import a107.cardmore.domain.bank.dto.InquireCreditCardTransactionListRequestDto;
+import a107.cardmore.domain.card.dto.CardColorInfo;
 import a107.cardmore.domain.card.entity.Card;
 import a107.cardmore.domain.card.service.CardModuleService;
 import a107.cardmore.domain.company.entity.Company;
@@ -26,9 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,15 +43,11 @@ public class TransactionService {
     private final DiscountModuleService discountModuleService;
 
     public InquireTransactionResponseDto getTransactionList(String email) {
-
         //ResponseDto
         InquireTransactionResponseDto inquireTransactionResponse = new InquireTransactionResponseDto();
 
         //User
         User user = userModuleService.getUserByEmail(email);
-
-        //기업명 추가
-        inquireTransactionResponse.getCompanyNameList().addAll(companyModuleService.findUserCompanies(user).stream().map(Company::getName).toList());
 
         //내 카드 목록
         List<Card> myCardList = cardModuleService.findCardsByUser(user);
@@ -91,12 +87,23 @@ public class TransactionService {
 
             List<TransactionDto> transactionList = new ArrayList<>();
 
+            //카드 이름 목록 추가
+            inquireTransactionResponse.getCardNameList().add(card.getCardName());
+
             if(transactions != null) {
+                
+                //결제 내역 추가
                 transactionList.addAll(transactions.stream()
                         .map(
                                 s->{
                                     TransactionDto t = transactionMapper.toTransactionDto(s);
-                                    t.setCompanyName(card.getCardIssuerName());
+
+                                    CardColorInfo cardColorInfo = cardModuleService.getColorWithCardUniqueNo(card.getCardUniqueNo());
+
+                                    t.setCardName(card.getCardName());
+                                    t.setColorBackground(cardColorInfo.getColorBackground());
+                                    t.setColorTitle(cardColorInfo.getColorTitle());
+
                                     return t;
                                 }
                         )
@@ -104,41 +111,28 @@ public class TransactionService {
             }
 
             inquireTransactionResponse.getTransactionList().get(0).addAll(transactionList);
+            inquireTransactionResponse.getTransactionList().add(transactionList);
         }
 
-        for(String companyName: inquireTransactionResponse.getCompanyNameList()){
+        Map<String, Long> categoryBalanceMap = inquireTransactionResponse.getTransactionList().get(0).stream()
+                .collect(Collectors.groupingBy(
+                        TransactionDto::getCategoryName, // 카테고리 이름으로 그룹화
+                        Collectors.summingLong(TransactionDto::getTransactionBalance) // balance 합산
+                ));
 
-            log.info("카드사 -> {}",companyName);
-            
-            List<TransactionDto> transactionList;
+        // 카테고리 이름별 balance 출력 (혹은 처리)
+        categoryBalanceMap.forEach((category, balance) -> {
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setName(category);
+            categoryDto.setBalance(balance);
 
-            if(companyName.equals("전체")){
-                transactionList = new ArrayList<>(inquireTransactionResponse.getTransactionList().get(0).stream().toList());
-            }
-            else{
-                transactionList = new ArrayList<>(inquireTransactionResponse.getTransactionList().get(0).stream().filter(s->s.getCompanyName().equals(companyName)).toList());
-                inquireTransactionResponse.getTransactionList().add(transactionList);
-            }
+            inquireTransactionResponse.getCategoryList().add(categoryDto);
+        });
 
-            List<CategoryDto> categoryList = new ArrayList<>();
-            for(MerchantCategory category: MerchantCategory.values()) {
-                CategoryDto categoryDto = new CategoryDto();
 
-                List<TransactionDto> categoryTransactionList = transactionList.stream().filter(s->s.getCategoryId().equals(category.getValue())).toList();
-                long balance = categoryTransactionList.stream().mapToLong(TransactionDto::getTransactionBalance).sum();
-
-                if(balance>0){
-                    categoryDto.setName(categoryTransactionList.get(0).getCategoryName());
-                    categoryDto.setBalance(balance);
-                    categoryList.add(categoryDto);
-                }
-            }
-
-            for(CategoryDto categoryDto : categoryList){
-                log.info("카테고리 -> {}",categoryDto);
-            }
-
-            inquireTransactionResponse.getCategoryList().add(categoryList);
+        //카드 결제 내역 정렬
+        for(List<TransactionDto> transactionDtoList : inquireTransactionResponse.getTransactionList()){
+            transactionDtoList.sort(Comparator.comparing(TransactionDto::getTransactionDate).reversed()); // transactionDate 기준 정렬
         }
 
         return inquireTransactionResponse;

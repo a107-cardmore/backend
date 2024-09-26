@@ -9,16 +9,16 @@ import java.util.List;
 @Getter
 @Setter
 public class InquireTransactionResponseDto {
-    List<List<CategoryDto>> categoryList;
-    List<String> companyNameList;
+    List<CategoryDto> categoryList;
+    List<String> cardNameList;
     List<List<TransactionDto>> transactionList;
 
     public InquireTransactionResponseDto() {
         categoryList = new ArrayList<>();
-        companyNameList = new ArrayList<>();
+        cardNameList = new ArrayList<>();
         transactionList = new ArrayList<>();
 
-        companyNameList.add("전체");
+        cardNameList.add("전체");
         transactionList.add(new ArrayList<>());
     }
 }

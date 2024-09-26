@@ -11,7 +11,9 @@ import lombok.ToString;
 public class TransactionDto {
     private String categoryName;
     private String categoryId;
-    private String companyName;
+    private String cardName;
+    private String colorBackground;
+    private String colorTitle;
     private String merchantName;
     private String transactionDate;
     private String transactionTime;
