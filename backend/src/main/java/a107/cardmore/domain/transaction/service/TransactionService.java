@@ -170,7 +170,10 @@ public class TransactionService {
                 Discount discount = Discount.builder()
                         .card(card)
                         .price(price)
+                        .paymentDate(LocalDate.now())
                         .categoryId(merchant.getCategoryId())
+                        .merchantCategory(merchant.getCategoryName())
+                        .user(card.getCompany().getUser())
                         .build();
 
                 discountModuleService.saveDiscount(discount);

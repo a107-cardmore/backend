@@ -8,6 +8,7 @@ import a107.cardmore.domain.company.entity.Company;
 import a107.cardmore.domain.company.service.CompanyModuleService;
 import a107.cardmore.domain.user.entity.User;
 import a107.cardmore.domain.user.service.UserModuleService;
+import a107.cardmore.global.exception.BadRequestException;
 import a107.cardmore.util.api.RestTemplateUtil;
 import a107.cardmore.util.api.dto.card.CardProductResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
@@ -54,7 +55,14 @@ public class CardService {
         return companyCards;
     }
 
-    public void updateUserSelectedCard(List<SelectedInfo> selectedCards) {
+    public void updateUserSelectedCard(List<SelectedInfo> selectedCards, String email) {
+        User user  = userModuleService.getUserByEmail(email);
+
+        for (SelectedInfo selectedInfo : selectedCards) {
+            Card card = cardModuleService.findCardById(selectedInfo.getId());
+            if(card.getCompany().getUser() != user) throw new BadRequestException("타회원의 카드 정보는 수정할 수 없습니다.");
+        }
+
         for (SelectedInfo selectedInfo : selectedCards) {
             Card card = cardModuleService.findCardById(selectedInfo.getId());
             card.changeIsSelected(selectedInfo.getIsSelected());
@@ -70,6 +78,7 @@ public class CardService {
         List<CardResponseDto> mySelectedCards = new ArrayList<>();
 
         for(Card card : userCard){
+            System.out.println("cardId : " + card.getId());
             if(!card.getIsSelected()) continue;
             for(CardProductResponseRestTemplateDto restCard : cards){
                 if(restCard.getCardUniqueNo().equals(card.getCardUniqueNo())){

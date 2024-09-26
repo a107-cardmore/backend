@@ -39,8 +39,8 @@ public class CardController {
 
     @PostMapping("/card")
     public BaseSuccessResponse<Void> updateUserSelectedCard(@RequestBody SelectedCardResponseDto selectedCardResponseDto){
-//        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        cardService.updateUserSelectedCard(selectedCardResponseDto.getCardsSelectedInfos());
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        cardService.updateUserSelectedCard(selectedCardResponseDto.getCardsSelectedInfos(), userEmail);
 
         return new BaseSuccessResponse<>(null);
     }
