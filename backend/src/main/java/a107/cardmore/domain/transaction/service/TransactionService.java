@@ -87,9 +87,10 @@ public class TransactionService {
 
             List<TransactionDto> transactionList = new ArrayList<>();
 
+            //카드 이름 목록 추가
+            inquireTransactionResponse.getCardNameList().add(card.getCardName());
+
             if(transactions != null) {
-                //카드 이름 목록 추가
-                inquireTransactionResponse.getCardNameList().add(card.getCardName());
                 
                 //결제 내역 추가
                 transactionList.addAll(transactions.stream()
@@ -109,11 +110,8 @@ public class TransactionService {
                         .toList());
             }
 
-            if(!transactionList.isEmpty()){
-                inquireTransactionResponse.getTransactionList().get(0).addAll(transactionList);
-                inquireTransactionResponse.getTransactionList().add(transactionList);
-            }
-
+            inquireTransactionResponse.getTransactionList().get(0).addAll(transactionList);
+            inquireTransactionResponse.getTransactionList().add(transactionList);
         }
 
         Map<String, Long> categoryBalanceMap = inquireTransactionResponse.getTransactionList().get(0).stream()
