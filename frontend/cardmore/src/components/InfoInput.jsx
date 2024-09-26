@@ -1,8 +1,9 @@
 import { css } from "@emotion/css";
-function InfoInput({ title, type, placeholder, onChange }) {
+function InfoInput({ title, type, placeholder, onChange, children, onKeyDown }) {
   return (
     <div
       className={css`
+        position: relative;
         padding-top: 1rem;
         width: 100%;
       `}
@@ -38,7 +39,9 @@ function InfoInput({ title, type, placeholder, onChange }) {
         type={type}
         placeholder={placeholder}
         onChange={onChange}
+        onKeyDown={onKeyDown}
       />
+      {children}
     </div>
   );
 }

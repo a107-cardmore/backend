@@ -1,14 +1,16 @@
 import Axios from "axios";
 
-const dahyunurl = "http://70.12.246.233:8080/api";
+const DHurl = "http://70.12.246.233:8080/api";
+const DYurl = "http://70.12.108.65:8080/api";
+const url = "https://j11a107.p.ssafy.io/api";
 
-export const axios = Axios.create({
-  baseURL: dahyunurl,
+const axios = Axios.create({
+  baseURL: url,
 });
 
 axios.interceptors.request.use(
   (config) => {
-    const accessToken = sessionStorage.getItem("accessToke");
+    const accessToken = sessionStorage.getItem("accessToken");
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     } else {
@@ -20,3 +22,5 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export default axios;

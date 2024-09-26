@@ -3,23 +3,26 @@ import { css } from "@emotion/css";
 import Card from "../components/Card";
 import NavBar from "../components/NavBar";
 import CardModal from "../components/CardModal";
-// import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { getCards } from "../apis/Main";
+import { useNavigate } from "react-router-dom";
+import { discountAll } from "../apis/Discount";
 
-const cardlist = [
-  { key: 1, bgColor: "#fbb89d", inColor: "#fe4437" },
-  { key: 2, bgColor: "#7497F6", inColor: "#0543EC" },
-  { key: 3, bgColor: "#D8F068", inColor: "#00B451" },
-  { key: 4, bgColor: "#CDB3FA", inColor: "#5B2188" },
-  { key: 5, bgColor: "#D3CA9F", inColor: "#844301" },
-  { key: 6, bgColor: "#014886", inColor: "#6BCEF5" },
-];
 function MainPage() {
   const [isSelected, setIsSelected] = useState(10000);
   const [showModal, setShowModal] = useState(false);
   const [startIndex, setStartIndex] = useState(1);
+  const [cards, setCards] = useState();
+  const [discount, setDiscount] = useState();
+  const [selectedIndex, setSelectedIndex] = useState();
 
-  const _addCard = () => {};
+  const navigate = useNavigate();
+
+  const _addCard = () => {
+    navigate("/company-select");
+  };
+
   const _showCard = (key) => {
+    setSelectedIndex(key);
     // console.log(index);
     if (key === isSelected) {
       setIsSelected(10000);
@@ -44,10 +47,8 @@ function MainPage() {
   const handleScroll = (e) => {
     const scrollDirection = e.deltaY > 0 ? "down" : "up"; // deltaY를 이용하여 스크롤 방향을 확인
 
-    if (scrollDirection === "down") {
-      setStartIndex((prevIndex) =>
-        Math.min(prevIndex + 1, cardlist.length - 3)
-      ); // 아래로 스크롤 시 증가
+    if (scrollDirection === "down" && cards) {
+      setStartIndex((prevIndex) => Math.min(prevIndex + 1, cards.length - 3)); // 아래로 스크롤 시 증가
     } else {
       setStartIndex((prevIndex) => Math.max(prevIndex - 1, 1)); // 위로 스크롤 시 감소
     }
@@ -55,11 +56,24 @@ function MainPage() {
 
   useEffect(() => {
     window.addEventListener("wheel", handleScroll); // 스크롤 이벤트 등록
-
+    getInfo();
     return () => {
       window.removeEventListener("wheel", handleScroll); // 컴포넌트 언마운트 시 이벤트 제거
     };
   }, []);
+
+  const getInfo = async () => {
+    const cardResponse = await getCards().then((res) => {
+      console.log("[Main Page] card response", res.result);
+      return res.result;
+    });
+    const discountResponse = await discountAll().then((res) => {
+      console.log("[Main Page] discount response : ", res.result);
+      return res.result;
+    });
+    setCards(cardResponse.map((card, index) => ({ ...card, key: index + 1 })));
+    setDiscount(discountResponse);
+  };
 
   return (
     <div
@@ -168,63 +182,31 @@ function MainPage() {
                 />
               </svg>
             </div>
-            <div
-              className={css`
-                color: black;
-                font-size: 1.2rem;
-                text-align: end;
-                width: 100%;
-                margin-top: 1rem;
-              `}
-            >
-              0000 0000 0000 0000
-            </div>
-            <div
-              className={css`
-                color: black;
-                font-size: 1.2rem;
-                width: 100%;
-                text-align: end;
-                margin-top: 1.5rem;
-              `}
-            >
-              CVC 000
-            </div>
-            <div
-              className={css`
-                color: black;
-                font-size: 1.2rem;
-                width: 100%;
-                text-align: end;
-                margin-top: 0.3rem;
-              `}
-            >
-              End Date 09/24
-            </div>
           </div>
         </div>
-        {cardlist.map((data, index) => (
-          <div
-            className={css`
-              position: absolute;
-              top: ${(index - startIndex + 2) * 3.5 +
-              (isSelected < data.key ? 10 : 1)}rem;
-              opacity: ${startIndex > data.key
-                ? 0
-                : 1}; /* startIndex와 현재 데이터 key가 같으면 사라짐 */
-            `}
-            onClick={() => _showCard(data.key)}
-          >
-            <Card
-              bgColor={data.bgColor}
-              inColor={data.inColor}
-              setShowModal={setShowModal}
-              isSelected={isSelected}
-            />
-          </div>
-        ))}
-      </div>
 
+        {cards &&
+          cards.map((card, index) => (
+            <div
+              key={index}
+              className={css`
+                position: absolute;
+                top: ${(index - startIndex + 2) * 3.5 +
+                (isSelected < card.key ? 10 : 1)}rem;
+                opacity: ${startIndex > card.key
+                  ? 0
+                  : 1}; /* startIndex와 현재 데이터 key가 같으면 사라짐 */
+              `}
+              onClick={() => _showCard(card.key)}
+            >
+              <Card
+                setShowModal={setShowModal}
+                isSelected={isSelected}
+                data={card}
+              />
+            </div>
+          ))}
+      </div>
       <div
         className={css`
           background-color: black;
@@ -262,6 +244,7 @@ function MainPage() {
             viewBox="0 0 32 32"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            onClick={() => { navigate("/discount") }}
           >
             <circle
               cx="15.75"
@@ -286,15 +269,17 @@ function MainPage() {
             margin-top: 1rem;
           `}
         >
-          총 100,000원
+          총{" "}
+          {discount &&
+            discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          원
         </div>
       </div>
-      <NavBar />
+      <NavBar isSelected={"Home"} />
       {isSelected && showModal && (
         <CardModal
-          inColor={"#fe4437"}
-          bgColor={"#FFE6DC"}
           setShowModal={setShowModal}
+          data={cards[selectedIndex - 1]}
         ></CardModal>
       )}
     </div>

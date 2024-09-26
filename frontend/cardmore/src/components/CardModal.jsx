@@ -1,16 +1,49 @@
 import React, { useEffect, useRef } from "react";
 import { css } from "@emotion/css";
+import BarcodeItem from "./BarcodeItem";
 
-function CardModal({ bgColor, inColor, setShowModal }) {
+function CardModal({ setShowModal, data }) {
   const handleScroll = (event) => {
     event.stopPropagation(); // 스크롤 이벤트 전파 중단
   };
+
+  const lightenColor = (hex, percent) => {
+    // HEX를 RGB로 변환
+    const hexToRgb = (hex) => {
+      hex = hex.replace("#", "");
+      const bigint = parseInt(hex, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r, g, b];
+    };
+
+    // RGB 값을 HEX로 변환
+    const rgbToHex = (r, g, b) => {
+      const componentToHex = (c) => {
+        const hex = c.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      };
+      return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
+    };
+
+    // 색상을 밝게 만드는 함수
+    const [r, g, b] = hexToRgb(hex);
+    const newR = Math.min(255, r + (255 - r) * percent);
+    const newG = Math.min(255, g + (255 - g) * percent);
+    const newB = Math.min(255, b + (255 - b) * percent);
+
+    // 밝아진 색을 다시 HEX로 변환하여 반환
+    return rgbToHex(Math.round(newR), Math.round(newG), Math.round(newB));
+  };
+
+  const lighterColor = lightenColor(data.colorBackground, 0.5);
 
   return (
     <div
       className={css`
         position: absolute;
-        background-color: rgb(0, 0, 0, 0.1);
+        background-color: rgb(0, 0, 0, 0.2);
         width: 100%;
         height: 100vh;
         z-index: 2;
@@ -31,7 +64,8 @@ function CardModal({ bgColor, inColor, setShowModal }) {
           padding: 0 2rem;
           height: 13.627rem;
           border-radius: 1rem;
-          background-color: ${bgColor};
+          background-color: ${lighterColor};
+          color: ${data.colorTitle};
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -44,17 +78,16 @@ function CardModal({ bgColor, inColor, setShowModal }) {
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            border-bottom: solid 0.2rem ${inColor};
+            border-bottom: solid 0.2rem ${data.colorTitle};
             padding: 1rem 0;
           `}
         >
           <div
             className={css`
-              color: ${inColor};
               font-size: 1.5rem;
             `}
           >
-            KB 국민카드
+            {data.cardName}
           </div>
           <svg
             width="32"
@@ -67,12 +100,12 @@ function CardModal({ bgColor, inColor, setShowModal }) {
               cx="15.75"
               cy="15.75"
               r="14.75"
-              stroke={inColor}
+              stroke={data.colorTitle}
               stroke-width="2"
             />
             <path
               d="M7.625 15.5H23.375M23.375 15.5L15.5 7.625M23.375 15.5L15.5 23.375"
-              stroke={inColor}
+              stroke={data.colorTitle}
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -92,7 +125,7 @@ function CardModal({ bgColor, inColor, setShowModal }) {
               width: 0.4rem;
             }
             ::-webkit-scrollbar-thumb {
-              background-color: ${inColor}; /* 스크롤바 색상 */
+              background-color: ${data.colorTitle}; /* 스크롤바 색상 */
               border-radius: 1rem; /* 스크롤바 모서리 둥글게 */
             }
             ::-webkit-scrollbar-corner {
@@ -101,17 +134,14 @@ function CardModal({ bgColor, inColor, setShowModal }) {
           `}
           onWheel={handleScroll}
         >
-          <img
-            className={css`
-              margin-top: 0.5rem;
-            `}
-            src="/Barcode.svg"
-            alt=""
+          <BarcodeItem
+            barcodeNumber={data.cardNo}
+            bgColor={lighterColor}
+            colorText={data.colorTitle}
           />
           <div
             className={css`
-              color: ${inColor};
-              font-size: 1.4rem;
+              font-size: 1.2rem;
               font-weight: 800;
               width: 100%;
             `}
@@ -126,13 +156,7 @@ function CardModal({ bgColor, inColor, setShowModal }) {
               flex-wrap: wrap;
             `}
           >
-            {[
-              { name: "스타벅스", discount: "50%" },
-              { name: "스트리밍", discount: "20%" },
-              { name: "배달", discount: "10%" },
-              { name: "대중교통", discount: "7%" },
-              { name: "주유소", discount: "15%" },
-            ].map((data) => (
+            {data.cardBenefits.map((benefit) => (
               <div
                 className={css`
                   width: 50%;
@@ -144,19 +168,17 @@ function CardModal({ bgColor, inColor, setShowModal }) {
                 <div
                   className={css`
                     width: 60%;
-                    color: ${inColor};
                   `}
                 >
-                  {data.name}
+                  {benefit.merchantCategory}
                 </div>
                 <div
                   className={css`
                     width: 40%;
-                    color: ${inColor};
                     font-weight: 800;
                   `}
                 >
-                  {data.discount}
+                  {benefit.discountRate}%
                 </div>
               </div>
             ))}
@@ -174,7 +196,6 @@ function CardModal({ bgColor, inColor, setShowModal }) {
             >
               <div
                 className={css`
-                  color: ${inColor};
                   font-size: 1.2rem;
                   font-weight: 800;
                 `}
@@ -184,7 +205,6 @@ function CardModal({ bgColor, inColor, setShowModal }) {
               <div
                 className={css`
                   width: 100%;
-                  color: ${inColor};
                   margin: 0.3rem 0;
                 `}
               >
@@ -198,7 +218,6 @@ function CardModal({ bgColor, inColor, setShowModal }) {
             >
               <div
                 className={css`
-                  color: ${inColor};
                   font-size: 1.2rem;
                   font-weight: 800;
                 `}
@@ -208,7 +227,6 @@ function CardModal({ bgColor, inColor, setShowModal }) {
               <div
                 className={css`
                   width: 100%;
-                  color: ${inColor};
                   margin: 0.3rem 0;
                 `}
               >

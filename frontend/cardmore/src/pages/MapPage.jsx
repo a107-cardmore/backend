@@ -349,7 +349,7 @@ const MapPage = () => {
           </div>
         </div>
       </MenuBar>
-      <NavBar />
+      <NavBar isSelected={"Map"} />
     </MapPageStyle>
   );
 };
