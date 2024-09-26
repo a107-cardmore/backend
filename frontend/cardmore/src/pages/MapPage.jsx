@@ -3,6 +3,8 @@ import "../App.css"; // 스타일을 위한 CSS 파일
 import KakaoMap from "../components/KakaoMap";
 import styled from "styled-components";
 import NavBar from "../components/NavBar";
+import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
+import { css } from "@emotion/css";
 
 const MapPageStyle = styled.div`
   height: 100vh;
@@ -11,7 +13,7 @@ const MapPageStyle = styled.div`
   justify-content: flex-end;
   align-items: center;
   position: relative; /* 메뉴바를 이동시키기 위해 상대적 위치로 설정 */
-  overflow: hidden; /* 스크롤바를 숨김 */
+  //overflow: hidden; /* 스크롤바를 숨김 */
 `;
 
 const InputField = styled.input`
@@ -176,13 +178,53 @@ const MapPage = () => {
     setKeyword(e.target.value);
   };
 
+  const [map, setMap] = useState();
+
+  useEffect(() => {
+    // if (!map) return;
+    const ps = new kakao.maps.services.Places();
+    ps.keywordSearch(keyword, placesSearchCB);
+    function placesSearchCB(data, status, pagination) {
+      if (status === kakao.maps.services.Status.OK) {
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+        // LatLngBounds 객체에 좌표를 추가합니다
+        var bounds = new kakao.maps.LatLngBounds();
+        console.log("marker data : ", data);
+        for (var i = 0; i < data.length; i++) {
+          displayMarker(data[i]);
+          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+        }
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        map.setBounds(bounds);
+      }
+    }
+    var infowindow = new kakao.maps.InfoWindow({ zIndex: 2 });
+
+    function displayMarker(place) {
+      // 마커를 생성하고 지도에 표시합니다
+      var marker = new kakao.maps.Marker({
+        map: map,
+        position: new kakao.maps.LatLng(place.y, place.x),
+      });
+
+      // 마커에 클릭이벤트를 등록합니다
+      kakao.maps.event.addListener(marker, "click", function () {
+        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+        infowindow.setContent(
+          '<div style="padding:5px;font-size:12px;">' +
+            place.place_name +
+            "</div>"
+        );
+        infowindow.open(map, marker);
+      });
+    }
+    console.log("kakao ps", ps);
+  }, [map, keyword]);
+
   //------------ 여기까지 Keyword 관련 함수 -----------------
 
-  const getSearchResult = () => {
-    // var ps = new kakao.maps.services.Places(document.getElementById("map"));
-  };
-
-  const [map, setMap] = useState(null);
+  const getSearchResult = () => {};
 
   const handleMapLoad = useCallback((loadedMap) => {
     setMap(loadedMap); // 맵 객체를 상태로 저장
@@ -205,16 +247,107 @@ const MapPage = () => {
           <CategoryTag>{text}</CategoryTag>
         ))}
       </CategoryContainer>
-      <KakaoMap onMapLoad={handleMapLoad} />
+      {/* <KakaoMap onMapLoad={handleMapLoad} /> */}
+      <Map
+        center={{ lat: 37.554371328, lng: 126.9227542239 }}
+        style={{ width: "100%", height: "100vh", zIndex: 1 }}
+        onCreate={setMap}
+      >
+        <MapMarker // 마커를 생성합니다
+          position={{
+            // 마커가 표시될 위치입니다
+            lat: 33.55635,
+            lng: 126.795841,
+          }}
+        />
+        <CustomOverlayMap position={{ lat: 33.55635, lng: 126.795841 }}>
+          <div
+            className={css`
+              margin-top: 25px;
+              padding: 5px;
+              background-color: white;
+              border-radius: 0.5rem;
+              display: flex;
+              flex-direction: row;
+            `}
+          >
+            {[
+              { bgColor: "#FBB89D", inColor: "#FE4437" },
+              { bgColor: "#FEF33F", inColor: "#F8BF00" },
+              { bgColor: "#D8F068", inColor: "#00B451" },
+            ].map((data) => (
+              <div
+                className={css`
+                  color: ${data.inColor};
+                  border: 0.1rem solid ${data.inColor};
+                  background-color: ${data.bgColor};
+                  border-radius: 0.3rem;
+                  margin: 0 0.2rem;
+                  padding: 0.1rem 0.2rem;
+                `}
+              >
+                10%
+              </div>
+            ))}
+          </div>
+        </CustomOverlayMap>
+      </Map>
       <MenuBar
         position={position}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       >
         <DragHandle />
-        <MenuContent>
-          <p>Menu Bar</p>
-        </MenuContent>
+        <div
+          className={css`
+            padding: 0.6rem;
+            display: flex;
+            /* align-items: center; */
+            justify-content: center;
+          `}
+        >
+          <div
+            className={css`
+              width: 80%;
+
+              /* height: 13.627rem; */
+              background-color: white;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            `}
+          >
+            <div
+              className={css`
+                display: flex;
+                flex-direction: row;
+              `}
+            >
+              <div
+                className={`
+            
+          `}
+              >
+                카즈야
+              </div>
+              {"      "}
+              <div
+                className={`
+            
+          `}
+              >
+                음식점
+              </div>
+            </div>
+            <div
+              className={`
+            
+          `}
+            >
+              서울 강남구 테헤란로27길 8-4 늘봄빌딩
+            </div>
+          </div>
+        </div>
       </MenuBar>
       <NavBar />
     </MapPageStyle>
