@@ -244,6 +244,7 @@ function MainPage() {
             viewBox="0 0 32 32"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            onClick={() => { navigate("/discount") }}
           >
             <circle
               cx="15.75"
@@ -268,14 +269,15 @@ function MainPage() {
             margin-top: 1rem;
           `}
         >
-          총 {discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
+          총{" "}
+          {discount &&
+            discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          원
         </div>
       </div>
       <NavBar isSelected={"Home"} />
       {isSelected && showModal && (
         <CardModal
-          inColor={"#fe4437"}
-          bgColor={"#FFE6DC"}
           setShowModal={setShowModal}
           data={cards[selectedIndex - 1]}
         ></CardModal>
