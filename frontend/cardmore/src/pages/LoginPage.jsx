@@ -33,6 +33,12 @@ function LoginPage() {
     }
   };
 
+  const onEnterDown = (e) => {
+    if (e.key === "Enter") {
+      login();
+    }
+  };
+
   return (
     <div
       className={css`
@@ -84,12 +90,14 @@ function LoginPage() {
           type={"text"}
           placeholder={"아이디 입력"}
           onChange={handelUserIdChange}
+          onKeyDown={(e) => onEnterDown(e)}
         />
         <InfoInput
           title={"Password"}
           type={"password"}
           placeholder={"비밀번호 입력"}
           onChange={handelPasswordChange}
+          onKeyDown={(e) => onEnterDown(e)}
         />
         {loginFail ? (
           <div
@@ -116,7 +124,6 @@ function LoginPage() {
           onClick={() => {
             console.log("UserId:", userId, "Password:", password);
             login();
-            // navigate("/");
           }}
         />
         <div
