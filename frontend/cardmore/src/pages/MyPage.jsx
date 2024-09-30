@@ -48,6 +48,8 @@ function MyPage() {
   //결제 내역
   useEffect(() => {
     if (transaction !== null) {
+      console.log(transaction);
+
       setSelectedCardNameList(
         transaction.result.cardNameList.map((name, index) => {
           return {
@@ -97,8 +99,6 @@ function MyPage() {
           display: flex;
           float: left;
           font-size: 2.5rem;
-          padding-top: 5%;
-          padding-right: 40%;
           font-weight: bold;
         `}
       >
@@ -109,7 +109,7 @@ function MyPage() {
       <div
         className={css`
           position: absolute;
-          top: 13vh;
+          top: 15vh;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -138,7 +138,7 @@ function MyPage() {
         <p
           className={css`
             padding: 10px;
-            margin: 0;
+            margin-top: 1rem;
             font-size: 0.8rem;
           `}
         >

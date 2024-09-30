@@ -1,5 +1,5 @@
 import { css } from "@emotion/css";
-function InfoInput({ title, type, placeholder, onChange, children }) {
+function InfoInput({ title, type, placeholder, onChange, children, onKeyDown }) {
   return (
     <div
       className={css`
@@ -39,6 +39,7 @@ function InfoInput({ title, type, placeholder, onChange, children }) {
         type={type}
         placeholder={placeholder}
         onChange={onChange}
+        onKeyDown={onKeyDown}
       />
       {children}
     </div>
