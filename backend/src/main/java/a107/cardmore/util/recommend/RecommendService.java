@@ -13,6 +13,13 @@ import a107.cardmore.util.api.RestTemplateUtil;
 import a107.cardmore.util.api.dto.card.CardBenefitsInfo;
 import a107.cardmore.util.api.dto.card.CardProductResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.InquireBillingStatementsRequestRestTemplateDto;
+import a107.cardmore.util.api.dto.card.InquireBillingStatementsResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListRequestRestTemplateDto;
+import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.Transaction;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -184,6 +191,65 @@ public class RecommendService {
             })
             .filter(Objects::nonNull) // null 값은 제외
             .collect(Collectors.toList());
+    }
+
+    public void recommendNewCard(Long userId){
+        User user = userRepository.findById(userId).orElse(null);   //Todo: moduleService로 바꾸기
+        //모든 카드 리스트
+        List<CardProductResponseRestTemplateDto> cardList = restTemplateUtil.inquireCreditCardList();
+        //유저 카드 리스트
+        List<CardResponseRestTemplateDto> userCardList = restTemplateUtil.inquireSignUpCreditCardList(user.getUserKey());
+        //혜택까지 담긴 유저 카드 리스트
+        List<CardResponseDto> userCardListInfo = getUserCardListInfo(userCardList, userId);
+
+        for (CardResponseDto card : userCardListInfo) {
+            String startMonth = getLastMonth(); //청구 시작달 현재 달
+            String endMonth = getCurrentMonth(); //청구 끝나는 달
+            InquireCreditCardTransactionListRequestRestTemplateDto cardInfo //청구 카드 정보
+                = new InquireCreditCardTransactionListRequestRestTemplateDto(card.getCardNo(),card.getCvc(),startMonth,endMonth);
+
+            //소비 정보
+            InquireCreditCardTransactionListResponseRestTemplateDto consumeInfo = restTemplateUtil.inquireCreditCardTransactionList(
+                user.getUserKey(), cardInfo);
+
+            //해당 카드의 소비 내역
+            List<Transaction> transactionList = consumeInfo.getTransactionList();
+
+            // 카드별 소비 돌면서 추천해줄 카드랑 비교하기
+            // TODO: MAP으로 저장해두기
+            for(CardProductResponseRestTemplateDto newCard: cardList){
+                int discountMoney = 0;
+                List<CardBenefitsInfo> cardBenefitsInfo = newCard.getCardBenefitsInfo();
+                for(Transaction transaction: transactionList){
+                    String categoryId = transaction.getCategoryId();
+                    for(CardBenefitsInfo benefitsInfo : cardBenefitsInfo){
+                        if(benefitsInfo.getCategoryId().equals(categoryId)){
+                            discountMoney += (int) (transaction.getTransactionBalance() * benefitsInfo.getDiscountRate());
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    public String getLastMonth() {
+        // 과거 날짜 가져오기
+        LocalDate lastDate = LocalDate.now().minusMonths(1);
+
+        // 과거 달을 YYYYMM 형식으로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+        return lastDate.format(formatter);
+    }
+
+    public String getCurrentMonth() {
+        //현재 달 계산
+        LocalDate currentMonth = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+
+        return currentMonth.format(formatter);
     }
 
 }
