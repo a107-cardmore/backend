@@ -26,4 +26,10 @@ public class RecommendController {
         return new BaseSuccessResponse<>(recommendService.discountCardRecommend(mapRequestWrapperDto.getMapRequestDtos(), userId));
     }
 
+    @GetMapping("/new")
+    public BaseSuccessResponse<List<CardRecommendResponseDto>> recommend() {
+        Long userId = userModuleService.getUserIdByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return new BaseSuccessResponse<>(recommendService.recommendNewCard(userId));
+    }
+
 }
