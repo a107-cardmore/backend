@@ -42,6 +42,15 @@ public class TransactionService {
     private final CardModuleService cardModuleService;
     private final DiscountModuleService discountModuleService;
 
+    private String getMerchantCategory(String categoryName){
+        for(MerchantCategory merchantCategory : MerchantCategory.values()){
+            if(merchantCategory.getValue().equalsIgnoreCase(categoryName)){
+                return merchantCategory.getKey();
+            }
+        }
+        return null;
+    }
+
     public InquireTransactionResponseDto getTransactionList(String email) {
 
         //ResponseDto
@@ -172,7 +181,7 @@ public class TransactionService {
                         .price(price)
                         .paymentDate(LocalDate.now())
                         .categoryId(merchant.getCategoryId())
-                        .merchantCategory(merchant.getCategoryName())
+                        .merchantCategory(getMerchantCategory(merchant.getCategoryId()))
                         .user(card.getCompany().getUser())
                         .build();
 
