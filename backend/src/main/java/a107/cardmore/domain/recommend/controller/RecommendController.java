@@ -1,10 +1,12 @@
-package a107.cardmore.util.recommend;
+package a107.cardmore.domain.recommend.controller;
 
 import a107.cardmore.domain.user.service.UserModuleService;
-import a107.cardmore.util.api.dto.card.CardProductResponseRestTemplateDto;
 import a107.cardmore.util.base.BaseSuccessResponse;
+import a107.cardmore.domain.recommend.dto.CardRecommendResponseDto;
+import a107.cardmore.domain.recommend.dto.MapRequestWrapperDto;
+import a107.cardmore.domain.recommend.dto.MapResponseDto;
+import a107.cardmore.domain.recommend.service.RecommendService;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;

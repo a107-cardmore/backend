@@ -1,9 +1,6 @@
-package a107.cardmore.util.recommend;
+package a107.cardmore.domain.recommend.dto;
 
-import a107.cardmore.domain.card.dto.CardResponseDto;
 import a107.cardmore.util.api.dto.card.CardProductResponseRestTemplateDto;
-import a107.cardmore.util.constant.MerchantCategory;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
