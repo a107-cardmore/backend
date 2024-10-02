@@ -36,35 +36,38 @@ function Card({ data, setShowModal, isSelected }) {
       >
         <div
           className={css`
+            height: 1.5rem;
             font-size: 1.3rem;
             font-weight: 600;
           `}
         >
           {data.cardName}
         </div>
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          onClick={_clickArrow}
-        >
-          <circle
-            cx="15.75"
-            cy="15.75"
-            r="14.75"
-            stroke={data.colorTitle}
-            stroke-width="2"
-          />
-          <path
-            d="M7.625 15.5H23.375M23.375 15.5L15.5 7.625M23.375 15.5L15.5 23.375"
-            stroke={data.colorTitle}
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        {setShowModal && (
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            onClick={_clickArrow}
+          >
+            <circle
+              cx="15.75"
+              cy="15.75"
+              r="14.75"
+              stroke={data.colorTitle}
+              stroke-width="2"
+            />
+            <path
+              d="M7.625 15.5H23.375M23.375 15.5L15.5 7.625M23.375 15.5L15.5 23.375"
+              stroke={data.colorTitle}
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        )}
       </div>
       <div
         className={css`

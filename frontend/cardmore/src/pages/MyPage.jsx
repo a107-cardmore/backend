@@ -3,9 +3,11 @@ import { useEffect, useState, useRef } from "react";
 import Chart from "chart.js/auto";
 import ExpenditureCard from "../components/ExpenditureCard";
 import NavBar from "../components/NavBar";
+import { useNavigate } from "react-router-dom";
 
 function MyPage() {
   const chartRef = useRef(null);
+  const navigate = useNavigate();
 
   const data = {
     labels: ["Red", "Blue", "Yellow"],
@@ -124,6 +126,9 @@ function MyPage() {
             padding: 5px;
             background-color: #555555;
           `}
+          onClick={() => {
+            navigate("/recommend");
+          }}
         >
           카드 추천 받기
         </button>
