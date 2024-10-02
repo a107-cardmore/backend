@@ -2,8 +2,6 @@ import React from "react";
 import { css } from "@emotion/css";
 
 function ExpenditureCard({ transactionList = [] }) {
-  console.log(transactionList);
-
   const displayDate = (dateString) => {
     // 연, 월, 일을 추출
     const month = dateString.slice(4, 6); // '09'
@@ -18,7 +16,7 @@ function ExpenditureCard({ transactionList = [] }) {
       className={css`
         display: flex;
         justify-content: center;
-        padding: 5px;
+        padding: 0.313rem;
       `}
     >
       <div
@@ -32,6 +30,7 @@ function ExpenditureCard({ transactionList = [] }) {
             font-weight: 700;
             color: #959595;
             font-size: 1rem;
+            padding-top: 0.5rem;
           `}
         >
           결제 내역이 존재하지 않습니다.
@@ -46,7 +45,7 @@ function ExpenditureCard({ transactionList = [] }) {
           display: flex;
           justify-content: space-between;
           border-bottom: 1px solid #c6c6c6;
-          padding: 5px;
+          padding: 0.313rem;
         `}
       >
         <div
@@ -95,7 +94,6 @@ function ExpenditureCard({ transactionList = [] }) {
           className={css`
             text-align: center;
             line-height: 3rem;
-            height: 100%;
             font-size: 1.2rem;
             color: #ee3b24;
           `}

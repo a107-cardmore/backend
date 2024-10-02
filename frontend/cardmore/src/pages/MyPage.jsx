@@ -65,7 +65,20 @@ function MyPage() {
           {
             label: "소비 금액",
             data: transaction.result.categoryList.map((category) => category.balance),
-            backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+            backgroundColor: [
+              "rgba(255, 230, 220, 100)",
+              "rgba(244, 255, 190, 100)",
+              "rgba(186, 205, 255, 100)",
+              "rgba(237, 237, 237, 100)",
+              // "rgba(54, 162, 235, 0.2)",
+            ],
+            borderColor: [
+              "rgb(251, 184, 157)",
+              "rgb(187, 216, 52)",
+              "rgb(116, 151, 246)",
+              "rgb(198, 198, 198)",
+              // "rgb(54, 162, 235)",
+            ],
             hoverOffset: 4,
           },
         ],
@@ -96,6 +109,9 @@ function MyPage() {
     >
       <div
         className={css`
+          width: 100%;
+          padding-top: 2rem;
+          padding-left: 4rem;
           display: flex;
           float: left;
           font-size: 2.5rem;
@@ -126,43 +142,73 @@ function MyPage() {
           `}
         />
       </div>
-      <div
-        className={css`
-          position: absolute;
-          top: 8.5vh;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-        `}
-      >
-        <p
-          className={css`
-            padding: 10px;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-          `}
-        >
-          소비패턴을 기반으로 카드를 추천 받으시겠어요?
-        </p>
-        <button
-          className={css`
-            display: flex;
-            border-radius: 0.5rem;
-            border-style: none;
-            width: fit-content;
-            text-align: center;
-            justify-content: center;
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 0.8rem;
-            padding: 5px;
-            background-color: #555555;
-          `}
-        >
-          카드 추천 받기
-        </button>
-      </div>
 
+      {transaction === null || transaction.result.categoryList.length === 0 ? (
+        <>
+          <div
+            className={css`
+              position: absolute;
+              top: 10vh;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            `}
+          >
+            <p
+              className={css`
+                font-size: 1.5rem;
+                font-weight: semi-bold;
+              `}
+            >
+              결제내역이 존재하지 않습니다.
+            </p>
+            <img
+              src="/question.png"
+              className={css`
+                padding-top: 1rem;
+                width: 15rem;
+              `}
+            ></img>
+          </div>
+        </>
+      ) : (
+        <div
+          className={css`
+            position: absolute;
+            top: 8.5vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+          `}
+        >
+          <p
+            className={css`
+              padding: 10px;
+              margin-top: 1rem;
+              font-size: 0.8rem;
+            `}
+          >
+            소비패턴을 기반으로 카드를 추천 받으시겠어요?
+          </p>
+          <button
+            className={css`
+              display: flex;
+              border-radius: 0.5rem;
+              border-style: none;
+              width: fit-content;
+              text-align: center;
+              justify-content: center;
+              color: #ffffff;
+              font-weight: 700;
+              font-size: 0.8rem;
+              padding: 5px;
+              background-color: #555555;
+            `}
+          >
+            카드 추천 받기
+          </button>
+        </div>
+      )}
       {/* 지출 내역 */}
       <div
         className={css`
@@ -188,7 +234,7 @@ function MyPage() {
             width: 100%;
             justify-content: center;
             align-items: flex-start;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
           `}
         >
           <div
@@ -210,62 +256,14 @@ function MyPage() {
               onChange={(e) => setSelectedCardIndex(e.value)}
             />
           </div>
-
-          {/* <select
-            name="cars"
-            id="cars"
-            onChange={handleSelectChange}
-            className={css`
-              display: flex;
-              border-radius: 1rem;
-              padding: 5px 10px;
-              color: #979797;
-              border: none;
-              background: #f6f6f6;
-              font-weight: 700;
-              font-size: 0.9rem;
-              width: 13rem;
-              box-shadow: 0 4px 5px rgb(0 0 0 / 10%);
-              outline: none;
-            `}
-          >
-            {transaction !== null ? (
-              transaction.result.cardNameList.map((name, index) => (
-                <option
-                  key={index}
-                  value={index}
-                  className={css`
-                    background-color: #ffffff;
-                    color: #979797;
-                    font-size: 0.9rem;
-                    padding: 5px;
-                    border: none;
-                  `}
-                >
-                  {name}
-                </option>
-              ))
-            ) : (
-              <option
-                value="volvo"
-                className={css`
-                  background-color: #ffffff;
-                  color: #979797;
-                  font-size: 0.9rem;
-                  padding: 5px;
-                  border: none;
-                `}
-              >
-                전체
-              </option>
-            )}
-          </select> */}
         </div>
         <div
           className={css`
             display: flex;
             flex-direction: column;
             width: 100%;
+            height: 72%;
+
             overflow-y: scroll;
 
             ::-webkit-scrollbar {
