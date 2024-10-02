@@ -3,9 +3,10 @@ import { css } from "@emotion/css";
 import Card from "../components/Card";
 import NavBar from "../components/NavBar";
 import CardModal from "../components/CardModal";
-import { getCards } from "../apis/Main";
+import { getCards, getUser } from "../apis/Main";
 import { useNavigate } from "react-router-dom";
 import { discountAll } from "../apis/Discount";
+import { useAsync } from "react-select/async";
 
 function MainPage() {
   const [isSelected, setIsSelected] = useState(10000);
@@ -14,6 +15,7 @@ function MainPage() {
   const [cards, setCards] = useState();
   const [discount, setDiscount] = useState();
   const [selectedIndex, setSelectedIndex] = useState();
+  const [user, setUser] = useState();
 
   const navigate = useNavigate();
 
@@ -71,6 +73,12 @@ function MainPage() {
       console.log("[Main Page] discount response : ", res.result);
       return res.result;
     });
+    const userResponse = await getUser().then((res) => {
+      console.log("[Main Page] user response", res.result);
+      return res.result;
+    });
+
+    setUser(userResponse);
     setCards(cardResponse.map((card, index) => ({ ...card, key: index + 1 })));
     setDiscount(discountResponse);
   };
@@ -106,7 +114,7 @@ function MainPage() {
           font-weight: 700;
         `}
       >
-        SooYoung
+        {user}
       </div>
       <div
         className={css`
@@ -166,13 +174,7 @@ function MainPage() {
                 xmlns="http://www.w3.org/2000/svg"
                 onClick={_addCard}
               >
-                <circle
-                  cx="15.75"
-                  cy="15.75"
-                  r="14.75"
-                  stroke="black"
-                  stroke-width="2"
-                />
+                <circle cx="15.75" cy="15.75" r="14.75" stroke="black" stroke-width="2" />
                 <path
                   d="M15.5 7.625V23.375M7.625 15.5H23.375"
                   stroke="#1E1E1E"
@@ -191,19 +193,14 @@ function MainPage() {
               key={index}
               className={css`
                 position: absolute;
-                top: ${(index - startIndex + 2) * 3.5 +
-                (isSelected < card.key ? 10 : 1)}rem;
+                top: ${(index - startIndex + 2) * 3.5 + (isSelected < card.key ? 10 : 1)}rem;
                 opacity: ${startIndex > card.key
                   ? 0
                   : 1}; /* startIndex와 현재 데이터 key가 같으면 사라짐 */
               `}
               onClick={() => _showCard(card.key)}
             >
-              <Card
-                setShowModal={setShowModal}
-                isSelected={isSelected}
-                data={card}
-              />
+              <Card setShowModal={setShowModal} isSelected={isSelected} data={card} />
             </div>
           ))}
       </div>
@@ -244,15 +241,11 @@ function MainPage() {
             viewBox="0 0 32 32"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            onClick={() => { navigate("/discount") }}
+            onClick={() => {
+              navigate("/discount");
+            }}
           >
-            <circle
-              cx="15.75"
-              cy="15.75"
-              r="14.75"
-              stroke="white"
-              stroke-width="2"
-            />
+            <circle cx="15.75" cy="15.75" r="14.75" stroke="white" stroke-width="2" />
             <path
               d="M9.9375 21.5625L21.5625 9.9375M21.5625 9.9375H9.9375M21.5625 9.9375V21.5625"
               stroke="white"
@@ -269,18 +262,12 @@ function MainPage() {
             margin-top: 1rem;
           `}
         >
-          총{" "}
-          {discount &&
-            discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          원
+          총 {discount && discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
         </div>
       </div>
       <NavBar isSelected={"Home"} />
       {isSelected && showModal && (
-        <CardModal
-          setShowModal={setShowModal}
-          data={cards[selectedIndex - 1]}
-        ></CardModal>
+        <CardModal setShowModal={setShowModal} data={cards[selectedIndex - 1]}></CardModal>
       )}
     </div>
   );
