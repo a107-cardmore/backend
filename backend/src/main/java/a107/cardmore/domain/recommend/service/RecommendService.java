@@ -2,6 +2,7 @@ package a107.cardmore.domain.recommend.service;
 
 import a107.cardmore.domain.bank.service.BankModuleService;
 import a107.cardmore.domain.card.dto.CardBenefitResponseDto;
+import a107.cardmore.domain.card.dto.CardColorInfo;
 import a107.cardmore.domain.card.dto.CardResponseDto;
 import a107.cardmore.domain.card.entity.Card;
 import a107.cardmore.domain.card.repository.CardRepository;
@@ -273,7 +274,10 @@ public class RecommendService {
             }
             CardProductResponseRestTemplateDto card = entry.getKey();
             int discount = entry.getValue();
-            top3Recommendations.add(new CardRecommendResponseDto(card, originalDiscountMoney, discount));
+
+            CardColorInfo colorInfo = cardModuleService.getColorWithCardUniqueNo(
+                card.getCardUniqueNo());
+            top3Recommendations.add(new CardRecommendResponseDto(card, originalDiscountMoney,discount,colorInfo.getColorBackground(),colorInfo.getColorTitle()));
             count++;
         }
 
