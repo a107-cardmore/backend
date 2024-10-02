@@ -13,6 +13,14 @@ import a107.cardmore.util.api.RestTemplateUtil;
 import a107.cardmore.util.api.dto.card.CardBenefitsInfo;
 import a107.cardmore.util.api.dto.card.CardProductResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.InquireBillingStatementsRequestRestTemplateDto;
+import a107.cardmore.util.api.dto.card.InquireBillingStatementsResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListRequestRestTemplateDto;
+import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListResponseRestTemplateDto;
+import a107.cardmore.util.api.dto.card.Transaction;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -184,6 +192,141 @@ public class RecommendService {
             })
             .filter(Objects::nonNull) // null 값은 제외
             .collect(Collectors.toList());
+    }
+
+    /**
+     * 사용자에게 새로운 카드를 추천해주는 로직
+     * 사용자의 소비내역을 기반으로 하여 가장 많이 할인 받을 수 있는 금액의 카드를 추
+     */
+    public List<CardRecommendResponseDto> recommendNewCard(Long userId){
+        User user = userRepository.findById(userId).orElse(null);   //Todo: moduleService로 바꾸기
+        //모든 카드 리스트
+        List<CardProductResponseRestTemplateDto> cardList = restTemplateUtil.inquireCreditCardList();
+        //유저 카드 리스트
+        List<CardResponseRestTemplateDto> userCardList = restTemplateUtil.inquireSignUpCreditCardList(user.getUserKey());
+        //혜택까지 담긴 유저 카드 리스트
+        List<CardResponseDto> userCardListInfo = getUserCardListInfo(userCardList, userId);
+
+        Map<CardProductResponseRestTemplateDto, Integer> discountMap = new HashMap<>(); //카드정보, 할인금액 저장
+        //유저 카드 순회 시작
+        int originalDiscountMoney = 0; //현재 할인받고 있는 금액
+        for (CardResponseDto card : userCardListInfo) {
+//            String startMonth = getLastMonthStart(); //저번 달 시작일
+//            String endMonth = getLastMonthEnd();//저번 달 끝
+            //원래는 저번 달 조회가 맞는데 데이터가 없으므로 30일 전으로 로직 변경
+            String startMonth = getThirtyDaysAgo(); //30일 전
+            String endMonth = getToday();//현재
+            InquireCreditCardTransactionListRequestRestTemplateDto cardInfo //청구 카드 정보
+                = new InquireCreditCardTransactionListRequestRestTemplateDto(card.getCardNo(),card.getCvc(),startMonth,endMonth);
+
+            //소비 정보
+            InquireCreditCardTransactionListResponseRestTemplateDto consumeInfo = restTemplateUtil.inquireCreditCardTransactionList(
+                user.getUserKey(), cardInfo);
+
+            //해당 카드의 소비 내역
+            List<Transaction> transactionList = consumeInfo.getTransactionList();
+            if(transactionList==null) {
+                continue;
+            }
+
+            for (Transaction t : transactionList) {
+                log.info("결제내역: {}", t.toString());
+            }
+
+            List<CardBenefitResponseDto> CardBenefitResponseInfo = card.getCardBenefits();
+            for(Transaction transaction: transactionList){
+                String categoryId = transaction.getCategoryId();
+                for(CardBenefitResponseDto benefitResponseInfo : CardBenefitResponseInfo){
+                    if(benefitResponseInfo.getCategoryId().equals(categoryId)){
+                        originalDiscountMoney += (int) ((transaction.getTransactionBalance() * benefitResponseInfo.getDiscountRate()) / 100);
+                        break;
+                    }
+                }
+            }
+
+            // 카드별 소비 돌면서 추천해줄 카드랑 비교하기
+            for(CardProductResponseRestTemplateDto newCard: cardList){
+                int discountMoney = 0;
+                List<CardBenefitsInfo> cardBenefitsInfo = newCard.getCardBenefitsInfo();
+                for(Transaction transaction: transactionList){
+                    String categoryId = transaction.getCategoryId();
+                    //카드 혜택 돌면서 결제 내역의 카테고리와 같은지 확인
+                    for(CardBenefitsInfo benefitsInfo : cardBenefitsInfo){
+                        if(benefitsInfo.getCategoryId().equals(categoryId)){
+                            discountMoney += (int) ((transaction.getTransactionBalance() * benefitsInfo.getDiscountRate()) / 100);
+                            break;
+                        }
+                    }
+                }
+                discountMap.put(newCard, discountMap.getOrDefault(newCard, 0) + discountMoney);
+            }
+        }
+        // 할인 금액 기준으로 상위 3개의 카드 추출
+        List<Map.Entry<CardProductResponseRestTemplateDto, Integer>> sortedDiscountList = new ArrayList<>(discountMap.entrySet());
+        sortedDiscountList.sort((entry1, entry2) -> entry2.getValue() - entry1.getValue()); // 내림차순 정렬
+
+        // 상위 3개 카드 추출
+        List<CardRecommendResponseDto> top3Recommendations = new ArrayList<>();
+        int count = 0;
+        for (Map.Entry<CardProductResponseRestTemplateDto, Integer> entry : sortedDiscountList) {
+            if (count == 3) {
+                break;
+            }
+            CardProductResponseRestTemplateDto card = entry.getKey();
+            int discount = entry.getValue();
+            top3Recommendations.add(new CardRecommendResponseDto(card, originalDiscountMoney, discount));
+            count++;
+        }
+
+        log.info("원래 할인 금액 최종= {}", originalDiscountMoney);
+        for (CardRecommendResponseDto recommendation : top3Recommendations) {
+            log.info("추천 카드: {}, 할인 금액: {}", recommendation.getCard().getCardName(), recommendation.getDiscountMoney());
+        }
+
+        return top3Recommendations;
+    }
+
+    public String getLastMonthStart() {
+        // 현재 날짜로부터 1개월 전의 YearMonth 객체 생성
+        YearMonth lastMonth = YearMonth.now().minusMonths(1);
+
+        // 해당 월의 첫 번째 날짜를 가져오기
+        LocalDate firstDate = lastMonth.atDay(1);
+
+        // 과거 달을 YYYYMMDD 형식으로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return firstDate.format(formatter);
+    }
+
+    public String getLastMonthEnd() {
+        // 현재 날짜로부터 1개월 전의 YearMonth 객체 생성
+        YearMonth lastMonth = YearMonth.now().minusMonths(1);
+
+        // 해당 월의 마지막 날짜를 가져오기
+        LocalDate lastDate = lastMonth.atEndOfMonth();
+
+        // 과거 달을 YYYYMMDD 형식으로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return lastDate.format(formatter);
+    }
+
+    public static String getToday() {
+        // 오늘 날짜 가져오기
+        LocalDate today = LocalDate.now();
+
+        // 오늘 날짜를 YYYYMMDD 형식으로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return today.format(formatter);
+    }
+
+    // 오늘로부터 30일 전의 날짜를 YYYYMMDD 형식으로 리턴하는 메서드
+    public static String getThirtyDaysAgo() {
+        // 오늘로부터 30일 전의 날짜 가져오기
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+
+        // 30일 전 날짜를 YYYYMMDD 형식으로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return thirtyDaysAgo.format(formatter);
     }
 
 }

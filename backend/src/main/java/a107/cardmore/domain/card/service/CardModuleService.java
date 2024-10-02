@@ -38,7 +38,7 @@ public class CardModuleService {
                 .build());
     }
 
-    private CardColorInfo getColorWithCardUniqueNo(String cardUniqueNo) {
+    public CardColorInfo getColorWithCardUniqueNo(String cardUniqueNo) {
         Map<String, CardColorInfo> cardColorMap = new HashMap<>();
 
         // cardUniqueNo와 해당 색상 정보를 매핑
