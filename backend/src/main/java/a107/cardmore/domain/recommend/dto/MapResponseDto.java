@@ -1,4 +1,4 @@
-package a107.cardmore.util.recommend;
+package a107.cardmore.domain.recommend.dto;
 
 import a107.cardmore.domain.card.dto.CardResponseDto;
 import a107.cardmore.util.constant.MerchantCategory;

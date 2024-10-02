@@ -1,11 +1,15 @@
-package a107.cardmore.util.recommend;
+package a107.cardmore.domain.recommend.service;
 
 import a107.cardmore.domain.bank.service.BankModuleService;
 import a107.cardmore.domain.card.dto.CardBenefitResponseDto;
+import a107.cardmore.domain.card.dto.CardColorInfo;
 import a107.cardmore.domain.card.dto.CardResponseDto;
 import a107.cardmore.domain.card.entity.Card;
 import a107.cardmore.domain.card.repository.CardRepository;
 import a107.cardmore.domain.card.service.CardModuleService;
+import a107.cardmore.domain.recommend.dto.CardRecommendResponseDto;
+import a107.cardmore.domain.recommend.dto.MapRequestDto;
+import a107.cardmore.domain.recommend.dto.MapResponseDto;
 import a107.cardmore.domain.user.entity.User;
 import a107.cardmore.domain.user.repository.UserRepository;
 import a107.cardmore.domain.user.service.UserModuleService;
@@ -13,8 +17,6 @@ import a107.cardmore.util.api.RestTemplateUtil;
 import a107.cardmore.util.api.dto.card.CardBenefitsInfo;
 import a107.cardmore.util.api.dto.card.CardProductResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.CardResponseRestTemplateDto;
-import a107.cardmore.util.api.dto.card.InquireBillingStatementsRequestRestTemplateDto;
-import a107.cardmore.util.api.dto.card.InquireBillingStatementsResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListRequestRestTemplateDto;
 import a107.cardmore.util.api.dto.card.InquireCreditCardTransactionListResponseRestTemplateDto;
 import a107.cardmore.util.api.dto.card.Transaction;
@@ -26,9 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -274,7 +274,10 @@ public class RecommendService {
             }
             CardProductResponseRestTemplateDto card = entry.getKey();
             int discount = entry.getValue();
-            top3Recommendations.add(new CardRecommendResponseDto(card, originalDiscountMoney, discount));
+
+            CardColorInfo colorInfo = cardModuleService.getColorWithCardUniqueNo(
+                card.getCardUniqueNo());
+            top3Recommendations.add(new CardRecommendResponseDto(card, originalDiscountMoney,discount,colorInfo.getColorBackground(),colorInfo.getColorTitle()));
             count++;
         }
 

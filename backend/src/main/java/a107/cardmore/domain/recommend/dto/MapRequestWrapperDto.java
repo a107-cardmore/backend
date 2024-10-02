@@ -1,4 +1,4 @@
-package a107.cardmore.util.recommend;
+package a107.cardmore.domain.recommend.dto;
 
 import java.util.List;
 import lombok.Getter;
