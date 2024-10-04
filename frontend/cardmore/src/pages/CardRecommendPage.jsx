@@ -111,7 +111,7 @@ function CardRecommendPage() {
           flex-direction: column;
           align-items: center;
           justify-content: space-between;
-          width: 80%;
+          width: 85%;
           height: 62%;
         `}
       >

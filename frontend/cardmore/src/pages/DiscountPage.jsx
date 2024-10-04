@@ -1,49 +1,95 @@
 import { css } from "@emotion/css";
 import NavBar from "../components/NavBar";
-import { discountAll } from "../apis/Discount";
+import { discountAll, discountHistory } from "../apis/Discount";
 import { useEffect, useState, useRef } from "react";
 import { Chart } from "chart.js/auto";
 
 function DiscountPage() {
   const [discount, setDiscount] = useState();
+  const [year, setYear] = useState();
+  const [month, setMonth] = useState();
+  const [discountData, setDiscountData] = useState();
+  const [cards, setCards] = useState();
   const chartRef = useRef(null);
 
-  const labels = ["주유", "대형마트", "교통", "해외", "생활"];
+  const labels = ["주유", "대형마트", "교통", "생활"];
+
+  const getDate = () => {
+    const currentDate = new Date();
+    setYear(currentDate.getFullYear());
+    setMonth(currentDate.getMonth());
+    console.log(currentDate.getFullYear(), currentDate.getMonth());
+  };
+
+  const getDiscountInfo = async () => {
+    if (year && month !== undefined) {
+      const time = {
+        year: year,
+        month: month,
+      };
+      console.log(time);
+      const response = await discountHistory(time).then((res) => {
+        console.log(res.result);
+        return res.result;
+      });
+      setDiscountData(response);
+    }
+  };
+
+  const asdf = [
+    {
+      cardId: "1009508169730805",
+      cardName: "원더카드 (원더 Life)",
+      colorBackground: "#D8F068",
+      colorTitle: "#00B451",
+      merchantCategory: "MARKET",
+      price: 480,
+    },
+    {
+      cardId: "1006464439409805",
+      cardName: "현대카드M",
+      colorBackground: "#6BCEF5",
+      colorTitle: "#014886",
+      merchantCategory: "REFUELING",
+      price: 1200,
+    },
+    {
+      cardId: "1006464439409805",
+      cardName: "현대카드M",
+      colorBackground: "#6BCEF5",
+      colorTitle: "#014886",
+      merchantCategory: "TRAFFIC",
+      price: 48,
+    },
+    {
+      cardId: "1006464439409805",
+      cardName: "현대카드M",
+      colorBackground: "#6BCEF5",
+      colorTitle: "#014886",
+      merchantCategory: "MARKET",
+      price: 144,
+    },
+  ];
 
   const data = {
     labels: labels,
     datasets: [
-      {
-        data: [300, 50, 100, 200, 80, 90, 10],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 205, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-        ],
-        borderColor: [
-          "rgb(255, 99, 132)",
-          "rgb(255, 159, 64)",
-          "rgb(255, 205, 86)",
-          "rgb(75, 192, 192)",
-          "rgb(54, 162, 235)",
-        ],
-        borderWidth: 1,
-        scales: {
-          x: {
-            stacked: true,
-          },
-          y: {
-            stacked: true,
-          },
-        },
-        hoverOffset: 4,
-      },
+      discountData.map((data, index) => {
+        let cardCategories = {};
+        cardCategories.push();
+      }),
     ],
   };
 
   useEffect(() => {
+    if (year && month !== undefined) {
+      getDiscountInfo();
+    }
+  }, [year, month]);
+
+  useEffect(() => {
+    getDate();
+
     const ctx = chartRef.current.getContext("2d");
     const myChart = new Chart(ctx, {
       type: "bar",
@@ -79,12 +125,22 @@ function DiscountPage() {
     };
   }, []);
 
-  const cards = [
-    "원더카드 (원더 Life)",
-    "My WE:SH 카드",
-    "현대카드M",
-    "NOL 카드",
-  ];
+  // const cards = [
+  //   "원더카드 (원더 Life)",
+  //   "My WE:SH 카드",
+  //   "현대카드M",
+  //   "NOL 카드",
+  // ];
+
+  const getUniqueCards = () => {
+    if (discountData && discountData.length > 0) {
+      const uniqueCards = Array.from(
+        new Set(discountData.map((data) => data.cardName))
+      );
+      return uniqueCards;
+    }
+    return [];
+  };
 
   useEffect(() => {
     getInfo();
@@ -220,26 +276,25 @@ function DiscountPage() {
               }
             `}
           >
-            {cards &&
-              cards.map((card, index) => (
-                <div
-                  key={index}
-                  className={css`
-                    --height: 2rem;
-                    background-color: #f6f6f6;
-                    line-height: var(--height);
-                    height: var(--height);
-                    white-space: nowrap;
-                    padding: 0 1rem;
-                    margin-right: 0.5rem;
-                    border-radius: 1rem;
-                    color: #979797;
-                    box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
-                  `}
-                >
-                  {card}
-                </div>
-              ))}
+            {getUniqueCards().map((card, index) => (
+              <div
+                key={index}
+                className={css`
+                  --height: 2rem;
+                  background-color: #f6f6f6;
+                  line-height: var(--height);
+                  height: var(--height);
+                  white-space: nowrap;
+                  padding: 0 1rem;
+                  margin-right: 0.5rem;
+                  border-radius: 1rem;
+                  color: #979797;
+                  box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
+                `}
+              >
+                {card}
+              </div>
+            ))}
           </div>
         </div>
       </div>
