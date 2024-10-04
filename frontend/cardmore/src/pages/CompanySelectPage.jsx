@@ -69,15 +69,13 @@ function CompanySelectPage() {
     console.log(response.result);
     setCompanies(
       response.result.map((company) => {
-        const logo = logos.find(
-          (logo) => logo.companyNo === Number(company.companyNo)
-        );
+        const logo = logos.find((logo) => logo.companyNo === Number(company.companyNo));
         return { ...company, logoUrl: logo ? logo.logoUrl : "" };
       })
     );
   };
 
-  const selectedCompany = () => {
+  const selectedCompany = async () => {
     const companiesSelected = companies.map((company) => {
       return { id: company.companyId, isSelected: company.isSelected };
     });
@@ -85,7 +83,7 @@ function CompanySelectPage() {
       companiesSelectedInfos: companiesSelected,
     };
     console.log(data);
-    const response = sendCompany(data).then((res) => {
+    const response = await sendCompany(data).then((res) => {
       console.log(res.success);
       return res.success;
     });
