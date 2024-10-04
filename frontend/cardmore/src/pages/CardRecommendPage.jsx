@@ -1,70 +1,35 @@
 import { css } from "@emotion/css";
 import CardInfo from "../components/CardInfo";
 import NavBar from "../components/NavBar";
+import { useEffect, useState } from "react";
+import { getRecommends } from "../apis/Recommend";
 
 function CardRecommendPage() {
-  const cardInfo = [
-    {
-      cardName: "My WE:SH 카드",
-      colorBackground: "#D3CA9F",
-      colorTitle: "#844301",
-      cardNo: "000000000000",
-      cvc: "000",
-      cardExpiryDate: "00000000",
-      cardBenefits: [
-        {
-          categoryId: "CG-9ca85f66311a23d",
-          merchantCategory: "생활",
-          discountRate: 5.0,
-        },
-        {
-          categoryId: "CG-4fa85f6425ad1d3",
-          merchantCategory: "대형마트",
-          discountRate: 10.0,
-        },
-      ],
-    },
-    {
-      cardName: "My WE:SH 카드",
-      colorBackground: "#D3CA9F",
-      colorTitle: "#844301",
-      cardNo: "000000000000",
-      cvc: "000",
-      cardExpiryDate: "00000000",
-      cardBenefits: [
-        {
-          categoryId: "CG-9ca85f66311a23d",
-          merchantCategory: "생활",
-          discountRate: 5.0,
-        },
-        {
-          categoryId: "CG-4fa85f6425ad1d3",
-          merchantCategory: "대형마트",
-          discountRate: 10.0,
-        },
-      ],
-    },
-    {
-      cardName: "My WE:SH 카드",
-      colorBackground: "#D3CA9F",
-      colorTitle: "#844301",
-      cardNo: "000000000000",
-      cvc: "000",
-      cardExpiryDate: "00000000",
-      cardBenefits: [
-        {
-          categoryId: "CG-9ca85f66311a23d",
-          merchantCategory: "생활",
-          discountRate: 5.0,
-        },
-        {
-          categoryId: "CG-4fa85f6425ad1d3",
-          merchantCategory: "대형마트",
-          discountRate: 10.0,
-        },
-      ],
-    },
-  ];
+  const [cardInfo, setCardInfo] = useState();
+
+  useEffect(() => {
+    getRecommendCard();
+  }, []);
+
+  const getRecommendCard = async () => {
+    const response = await getRecommends().then((res) => {
+      const updatedCardInfo = res.result.map((item) => {
+        return {
+          ...item,
+          card: {
+            ...item.card,
+            cardNo: "0000000000000000",
+            cardExpiryDate:"00000000",
+            colorBackground: item.colorBackground,
+            colorTitle: item.colorTitle,
+          },
+        };
+      });
+      console.log("[PAGE] card info : ", updatedCardInfo);
+      return updatedCardInfo;
+    });
+    setCardInfo(response);
+  };
 
   return (
     <div
@@ -115,9 +80,8 @@ function CardRecommendPage() {
           height: 62%;
         `}
       >
-        {cardInfo.map((info, index) => (
-          <CardInfo key={index} data={info} />
-        ))}
+        {cardInfo &&
+          cardInfo.map((info, index) => <CardInfo key={index} data={info} />)}
         <div
           className={css`
             background-color: #b0ffa3;

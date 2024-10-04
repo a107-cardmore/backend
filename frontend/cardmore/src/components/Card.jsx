@@ -1,6 +1,8 @@
 import { css } from "@emotion/css";
 
 function Card({ data, setShowModal, isSelected }) {
+  // console.log(data);
+
   const _clickArrow = () => {
     if (isSelected) {
       setShowModal(true);

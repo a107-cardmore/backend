@@ -27,47 +27,65 @@ function CardInfo({ data }) {
             transform: scale(0.4);
           `}
         >
-          <Card data={data} />
+          <Card data={data.card} />
         </div>
       </div>
       <div
         className={css`
           display: flex;
           flex-direction: column;
-          width: 45%;
+          width: 48%;
           margin-right: 0.5rem;
         `}
       >
         <div
           className={css`
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #555555;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.7rem;
           `}
         >
-          {data.cardName}
+          {data.card.cardName}
         </div>
         <div
           className={css`
             padding: 0 1rem;
             border-left: solid 0.15rem #c6c6c6;
+            max-height: 3rem;
           `}
         >
-          {data.cardBenefits.map((benefit, index) => (
-            <div
-              key={index}
-              className={css`
-                color: #555555;
-                display: flex;
-                width: 85%;
-                justify-content: space-between;
-              `}
-            >
-              <div>{benefit.merchantCategory}</div>
-              <div>{benefit.discountRate}%</div>
-            </div>
-          ))}
+          <div
+            className={css`
+              max-height: 4rem;
+              overflow: scroll;
+              ::-webkit-scrollbar {
+                width: 0.3rem;
+              }
+              ::-webkit-scrollbar-thumb {
+                background-color: #d9d9d9; /* 스크롤바 색상 */
+                border-radius: 1rem; /* 스크롤바 모서리 둥글게 */
+              }
+              ::-webkit-scrollbar-corner {
+                background-color: transparent; /* 배경색을 투명하게 설정 */
+              }
+            `}
+          >
+            {data.card.cardBenefitsInfo.map((benefit, index) => (
+              <div
+                key={index}
+                className={css`
+                  color: #555555;
+                  display: flex;
+                  width: 85%;
+                  justify-content: space-between;
+                `}
+              >
+                <div>{benefit.categoryName}</div>
+                <div>{benefit.discountRate}%</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

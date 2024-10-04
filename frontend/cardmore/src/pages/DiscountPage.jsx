@@ -36,49 +36,18 @@ function DiscountPage() {
     }
   };
 
-  const asdf = [
-    {
-      cardId: "1009508169730805",
-      cardName: "원더카드 (원더 Life)",
-      colorBackground: "#D8F068",
-      colorTitle: "#00B451",
-      merchantCategory: "MARKET",
-      price: 480,
-    },
-    {
-      cardId: "1006464439409805",
-      cardName: "현대카드M",
-      colorBackground: "#6BCEF5",
-      colorTitle: "#014886",
-      merchantCategory: "REFUELING",
-      price: 1200,
-    },
-    {
-      cardId: "1006464439409805",
-      cardName: "현대카드M",
-      colorBackground: "#6BCEF5",
-      colorTitle: "#014886",
-      merchantCategory: "TRAFFIC",
-      price: 48,
-    },
-    {
-      cardId: "1006464439409805",
-      cardName: "현대카드M",
-      colorBackground: "#6BCEF5",
-      colorTitle: "#014886",
-      merchantCategory: "MARKET",
-      price: 144,
-    },
-  ];
-
-  const data = {
-    labels: labels,
-    datasets: [
-      discountData.map((data, index) => {
-        let cardCategories = {};
-        cardCategories.push();
-      }),
-    ],
+  const makeDataSet = (data) => {
+    const datasets = data.cardNames.map((cardName) => {
+      const cardDiscounts = data.discountInfos.filter(
+        (info) => info.cardName === cardName
+      );
+      const dataforCategories = data.categoryNames.map((category) => {
+        const discount = cardDiscounts.find(
+          (info) => info.marchantCategory === category
+        );
+        return discount ? discount.price : 0;
+      });
+    });
   };
 
   useEffect(() => {
@@ -88,12 +57,13 @@ function DiscountPage() {
   }, [year, month]);
 
   useEffect(() => {
+    getInfo();
     getDate();
 
     const ctx = chartRef.current.getContext("2d");
     const myChart = new Chart(ctx, {
       type: "bar",
-      data: data,
+      // data: data,
       options: {
         scales: {
           x: {
@@ -125,26 +95,15 @@ function DiscountPage() {
     };
   }, []);
 
-  // const cards = [
-  //   "원더카드 (원더 Life)",
-  //   "My WE:SH 카드",
-  //   "현대카드M",
-  //   "NOL 카드",
-  // ];
-
-  const getUniqueCards = () => {
-    if (discountData && discountData.length > 0) {
-      const uniqueCards = Array.from(
-        new Set(discountData.map((data) => data.cardName))
-      );
-      return uniqueCards;
-    }
-    return [];
-  };
-
-  useEffect(() => {
-    getInfo();
-  }, []);
+  // const getUniqueCards = () => {
+  //   if (discountData && discountData.length > 0) {
+  //     const uniqueCards = Array.from(
+  //       new Set(discountData.map((data) => data.cardName))
+  //     );
+  //     return uniqueCards;
+  //   }
+  //   return [];
+  // };
 
   const getInfo = async () => {
     const discountResponse = await discountAll().then((res) => {
@@ -153,6 +112,7 @@ function DiscountPage() {
     });
     setDiscount(discountResponse);
   };
+
   return (
     <div
       className={css`
@@ -276,25 +236,26 @@ function DiscountPage() {
               }
             `}
           >
-            {getUniqueCards().map((card, index) => (
-              <div
-                key={index}
-                className={css`
-                  --height: 2rem;
-                  background-color: #f6f6f6;
-                  line-height: var(--height);
-                  height: var(--height);
-                  white-space: nowrap;
-                  padding: 0 1rem;
-                  margin-right: 0.5rem;
-                  border-radius: 1rem;
-                  color: #979797;
-                  box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
-                `}
-              >
-                {card}
-              </div>
-            ))}
+            {discountData &&
+              discountData.cardNames.map((card, index) => (
+                <div
+                  key={index}
+                  className={css`
+                    --height: 2rem;
+                    background-color: #f6f6f6;
+                    line-height: var(--height);
+                    height: var(--height);
+                    white-space: nowrap;
+                    padding: 0 1rem;
+                    margin-right: 0.5rem;
+                    border-radius: 1rem;
+                    color: #979797;
+                    box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
+                  `}
+                >
+                  {card}
+                </div>
+              ))}
           </div>
         </div>
       </div>
