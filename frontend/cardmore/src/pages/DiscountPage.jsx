@@ -2,7 +2,7 @@ import { css } from "@emotion/css";
 import NavBar from "../components/NavBar";
 import { discountAll, discountHistory } from "../apis/Discount";
 import { useEffect, useState, useRef } from "react";
-import { Chart } from "chart.js/auto";
+import DiscountChart from "../components/DiscountChart";
 
 function DiscountPage() {
   const [discount, setDiscount] = useState();
@@ -10,7 +10,6 @@ function DiscountPage() {
   const [month, setMonth] = useState();
   const [discountData, setDiscountData] = useState();
   const [cards, setCards] = useState();
-  const chartRef = useRef(null);
 
   const labels = ["주유", "대형마트", "교통", "생활"];
 
@@ -21,89 +20,74 @@ function DiscountPage() {
     console.log(currentDate.getFullYear(), currentDate.getMonth());
   };
 
-  const getDiscountInfo = async () => {
-    if (year && month !== undefined) {
-      const time = {
-        year: year,
-        month: month,
-      };
-      console.log(time);
-      const response = await discountHistory(time).then((res) => {
-        console.log(res.result);
-        return res.result;
-      });
-      setDiscountData(response);
-    }
+  // const getDiscountInfo = async () => {
+  //   if (year && month !== undefined) {
+  //     const time = {
+  //       year: year,
+  //       month: month,
+  //     };
+  //     console.log(time);
+  //     const response = await discountHistory(time).then((res) => {
+  //       console.log(res.result);
+  //       return res.result;
+  //     });
+  //     setDiscountData(response);
+  //   }
+  // };
+
+   // 데이터를 mock 데이터로 설정
+   const discountMockData = {
+    categoryNames: ["TRAFFIC", "MARKET", "REFUELING"],
+    cardNames: ["현대카드M", "원더카드 (원더 Life)"],
+    discountInfos: [
+      {
+        cardId: "1009508169730805",
+        cardName: "원더카드 (원더 Life)",
+        merchantCategory: "MARKET",
+        colorTitle: "#00B451",
+        colorBackground: "#D8F068",
+        price: 480,
+      },
+      {
+        cardId: "1006464439409805",
+        cardName: "현대카드M",
+        merchantCategory: "REFUELING",
+        colorTitle: "#014886",
+        colorBackground: "#6BCEF5",
+        price: 1200,
+      },
+      {
+        cardId: "1006464439409805",
+        cardName: "현대카드M",
+        merchantCategory: "TRAFFIC",
+        colorTitle: "#014886",
+        colorBackground: "#6BCEF5",
+        price: 48,
+      },
+      {
+        cardId: "1006464439409805",
+        cardName: "현대카드M",
+        merchantCategory: "MARKET",
+        colorTitle: "#014886",
+        colorBackground: "#6BCEF5",
+        price: 144,
+      },
+    ],
   };
 
-  const makeDataSet = (data) => {
-    const datasets = data.cardNames.map((cardName) => {
-      const cardDiscounts = data.discountInfos.filter(
-        (info) => info.cardName === cardName
-      );
-      const dataforCategories = data.categoryNames.map((category) => {
-        const discount = cardDiscounts.find(
-          (info) => info.marchantCategory === category
-        );
-        return discount ? discount.price : 0;
-      });
-    });
-  };
 
-  useEffect(() => {
-    if (year && month !== undefined) {
-      getDiscountInfo();
-    }
-  }, [year, month]);
+  // useEffect(() => {
+  //   if (year && month !== undefined) {
+  //     getDiscountInfo();
+  //   }
+  // }, [year, month]);
 
   useEffect(() => {
     getInfo();
     getDate();
 
-    const ctx = chartRef.current.getContext("2d");
-    const myChart = new Chart(ctx, {
-      type: "bar",
-      // data: data,
-      options: {
-        scales: {
-          x: {
-            grid: {
-              display: false, // x축 그리드 없애기
-            },
-          },
-          y: {
-            grid: {
-              display: false, // y축 그리드 없애기
-            },
-            ticks: {
-              display: false, // y축 인덱스 없애기
-            },
-          },
-        },
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-      },
-    });
-
-    // 컴포넌트 언마운트 시 차트를 삭제
-    return () => {
-      myChart.destroy();
-    };
+    
   }, []);
-
-  // const getUniqueCards = () => {
-  //   if (discountData && discountData.length > 0) {
-  //     const uniqueCards = Array.from(
-  //       new Set(discountData.map((data) => data.cardName))
-  //     );
-  //     return uniqueCards;
-  //   }
-  //   return [];
-  // };
 
   const getInfo = async () => {
     const discountResponse = await discountAll().then((res) => {
@@ -270,13 +254,7 @@ function DiscountPage() {
           align-items: center;
         `}
       >
-        <canvas
-          ref={chartRef}
-          className={css`
-            width: 310px;
-            /* height: 400px; */
-          `}
-        />
+        <DiscountChart data={discountMockData}/>
       </div>
       <NavBar isSelected={"Home"} />
     </div>
