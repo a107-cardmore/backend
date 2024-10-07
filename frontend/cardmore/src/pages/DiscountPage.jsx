@@ -1,97 +1,74 @@
 import { css } from "@emotion/css";
 import NavBar from "../components/NavBar";
-import { discountAll } from "../apis/Discount";
-import { useEffect, useState, useRef } from "react";
-import { Chart } from "chart.js/auto";
+import { discountAll, discountHistory } from "../apis/Discount";
+import { useEffect, useState } from "react";
+import DiscountChart from "../components/DiscountChart";
+import { useNavigate } from "react-router-dom";
 
 function DiscountPage() {
   const [discount, setDiscount] = useState();
-  const chartRef = useRef(null);
+  const [year, setYear] = useState();
+  const [month, setMonth] = useState();
+  const [discountData, setDiscountData] = useState();
+  const [cards, setCards] = useState();
+  const [filteredData, setFilteredData] = useState(false);
+  const [filtered, setFiltered] = useState();
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
 
-  const labels = ["주유", "대형마트", "교통", "교육", "통신", "해외", "생활"];
+  const navigate = useNavigate();
 
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        data: [300, 50, 100, 200, 80, 90, 10],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 205, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(201, 203, 207, 0.2)",
-        ],
-        borderColor: [
-          "rgb(255, 99, 132)",
-          "rgb(255, 159, 64)",
-          "rgb(255, 205, 86)",
-          "rgb(75, 192, 192)",
-          "rgb(54, 162, 235)",
-          "rgb(153, 102, 255)",
-          "rgb(201, 203, 207)",
-        ],
-        borderWidth: 1,
-        scales: {
-          x: {
-            stacked: true,
-          },
-          y: {
-            stacked: true,
-          },
-        },
-        hoverOffset: 4,
-      },
-    ],
+  const labels = ["주유", "대형마트", "교통", "생활"];
+
+  const nextMonth = (to) => {
+    if (to > 0) {
+      if (month === 12) {
+        setYear(year + 1);
+        setMonth(1);
+      } else {
+        setMonth(month + 1);
+      }
+    } else {
+      if (month === 1) {
+        setYear(year - 1);
+        setMonth(12);
+      } else {
+        setMonth(month - 1);
+      }
+    }
+    setFiltered(false);
+  };
+
+  const getDate = () => {
+    const currentDate = new Date();
+    setYear(currentDate.getFullYear());
+    setMonth(currentDate.getMonth());
+    console.log(currentDate.getFullYear(), currentDate.getMonth());
+  };
+
+  const getDiscountInfo = async () => {
+    if (year && month !== undefined) {
+      const time = {
+        year: year,
+        month: month,
+      };
+      console.log(time);
+      const response = await discountHistory(time).then((res) => {
+        console.log(res.result);
+        return res.result;
+      });
+      setDiscountData(response);
+    }
   };
 
   useEffect(() => {
-    const ctx = chartRef.current.getContext("2d");
-    const myChart = new Chart(ctx, {
-      type: "bar",
-      data: data,
-      options: {
-        scales: {
-          x: {
-            grid: {
-              display: false, // x축 그리드 없애기
-            },
-          },
-          y: {
-            grid: {
-              display: false, // y축 그리드 없애기
-            },
-            ticks: {
-              display: false, // y축 인덱스 없애기
-            },
-          },
-        },
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-      },
-    });
-
-    // 컴포넌트 언마운트 시 차트를 삭제
-    return () => {
-      myChart.destroy();
-    };
-  }, []);
-
-  const cards = [
-    "원더카드 (원더 Life)",
-    "My WE:SH 카드",
-    "현대카드M",
-    "NOL 카드",
-  ];
+    if (year && month !== undefined) {
+      getDiscountInfo();
+    }
+  }, [year, month]);
 
   useEffect(() => {
     getInfo();
+    getDate();
   }, []);
 
   const getInfo = async () => {
@@ -101,6 +78,21 @@ function DiscountPage() {
     });
     setDiscount(discountResponse);
   };
+
+  const selectCard = (index) => {
+    const selectedCardName = discountData.cardNames[index];
+    const filteredInfo = discountData.discountInfos.filter(
+      (info) => info.cardName === selectedCardName
+    );
+    const filteredResult = {
+      ...discountData,
+      discountInfos: filteredInfo,
+    };
+    setSelectedCardIndex(index);
+    setFilteredData(filteredResult);
+    setFiltered(true);
+  };
+
   return (
     <div
       className={css`
@@ -113,6 +105,16 @@ function DiscountPage() {
         height: 100vh;
       `}
     >
+      <img
+        className={css`
+          position: absolute;
+          top: 1.3rem;
+          right: 1rem;
+        `}
+        src="X.svg"
+        alt=""
+        onClick={() => navigate("/main")}
+      />
       <div
         className={css`
           width: 100%;
@@ -190,6 +192,27 @@ function DiscountPage() {
       >
         <div
           className={css`
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 1rem;
+          `}
+        >
+          <img src="/LeftArrow.svg" alt="" onClick={() => nextMonth(-1)} />
+          <div
+            className={css`
+              color: #6c6c6c;
+              font-size: 1.7rem;
+              font-weight: 700;
+            `}
+          >
+            {year}. {month}.
+          </div>
+          <img src="/RightArrow.svg" alt="" onClick={() => nextMonth(1)} />
+        </div>
+        <div
+          className={css`
             width: 100%;
             display: flex;
           `}
@@ -197,15 +220,16 @@ function DiscountPage() {
           <div
             className={css`
               --height: 2rem;
-              background-color: #f6f6f6;
+              background-color: ${!filtered ? "#979797" : "#f6f6f6"};
               line-height: var(--height);
               height: var(--height);
               padding: 0 1rem;
               margin-right: 0.5rem;
               border-radius: 1rem;
-              color: #979797;
+              color: ${!filtered ? "#f6f6f6" : "#979797"};
               box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
             `}
+            onClick={() => setFiltered(false)}
           >
             전체
           </div>
@@ -224,22 +248,27 @@ function DiscountPage() {
               }
             `}
           >
-            {cards &&
-              cards.map((card, index) => (
+            {discountData &&
+              discountData.cardNames.map((card, index) => (
                 <div
                   key={index}
                   className={css`
                     --height: 2rem;
-                    background-color: #f6f6f6;
+                    background-color: ${filtered && selectedCardIndex === index
+                      ? "#979797"
+                      : "#f6f6f6"};
                     line-height: var(--height);
                     height: var(--height);
                     white-space: nowrap;
                     padding: 0 1rem;
                     margin-right: 0.5rem;
                     border-radius: 1rem;
-                    color: #979797;
+                    color: ${filtered && selectedCardIndex === index
+                      ? "#f6f6f6"
+                      : "#979797"};
                     box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
                   `}
+                  onClick={() => selectCard(index)}
                 >
                   {card}
                 </div>
@@ -251,21 +280,16 @@ function DiscountPage() {
       <div
         className={css`
           position: absolute;
-          bottom: 15vh;
+          bottom: 20vh;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
         `}
       >
-        <canvas
-          ref={chartRef}
-
-          className={css`
-            width: 310px;
-            height: 260px;
-          `}
-        />
+        {discountData && (
+          <DiscountChart data={filtered ? filteredData : discountData} />
+        )}
       </div>
       <NavBar isSelected={"Home"} />
     </div>

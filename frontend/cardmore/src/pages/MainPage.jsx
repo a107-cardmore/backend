@@ -3,9 +3,10 @@ import { css } from "@emotion/css";
 import Card from "../components/Card";
 import NavBar from "../components/NavBar";
 import CardModal from "../components/CardModal";
-import { getCards } from "../apis/Main";
+import { getCards, getUser } from "../apis/Main";
 import { useNavigate } from "react-router-dom";
 import { discountAll } from "../apis/Discount";
+import { useAsync } from "react-select/async";
 
 function MainPage() {
   const [isSelected, setIsSelected] = useState(10000);
@@ -14,6 +15,7 @@ function MainPage() {
   const [cards, setCards] = useState();
   const [discount, setDiscount] = useState();
   const [selectedIndex, setSelectedIndex] = useState();
+  const [user, setUser] = useState();
 
   const navigate = useNavigate();
 
@@ -71,6 +73,12 @@ function MainPage() {
       console.log("[Main Page] discount response : ", res.result);
       return res.result;
     });
+    const userResponse = await getUser().then((res) => {
+      console.log("[Main Page] user response", res.result);
+      return res.result;
+    });
+
+    setUser(userResponse);
     setCards(cardResponse.map((card, index) => ({ ...card, key: index + 1 })));
     setDiscount(discountResponse);
   };
@@ -83,6 +91,8 @@ function MainPage() {
         display: flex;
         flex-direction: column;
         align-items: center;
+        background-color: #f6f6f6;
+        position: relative;
       `}
     >
       <div
@@ -98,7 +108,7 @@ function MainPage() {
       </div>
       <div
         className={css`
-          font-size: 3rem;
+          font-size: 3.3rem;
           width: 80%;
           display: flex;
           justify-content: flex-end;
@@ -106,7 +116,7 @@ function MainPage() {
           font-weight: 700;
         `}
       >
-        SooYoung
+        {user}
       </div>
       <div
         className={css`
@@ -117,6 +127,7 @@ function MainPage() {
           width: 90%;
           height: 45vh;
           overflow: hidden;
+          margin-top: 0.7rem;
         `}
       >
         <div
@@ -127,8 +138,8 @@ function MainPage() {
         >
           <div
             className={css`
-              width: 17.56rem;
-              padding: 0 2rem;
+              width: 21rem;
+              padding: 0 1.5rem;
               height: 13.627rem;
               border-radius: 1rem;
               background-color: white;
@@ -136,6 +147,7 @@ function MainPage() {
               flex-direction: column;
               align-items: center;
               box-shadow: 0 0 5px rgb(0, 0, 0, 0.15);
+              box-sizing: border-box;
             `}
             onClick={() => console.log("???")}
           >
@@ -147,13 +159,14 @@ function MainPage() {
                 justify-content: space-between;
                 width: 100%;
                 border-bottom: solid 0.2rem black;
-                padding: 1rem 0;
+                padding: 0.9rem 0;
               `}
             >
               <div
                 className={css`
                   color: black;
-                  font-size: 1.5rem;
+                  font-size: 1.3rem;
+                  font-weight: 600;
                 `}
               >
                 새 카드 등록
@@ -192,7 +205,7 @@ function MainPage() {
               className={css`
                 position: absolute;
                 top: ${(index - startIndex + 2) * 3.5 +
-                (isSelected < card.key ? 10 : 1)}rem;
+                (isSelected < card.key ? 11 : 1)}rem;
                 opacity: ${startIndex > card.key
                   ? 0
                   : 1}; /* startIndex와 현재 데이터 key가 같으면 사라짐 */
@@ -214,10 +227,10 @@ function MainPage() {
           flex-direction: column;
           width: 17.56rem;
           padding: 0 2rem;
-          height: 8.627rem;
+          height: 7.7rem;
           border-radius: 1.3rem;
           align-items: center;
-          margin-top: 2rem;
+          margin-top: 1.3rem;
         `}
       >
         <div
@@ -233,7 +246,7 @@ function MainPage() {
           <div
             className={css`
               color: white;
-              font-size: 1.3rem;
+              font-size: 1.2rem;
             `}
           >
             이번달 받은 혜택
@@ -244,7 +257,9 @@ function MainPage() {
             viewBox="0 0 32 32"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            onClick={() => { navigate("/discount") }}
+            onClick={() => {
+              navigate("/discount");
+            }}
           >
             <circle
               cx="15.75"
@@ -264,9 +279,13 @@ function MainPage() {
         </div>
         <div
           className={css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            font-size: 2rem;
-            margin-top: 1rem;
+            font-size: 2.2rem;
+            font-weight: 600;
+            height: 50%;
           `}
         >
           총{" "}
@@ -275,13 +294,13 @@ function MainPage() {
           원
         </div>
       </div>
-      <NavBar isSelected={"Home"} />
       {isSelected && showModal && (
         <CardModal
           setShowModal={setShowModal}
           data={cards[selectedIndex - 1]}
         ></CardModal>
       )}
+      <NavBar isSelected={"Home"} />
     </div>
   );
 }

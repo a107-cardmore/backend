@@ -2,7 +2,7 @@ import axios from "./Axios";
 
 export const getCardAll = async () => {
   try {
-    const response = axios.get("/cards/all").then((res) => {
+    const response = await axios.get("/cards/all").then((res) => {
       return res.data;
     });
     console.log("[IN AXIOS] mydata get card all", response);
@@ -15,7 +15,7 @@ export const getCardAll = async () => {
 export const sendCompany = async (data) => {
   try {
     console.log(data);
-    const response = axios.post("/cards/company", data).then((res) => {
+    const response = await axios.post("/cards/company", data).then((res) => {
       console.log(res.data);
       return res.data;
     });
