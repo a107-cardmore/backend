@@ -11,3 +11,20 @@ export const getRecommends = async () => {
     console.error("[IN AXIOS] get recommendation fail : ", error);
   }
 };
+
+export const getRecommendedCards = async (mapRequestDtos) => {
+  console.log("[IN AXIOS] mapRequestDtos ", mapRequestDtos);
+
+  try {
+    const response = axios
+      .post("/recommends/discount", mapRequestDtos)
+      .then((res) => {
+        // console.log("resres", res);
+        return res.data;
+      });
+    console.log("[IN AXIOS] get Cards", response);
+    return response;
+  } catch (error) {
+    console.error("[IN AXIOS] get card error : ", error);
+  }
+};
