@@ -49,7 +49,7 @@ public class CardModuleService {
         cardColorMap.put("1009-4c87cbe6fbef4e8", new CardColorInfo("#D8F068", "#00B451"));
         cardColorMap.put("1006-473ecfa048ea400", new CardColorInfo("#6BCEF5", "#014886"));
         cardColorMap.put("1006-0a6bdfbd4a034f8", new CardColorInfo("#FEF33F", "#F8BF00"));
-        cardColorMap.put("1002-20c63ccd7f9044e", new CardColorInfo("#01563F", "#5B208A"));
+        cardColorMap.put("1002-20c63ccd7f9044e", new CardColorInfo("#01563F", "#D5F169"));
         cardColorMap.put("1002-3a9d4cf6ecce433", new CardColorInfo("#F8BF00", "#DC8A02"));
 
 
