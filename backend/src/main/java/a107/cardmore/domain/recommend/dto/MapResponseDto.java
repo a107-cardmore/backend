@@ -23,6 +23,7 @@ public class MapResponseDto {
     private double latitude;
     private double longitude;
     private String discountRate;
+    private String address;
     List<CardResponseDto> cardInfos;
 
 }

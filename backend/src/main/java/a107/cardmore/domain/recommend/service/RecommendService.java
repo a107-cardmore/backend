@@ -80,6 +80,7 @@ public class RecommendService {
                 .merchantCategory(place.getMerchantCategory())
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
+                .address(place.getAddress())
                 .build();
 
             if (!topCards.isEmpty()) {
