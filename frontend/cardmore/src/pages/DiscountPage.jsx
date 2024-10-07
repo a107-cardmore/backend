@@ -1,8 +1,9 @@
 import { css } from "@emotion/css";
 import NavBar from "../components/NavBar";
 import { discountAll, discountHistory } from "../apis/Discount";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import DiscountChart from "../components/DiscountChart";
+import { useNavigate } from "react-router-dom";
 
 function DiscountPage() {
   const [discount, setDiscount] = useState();
@@ -13,6 +14,8 @@ function DiscountPage() {
   const [filteredData, setFilteredData] = useState(false);
   const [filtered, setFiltered] = useState();
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
+
+  const navigate = useNavigate();
 
   const labels = ["주유", "대형마트", "교통", "생활"];
 
@@ -102,6 +105,16 @@ function DiscountPage() {
         height: 100vh;
       `}
     >
+      <img
+        className={css`
+          position: absolute;
+          top: 1.3rem;
+          right: 1rem;
+        `}
+        src="X.svg"
+        alt=""
+        onClick={() => navigate("/main")}
+      />
       <div
         className={css`
           width: 100%;

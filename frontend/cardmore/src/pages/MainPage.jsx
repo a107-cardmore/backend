@@ -92,6 +92,7 @@ function MainPage() {
         flex-direction: column;
         align-items: center;
         background-color: #f6f6f6;
+        position: relative;
       `}
     >
       <div
@@ -178,7 +179,13 @@ function MainPage() {
                 xmlns="http://www.w3.org/2000/svg"
                 onClick={_addCard}
               >
-                <circle cx="15.75" cy="15.75" r="14.75" stroke="black" stroke-width="2" />
+                <circle
+                  cx="15.75"
+                  cy="15.75"
+                  r="14.75"
+                  stroke="black"
+                  stroke-width="2"
+                />
                 <path
                   d="M15.5 7.625V23.375M7.625 15.5H23.375"
                   stroke="#1E1E1E"
@@ -205,7 +212,11 @@ function MainPage() {
               `}
               onClick={() => _showCard(card.key)}
             >
-              <Card setShowModal={setShowModal} isSelected={isSelected} data={card} />
+              <Card
+                setShowModal={setShowModal}
+                isSelected={isSelected}
+                data={card}
+              />
             </div>
           ))}
       </div>
@@ -250,7 +261,13 @@ function MainPage() {
               navigate("/discount");
             }}
           >
-            <circle cx="15.75" cy="15.75" r="14.75" stroke="white" stroke-width="2" />
+            <circle
+              cx="15.75"
+              cy="15.75"
+              r="14.75"
+              stroke="white"
+              stroke-width="2"
+            />
             <path
               d="M9.9375 21.5625L21.5625 9.9375M21.5625 9.9375H9.9375M21.5625 9.9375V21.5625"
               stroke="white"
@@ -271,13 +288,19 @@ function MainPage() {
             height: 50%;
           `}
         >
-          총 {discount && discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
+          총{" "}
+          {discount &&
+            discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          원
         </div>
       </div>
-      <NavBar isSelected={"Home"} />
       {isSelected && showModal && (
-        <CardModal setShowModal={setShowModal} data={cards[selectedIndex - 1]}></CardModal>
+        <CardModal
+          setShowModal={setShowModal}
+          data={cards[selectedIndex - 1]}
+        ></CardModal>
       )}
+      <NavBar isSelected={"Home"} />
     </div>
   );
 }
