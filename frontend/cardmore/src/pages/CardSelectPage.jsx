@@ -62,7 +62,7 @@ function CardSelectPage() {
     });
   };
 
-  const selectedCard = () => {
+  const selectedCard = async () => {
     const cardsSelected = [];
     cards.map((company) =>
       company.cards.map((card) =>
@@ -73,7 +73,7 @@ function CardSelectPage() {
       cardsSelectedInfos: cardsSelected,
     };
     console.log(data);
-    const response = sendCard(data).then((res) => {
+    const response = await sendCard(data).then((res) => {
       console.log(res.success);
       return res.success;
     });
