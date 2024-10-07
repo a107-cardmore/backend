@@ -5,11 +5,17 @@ import { Chart } from "chart.js";
 function DiscountChart({ data }) {
   const chartRef = useRef(null);
 
+  // useEffect(() => {}, [data]);
+
   const prepareData = (data) => {
-    const datasets = data.cardNames.map((cardName) => {
-      const cardDiscounts = data.discountInfos.filter((info) => info.cardName === cardName);
-      const dataForCategories = data.categoryNames.map((category) => {
-        const discount = cardDiscounts.find((info) => info.merchantCategory === category);
+    const datasets = data.cardNames.map((cardName, index) => {
+      const cardDiscounts = data.discountInfos.filter(
+        (info, index) => info.cardName === cardName
+      );
+      const dataForCategories = data.categoryNames.map((category, index) => {
+        const discount = cardDiscounts.find(
+          (info) => info.merchantCategory === category
+        );
         return discount ? discount.price : 0;
       });
 
@@ -17,7 +23,10 @@ function DiscountChart({ data }) {
         type: "bar",
         label: cardName,
         data: dataForCategories,
-        backgroundColor: cardDiscounts.length > 0 ? cardDiscounts[0].colorBackground : "#cccccc",
+        backgroundColor:
+          cardDiscounts.length > 0
+            ? cardDiscounts[0].colorBackground
+            : "#cccccc",
         stack: "stack1",
       };
     });
@@ -59,7 +68,7 @@ function DiscountChart({ data }) {
     return () => {
       discountChart.destroy();
     };
-  }, []);
+  }, [data]);
   return (
     <div>
       <canvas

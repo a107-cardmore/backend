@@ -10,8 +10,29 @@ function DiscountPage() {
   const [month, setMonth] = useState();
   const [discountData, setDiscountData] = useState();
   const [cards, setCards] = useState();
+  const [filteredData, setFilteredData] = useState(false);
+  const [filtered, setFiltered] = useState();
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
 
   const labels = ["주유", "대형마트", "교통", "생활"];
+
+  const nextMonth = (to) => {
+    if (to > 0) {
+      if (month === 12) {
+        setYear(year + 1);
+        setMonth(1);
+      } else {
+        setMonth(month + 1);
+      }
+    } else {
+      if (month === 1) {
+        setYear(year - 1);
+        setMonth(12);
+      } else {
+        setMonth(month - 1);
+      }
+    }
+  };
 
   const getDate = () => {
     const currentDate = new Date();
@@ -20,73 +41,30 @@ function DiscountPage() {
     console.log(currentDate.getFullYear(), currentDate.getMonth());
   };
 
-  // const getDiscountInfo = async () => {
-  //   if (year && month !== undefined) {
-  //     const time = {
-  //       year: year,
-  //       month: month,
-  //     };
-  //     console.log(time);
-  //     const response = await discountHistory(time).then((res) => {
-  //       console.log(res.result);
-  //       return res.result;
-  //     });
-  //     setDiscountData(response);
-  //   }
-  // };
-
-   // 데이터를 mock 데이터로 설정
-   const discountMockData = {
-    categoryNames: ["TRAFFIC", "MARKET", "REFUELING"],
-    cardNames: ["현대카드M", "원더카드 (원더 Life)"],
-    discountInfos: [
-      {
-        cardId: "1009508169730805",
-        cardName: "원더카드 (원더 Life)",
-        merchantCategory: "MARKET",
-        colorTitle: "#00B451",
-        colorBackground: "#D8F068",
-        price: 480,
-      },
-      {
-        cardId: "1006464439409805",
-        cardName: "현대카드M",
-        merchantCategory: "REFUELING",
-        colorTitle: "#014886",
-        colorBackground: "#6BCEF5",
-        price: 1200,
-      },
-      {
-        cardId: "1006464439409805",
-        cardName: "현대카드M",
-        merchantCategory: "TRAFFIC",
-        colorTitle: "#014886",
-        colorBackground: "#6BCEF5",
-        price: 48,
-      },
-      {
-        cardId: "1006464439409805",
-        cardName: "현대카드M",
-        merchantCategory: "MARKET",
-        colorTitle: "#014886",
-        colorBackground: "#6BCEF5",
-        price: 144,
-      },
-    ],
+  const getDiscountInfo = async () => {
+    if (year && month !== undefined) {
+      const time = {
+        year: year,
+        month: month,
+      };
+      console.log(time);
+      const response = await discountHistory(time).then((res) => {
+        console.log(res.result);
+        return res.result;
+      });
+      setDiscountData(response);
+    }
   };
 
-
-  // useEffect(() => {
-  //   if (year && month !== undefined) {
-  //     getDiscountInfo();
-  //   }
-  // }, [year, month]);
+  useEffect(() => {
+    if (year && month !== undefined) {
+      getDiscountInfo();
+    }
+  }, [year, month]);
 
   useEffect(() => {
     getInfo();
     getDate();
-
-    
   }, []);
 
   const getInfo = async () => {
@@ -95,6 +73,20 @@ function DiscountPage() {
       return res.result;
     });
     setDiscount(discountResponse);
+  };
+
+  const selectCard = (index) => {
+    const selectedCardName = discountData.cardNames[index];
+    const filteredInfo = discountData.discountInfos.filter(
+      (info) => info.cardName === selectedCardName
+    );
+    const filteredResult = {
+      ...discountData,
+      discountInfos: filteredInfo,
+    };
+    setSelectedCardIndex(index);
+    setFilteredData(filteredResult);
+    setFiltered(true);
   };
 
   return (
@@ -186,6 +178,27 @@ function DiscountPage() {
       >
         <div
           className={css`
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 1rem;
+          `}
+        >
+          <img src="/LeftArrow.svg" alt="" onClick={() => nextMonth(-1)} />
+          <div
+            className={css`
+              color: #6c6c6c;
+              font-size: 1.7rem;
+              font-weight: 700;
+            `}
+          >
+            {year}. {month}.
+          </div>
+          <img src="/RightArrow.svg" alt="" onClick={() => nextMonth(1)} />
+        </div>
+        <div
+          className={css`
             width: 100%;
             display: flex;
           `}
@@ -202,6 +215,7 @@ function DiscountPage() {
               color: #979797;
               box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
             `}
+            onClick={() => setFiltered(false)}
           >
             전체
           </div>
@@ -226,16 +240,21 @@ function DiscountPage() {
                   key={index}
                   className={css`
                     --height: 2rem;
-                    background-color: #f6f6f6;
+                    background-color: ${selectedCardIndex === index
+                      ? "#979797"
+                      : "#f6f6f6"};
                     line-height: var(--height);
                     height: var(--height);
                     white-space: nowrap;
                     padding: 0 1rem;
                     margin-right: 0.5rem;
                     border-radius: 1rem;
-                    color: #979797;
+                    color: ${selectedCardIndex === index
+                      ? "#f6f6f6"
+                      : "#979797"};
                     box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
                   `}
+                  onClick={() => selectCard(index)}
                 >
                   {card}
                 </div>
@@ -247,14 +266,16 @@ function DiscountPage() {
       <div
         className={css`
           position: absolute;
-          bottom: 15vh;
+          bottom: 20vh;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
         `}
       >
-        <DiscountChart data={discountMockData}/>
+        {discountData && (
+          <DiscountChart data={filtered ? filteredData : discountData} />
+        )}
       </div>
       <NavBar isSelected={"Home"} />
     </div>
