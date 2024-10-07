@@ -170,7 +170,7 @@ function MyPage() {
               결제내역이 존재하지 않습니다.
             </p>
             <img
-              src="/question.png"
+              src="/Empty.svg"
               className={css`
                 padding-top: 1rem;
                 width: 15rem;
