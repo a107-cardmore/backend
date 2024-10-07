@@ -107,7 +107,7 @@ function MainPage() {
       </div>
       <div
         className={css`
-          font-size: 3rem;
+          font-size: 3.3rem;
           width: 80%;
           display: flex;
           justify-content: flex-end;
