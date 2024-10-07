@@ -159,24 +159,26 @@ function MyPage() {
               display: flex;
               flex-direction: column;
               align-items: center;
+              justify-content: center;
+              height: 40%;
             `}
           >
+            <img
+              src="/Empty.svg"
+              className={css`
+                width: 7rem;
+              `}
+              alt=""
+            ></img>
             <p
               className={css`
-                font-size: 1.5rem;
-                font-weight: semi-bold;
+                color: #6b6b6b;
+                font-size: 1.2rem;
+                font-weight: 600;
               `}
             >
               결제내역이 존재하지 않습니다.
             </p>
-            <img
-              src="/Empty.svg"
-              className={css`
-                padding-top: 1rem;
-                width: 15rem;
-              `}
-              alt=""
-            ></img>
           </div>
         </>
       ) : (
