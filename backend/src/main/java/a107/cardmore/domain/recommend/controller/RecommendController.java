@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ public class RecommendController {
     private final RecommendService recommendService;
     private final UserModuleService userModuleService;
 
-    @GetMapping("/discount")
+    @PostMapping("/discount")
     public BaseSuccessResponse<List<MapResponseDto>> discount(@RequestBody MapRequestWrapperDto mapRequestWrapperDto) {
         Long userId = userModuleService.getUserIdByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return new BaseSuccessResponse<>(recommendService.discountCardRecommend(mapRequestWrapperDto.getMapRequestDtos(), userId));
