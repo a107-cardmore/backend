@@ -32,6 +32,7 @@ function DiscountPage() {
         setMonth(month - 1);
       }
     }
+    setFiltered(false);
   };
 
   const getDate = () => {
@@ -206,13 +207,13 @@ function DiscountPage() {
           <div
             className={css`
               --height: 2rem;
-              background-color: #f6f6f6;
+              background-color: ${!filtered ? "#979797" : "#f6f6f6"};
               line-height: var(--height);
               height: var(--height);
               padding: 0 1rem;
               margin-right: 0.5rem;
               border-radius: 1rem;
-              color: #979797;
+              color: ${!filtered ? "#f6f6f6" : "#979797"};
               box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
             `}
             onClick={() => setFiltered(false)}
@@ -240,7 +241,7 @@ function DiscountPage() {
                   key={index}
                   className={css`
                     --height: 2rem;
-                    background-color: ${selectedCardIndex === index
+                    background-color: ${filtered && selectedCardIndex === index
                       ? "#979797"
                       : "#f6f6f6"};
                     line-height: var(--height);
@@ -249,7 +250,7 @@ function DiscountPage() {
                     padding: 0 1rem;
                     margin-right: 0.5rem;
                     border-radius: 1rem;
-                    color: ${selectedCardIndex === index
+                    color: ${filtered && selectedCardIndex === index
                       ? "#f6f6f6"
                       : "#979797"};
                     box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
