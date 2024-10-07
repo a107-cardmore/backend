@@ -23,6 +23,7 @@ function ExpenditureCard({ transactionList = [] }) {
         className={css`
           display: flex;
           flex-direction: column;
+          height: 100%;
         `}
       >
         <div
