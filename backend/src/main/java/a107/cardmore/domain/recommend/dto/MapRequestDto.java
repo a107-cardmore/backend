@@ -16,6 +16,7 @@ public class MapRequestDto {
     private MerchantCategory merchantCategory;
     private double latitude;
     private double longitude;
+    private String address;
 
 }
 
