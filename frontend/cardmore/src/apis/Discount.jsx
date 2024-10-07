@@ -9,3 +9,18 @@ export const discountAll = async () => {
     return response;
   } catch (error) {}
 };
+
+export const discountHistory = async (time) => {
+  try {
+    console.log("time", time);
+    const response = await axios
+      .get(`/discounts?year=${time.year}&month=${time.month}`)
+      .then((res) => {
+        return res.data;
+      });
+    console.log("[IN AXIOS] discount history all", response);
+    return response;
+  } catch (error) {
+    console.error("discount history all fail : ", error);
+  }
+};

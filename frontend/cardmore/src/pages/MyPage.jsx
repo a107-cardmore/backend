@@ -3,17 +3,20 @@ import { useEffect, useState, useRef } from "react";
 import Chart from "chart.js/auto";
 import ExpenditureCard from "../components/ExpenditureCard";
 import NavBar from "../components/NavBar";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-
 import { getTransactionAll } from "../apis/Mypage";
 
 function MyPage() {
+  const navigate = useNavigate();
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
   const [transaction, setTransaction] = useState(null);
   const [selectedCardIndex, setSelectedCardIndex] = useState(0);
-  const [cardNameList, setSelectedCardNameList] = useState([{ value: 0, label: "전체" }]);
+  const [cardNameList, setSelectedCardNameList] = useState([
+    { value: 0, label: "전체" },
+  ]);
 
   const [data, setData] = useState(null);
 
@@ -60,11 +63,15 @@ function MyPage() {
       );
 
       const newData = {
-        labels: transaction.result.categoryList.map((category) => category.name),
+        labels: transaction.result.categoryList.map(
+          (category) => category.name
+        ),
         datasets: [
           {
             label: "소비 금액",
-            data: transaction.result.categoryList.map((category) => category.balance),
+            data: transaction.result.categoryList.map(
+              (category) => category.balance
+            ),
             backgroundColor: [
               "rgba(255, 230, 220, 100)",
               "rgba(244, 255, 190, 100)",
@@ -168,6 +175,7 @@ function MyPage() {
                 padding-top: 1rem;
                 width: 15rem;
               `}
+              alt=""
             ></img>
           </div>
         </>
@@ -204,6 +212,7 @@ function MyPage() {
               padding: 5px;
               background-color: #555555;
             `}
+            onClick={() => navigate("/recommend")}
           >
             카드 추천 받기
           </button>
@@ -283,7 +292,9 @@ function MyPage() {
           {/* Props로 데이터 넘겨주기 */}
           <ExpenditureCard
             transactionList={
-              transaction !== null ? transaction.result.transactionList[selectedCardIndex] : []
+              transaction !== null
+                ? transaction.result.transactionList[selectedCardIndex]
+                : []
             }
           />
         </div>

@@ -10,6 +10,7 @@ import CompanySelectPage from "./pages/CompanySelectPage";
 import MyPage from "./pages/MyPage";
 import CardSelectPage from "./pages/CardSelectPage";
 import DiscountPage from "./pages/DiscountPage";
+import CardRecommendPage from "./pages/CardRecommendPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/company-select" element={<CompanySelectPage />}></Route>
         <Route path="/card-select" element={<CardSelectPage />}></Route>
         <Route path="/discount" element={<DiscountPage />}></Route>
+        <Route path="/recommend" element={<CardRecommendPage />}></Route>
 
         {/*<Route path="/" element={<Page3 />}></Route> */}
       </Routes>
