@@ -1,5 +1,6 @@
 package a107.cardmore.domain.discount.repository;
 
+import a107.cardmore.domain.card.entity.Card;
 import a107.cardmore.domain.discount.entity.Discount;
 import a107.cardmore.domain.user.entity.User;
 import a107.cardmore.util.constant.MerchantCategory;
@@ -32,5 +33,4 @@ public interface DiscountRepository extends JpaRepository<Discount,Long> {
             "and  year(d.paymentDate) = :year "
     )
     Long totalUserDiscountPrice(@Param("user")User user, Integer year, Integer month);
-
 }

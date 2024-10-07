@@ -12,9 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DiscountDto {
-    private List<DiscountDetailDto> REFUELING;
-    private List<DiscountDetailDto> MARKET;
-    private List<DiscountDetailDto> TRAFFIC;
-    private List<DiscountDetailDto> FOREIGN;
-    private List<DiscountDetailDto> LIFE;
+    private List<String> categoryNames;
+    private List<String> cardNames;
+    private List<DiscountDetailDto> discountInfos;
 }

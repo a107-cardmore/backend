@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +33,15 @@ public class DiscountService {
         return discountRepository.totalUserDiscountPrice(user, LocalDate.now().getYear(), LocalDate.now().getMonthValue());
     }
 
-    public List<DiscountDetailDto> getTotalDiscountCardData(String email, Integer year, Integer month) {
+    public DiscountDto getTotalDiscountCardData(String email, Integer year, Integer month) {
         User user = userModuleService.getUserByEmail(email);
 
         List<Object[]> discounts = discountRepository.findAllByUserIdAndYearAndMonth(user.getId(),year, month);
+
         List<DiscountDetailDto> discountDtos = new ArrayList<>();
         List<CardResponseRestTemplateDto> cardResponseInfos = restTemplateUtil.inquireSignUpCreditCardList(user.getUserKey());
+        Set<String> cardNames = new HashSet<>();
+        Set<String> categoryNames = new HashSet<>();
 
         for(Object[] discount : discounts) {
             String merchantCategory = (String) discount[0];
@@ -45,16 +50,22 @@ public class DiscountService {
             String cardName = cardResponseInfos.stream().filter(cardResponseInfo -> cardResponseInfo.getCardNo().equals(card.getCardNo())).findFirst().map(CardResponseRestTemplateDto::getCardName)
                     .orElseThrow(() -> new BadRequestException("카드 이름을 찾을 수 없습니다."));
 
+            categoryNames.add(merchantCategory);
+            cardNames.add(cardName);
             discountDtos.add(DiscountDetailDto.builder()
-                            .cardId(card.getCardNo())
-                            .cardName(cardName)
-                            .merchantCategory(merchantCategory)
-                            .colorTitle(card.getColorTitle())
-                            .colorBackground(card.getColorBackground())
-                            .price(totalPrice)
+                    .cardId(card.getCardNo())
+                    .cardName(cardName)
+                    .merchantCategory(merchantCategory)
+                    .colorTitle(card.getColorTitle())
+                    .colorBackground(card.getColorBackground())
+                    .price(totalPrice)
                     .build());
         }
 
-        return discountDtos;
+        return DiscountDto.builder()
+                .discountInfos(discountDtos)
+                .categoryNames(categoryNames.stream().toList())
+                .cardNames(cardNames.stream().toList())
+                .build();
     }
 }
