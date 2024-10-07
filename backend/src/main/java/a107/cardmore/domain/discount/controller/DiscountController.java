@@ -1,6 +1,7 @@
 package a107.cardmore.domain.discount.controller;
 
 import a107.cardmore.domain.discount.dto.DiscountDetailDto;
+import a107.cardmore.domain.discount.dto.DiscountDto;
 import a107.cardmore.domain.discount.service.DiscountService;
 import a107.cardmore.util.base.BaseSuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class DiscountController {
     }
 
     @GetMapping
-    public BaseSuccessResponse<List<DiscountDetailDto>> getTotalDiscountCardData(@RequestParam(name = "year") Integer year, @RequestParam(name = "month") Integer month){
+    public BaseSuccessResponse<DiscountDto> getTotalDiscountCardData(@RequestParam(name = "year") Integer year, @RequestParam(name = "month") Integer month){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         return new BaseSuccessResponse<>(discountService.getTotalDiscountCardData(userEmail, year, month));
     }
