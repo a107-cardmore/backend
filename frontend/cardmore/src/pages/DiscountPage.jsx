@@ -41,7 +41,8 @@ function DiscountPage() {
   const getDate = () => {
     const currentDate = new Date();
     setYear(currentDate.getFullYear());
-    setMonth(currentDate.getMonth());
+    setMonth(currentDate.getMonth()+1);
+    console.log(currentDate);
     console.log(currentDate.getFullYear(), currentDate.getMonth());
   };
 
