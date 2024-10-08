@@ -110,6 +110,7 @@ function DiscountPage() {
           position: absolute;
           top: 1.3rem;
           right: 1rem;
+          cursor: pointer;
         `}
         src="X.svg"
         alt=""
@@ -199,7 +200,14 @@ function DiscountPage() {
             margin-bottom: 1rem;
           `}
         >
-          <img src="/LeftArrow.svg" alt="" onClick={() => nextMonth(-1)} />
+          <img
+            src="/LeftArrow.svg"
+            alt=""
+            onClick={() => nextMonth(-1)}
+            className={css`
+              cursor: pointer;
+            `}
+          />
           <div
             className={css`
               color: #6c6c6c;
@@ -209,7 +217,14 @@ function DiscountPage() {
           >
             {year}. {month}.
           </div>
-          <img src="/RightArrow.svg" alt="" onClick={() => nextMonth(1)} />
+          <img
+            src="/RightArrow.svg"
+            alt=""
+            onClick={() => nextMonth(1)}
+            className={css`
+              cursor: pointer;
+            `}
+          />
         </div>
         <div
           className={css`
@@ -228,6 +243,7 @@ function DiscountPage() {
               border-radius: 1rem;
               color: ${!filtered ? "#f6f6f6" : "#979797"};
               box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
+              cursor: pointer;
             `}
             onClick={() => setFiltered(false)}
           >
@@ -263,6 +279,7 @@ function DiscountPage() {
                     padding: 0 1rem;
                     margin-right: 0.5rem;
                     border-radius: 1rem;
+                    cursor: pointer;
                     color: ${filtered && selectedCardIndex === index
                       ? "#f6f6f6"
                       : "#979797"};
@@ -282,13 +299,41 @@ function DiscountPage() {
           position: absolute;
           bottom: 20vh;
           display: flex;
+          /* height: 30%; */
           flex-direction: column;
           justify-content: center;
           align-items: center;
         `}
       >
-        {discountData && (
+        {discountData && discountData.cardNames.length > 0 ? (
           <DiscountChart data={filtered ? filteredData : discountData} />
+        ) : (
+          <div
+            className={css`
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 40%;
+            `}
+          >
+            <img
+              src="/Empty.svg"
+              className={css`
+                width: 7rem;
+              `}
+              alt=""
+            ></img>
+            <p
+              className={css`
+                color: #6b6b6b;
+                font-size: 1.2rem;
+                font-weight: 600;
+              `}
+            >
+              혜택 내역이 존재하지 않습니다.
+            </p>
+          </div>
         )}
       </div>
       <NavBar isSelected={"Home"} />

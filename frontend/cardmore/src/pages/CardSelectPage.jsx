@@ -135,7 +135,7 @@ function CardSelectPage() {
           {cards &&
             cards.map(
               (company, CompIndex) =>
-                company.isSelected && (
+                company.isSelected && company.cards.length > 0 && (
                   <li
                     key={CompIndex}
                     className={css`
