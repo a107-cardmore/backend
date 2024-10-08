@@ -19,9 +19,10 @@ function CardRecommendPage() {
           card: {
             ...item.card,
             cardNo: "0000000000000000",
-            cardExpiryDate:"00000000",
+            cardExpiryDate: "00000000",
             colorBackground: item.colorBackground,
             colorTitle: item.colorTitle,
+            cvc: "000,",
           },
         };
       });
