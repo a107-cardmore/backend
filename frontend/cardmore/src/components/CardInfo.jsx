@@ -1,12 +1,12 @@
 import { css } from "@emotion/css";
 import Card from "./Card";
 
-function CardInfo({ data }) {
-  console.log(data);
+function CardInfo({ data, backgroundColor }) {
+  console.log("[CARD INFO]", data);
   return (
     <div
       className={css`
-        background-color: #ffffff;
+        background-color: ${backgroundColor ? `${backgroundColor}` : "#ffffff"};
         display: flex;
         align-items: center;
         justify-content: space-between;

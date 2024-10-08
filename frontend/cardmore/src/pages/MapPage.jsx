@@ -6,6 +6,7 @@ import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import { css } from "@emotion/css";
 import { getRecommendedCards } from "../apis/Recommend";
 import CardInfo from "../components/CardInfo";
+import CardModal from "../components/CardModal";
 
 const MapPageStyle = styled.div`
   height: 100vh;
@@ -32,31 +33,18 @@ const InputField = styled.input`
   box-shadow: 0 4px 4px rgb(0, 0, 0, 0.25);
 `;
 
-const MenuBar = styled.div`
-  position: absolute;
-  bottom: ${(props) => props.position}px;
-  z-index: 2;
-  width: 100%;
-  height: 100vh;
-  background-color: white;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.2);
-  padding-top: 0.3rem;
-`;
-
-const DragHandle = styled.div`
-  width: 3rem;
-  height: 0.3rem;
-  background-color: #c7c7c7;
-  border-radius: 0.3rem;
-  margin: 0.6rem auto;
-`;
-
-const MenuContent = styled.div`
-  padding: 0.6rem;
-  text-align: center;
-`;
+// const MenuBar = styled.div`
+//   position: absolute;
+//   bottom: ${(props) => props.position}px;
+//   z-index: 2;
+//   width: 100%;
+//   height: 100vh;
+//   background-color: white;
+//   border-top-left-radius: 20px;
+//   border-top-right-radius: 20px;
+//   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.2);
+//   padding-top: 0.3rem;
+// `;
 
 const CategoryContainer = styled.div`
   position: absolute;
@@ -68,22 +56,17 @@ const CategoryContainer = styled.div`
   z-index: 2;
 `;
 
-const CategoryTag = styled.div`
-  --height: 2rem;
-  background-color: white;
-  line-height: var(--height);
-  height: var(--height);
-  padding: 0 1rem;
-  margin-right: 0.5rem;
-  border-radius: 1rem;
-  color: #979797;
-  box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
-`;
 const { kakao } = window;
 
 const MapPage = () => {
   // console.log("[MAPPAGE RENDERING]");
-  const [position, setPosition] = useState(0); // 메뉴바의 초기 위치
+  // 초기 정보 받아올 때
+  const [loading, setLoading] = useState(true);
+
+  // 모달 관련 states
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState(null);
+  const [isMenuBarClicked, setIsMenuBarClicked] = useState(false);
   const [nowLocation, setNowLocation] = useState({
     // 현재 사용자의 위치
     center: {
@@ -104,8 +87,8 @@ const MapPage = () => {
   const [clickedPlace, setClickedPlace] = useState(null); // 선택된 장소
 
   useEffect(() => {
-    const initialPosition = -window.innerHeight * 0.8;
-    setPosition(initialPosition);
+    // const initialPosition = -window.innerHeight * 0.8;
+    // setPosition(initialPosition);
 
     // geolocation을 이용해서 접속 위치를 얻어옴
     if (navigator.geolocation) {
@@ -151,13 +134,7 @@ const MapPage = () => {
 
   const clickMenuBar = (e) => {
     e.stopPropagation();
-    const upPosition = -window.innerHeight * 0.3;
-    setPosition(upPosition);
-  };
-
-  const clickMap = (e) => {
-    const downPosition = -window.innerHeight * 0.8;
-    setPosition(downPosition);
+    setIsMenuBarClicked(true);
   };
 
   //------------ 여기까지 MenuBar 관련 함수 -----------------
@@ -168,7 +145,7 @@ const MapPage = () => {
 
   const [map, setMap] = useState();
   const mapRef = useRef(null);
-  const nextButton = useRef(null);
+  // const nextButton = useRef(null);
 
   const removeMarker = () => {
     // for (var i = 0; i < markers.length; i++) {
@@ -219,6 +196,11 @@ const MapPage = () => {
 
   //------------ 여기까지 Keyword 관련 함수 -----------------
 
+  useEffect(() => {
+    getPlacesInWindow();
+    setLoading(false);
+  }, []);
+
   // 현재 위치 기준으로 정보 가져오기
   const getPlacesInWindow = () => {
     var ps = new kakao.maps.services.Places(map);
@@ -238,24 +220,35 @@ const MapPage = () => {
     } else {
       throw new Error(`Invalid category: ${selectedCategory}`);
     }
-    ps.categorySearch(categoryCode, setPlacesSearchIW, { useMapBounds: true });
-  };
-
-  const addPlacesSearchIW = (data, status) => {
-    if (status === kakao.maps.services.Status.OK) {
-      console.log("marker data : ", data);
-      var markers_temp = markers;
-      for (var i = 0; i < data.length; i++) {
-        markers_temp.push(data[i]);
-      }
-      setMarkers(markers_temp);
-    }
+    ps.categorySearch(categoryCode, setPlacesSearchIW, {
+      useMapBounds: true,
+      size: 5,
+      useMapCenter: true,
+    });
+    // ps.categorySearch("OL7", addPlacesSearchIW, {
+    //   useMapBounds: true,
+    //   size: 5,
+    // });
   };
 
   const setPlacesSearchIW = (data, status) => {
     if (status === kakao.maps.services.Status.OK) {
+      console.log("[PLACE DATA FROM KAKAOMAP API]", data);
       getCardRecommendation(data).then((res) => {
         setMarkers(res);
+      });
+    }
+  };
+
+  const addPlacesSearchIW = (data, status) => {
+    if (status === kakao.maps.services.Status.OK) {
+      console.log("[PLACE DATA FROM KAKAOMAP API]", data);
+      getCardRecommendation(data).then((res) => {
+        let tempMarkers = markers;
+        for (var i = 0; i < res.length; i++) {
+          tempMarkers.push(res[i]);
+        }
+        setMarkers(tempMarkers);
       });
     }
   };
@@ -271,6 +264,7 @@ const MapPage = () => {
         latitude: Number(data[i].y),
         longitude: Number(data[i].x),
         address: data[i].road_address_name,
+        placeUrl: data[i].place_url,
       });
     }
     console.log("[mapRequestDtos]", mapRequestDtos);
@@ -304,10 +298,44 @@ const MapPage = () => {
     console.log("Updated clickedPlace:", clickedPlace);
   }, [clickedPlace]);
 
-  const matchCategoryNameWith = () => {};
+  const merchantCategory2categoryName = (merchantCategory) => {
+    if (merchantCategory === "LIFE") {
+      return "생활";
+    } else {
+      return merchantCategory;
+    }
+  };
+
+  const sortCards = (res) => {
+    // console.log("[IN SORT FUNCTION]", res);
+    const sortedRes = res.sort((a, b) => {
+      if (
+        Number(
+          a.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0]
+        ) <
+        Number(b.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0])
+      ) {
+        return 1;
+      }
+      if (
+        Number(
+          a.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0]
+        ) >
+        Number(b.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0])
+      ) {
+        return -1;
+      }
+      return 0;
+    });
+    return sortedRes;
+  };
+
+  const getLimitedCardInfos = (arr) => {
+    return arr.length > 3 ? arr.slice(0, 3) : arr;
+  };
 
   return (
-    <MapPageStyle onClick={clickMap}>
+    <MapPageStyle onClick={() => setIsMenuBarClicked(false)}>
       <InputField onChange={handleKeyword} />
       <CategoryContainer>
         {["카페", "음식점", "편의점", "주유소", "문화시설", "대형마트"].map(
@@ -322,6 +350,7 @@ const MapPage = () => {
                 height: var(--height);
                 padding: 0 1rem;
                 margin-right: 0.5rem;
+                margin-bottom: 0.4rem;
                 border-radius: 1rem;
                 color: ${selectedCategory === text ? "white" : "979797"};
                 box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
@@ -361,7 +390,7 @@ const MapPage = () => {
             }}
           />
         )}
-        {markers.length > 0 &&
+        {markers?.length > 0 &&
           markers?.map((markerInfo) => (
             <>
               <MapMarker // 장소 마커 생성
@@ -387,37 +416,62 @@ const MapPage = () => {
                     flex-direction: row;
                   `}
                 >
-                  {markerInfo.cardInfos.map((cardinfo) => (
-                    <div
-                      className={css`
-                        color: ${cardinfo.colorTitle};
-                        border: 0.1rem solid ${cardinfo.colorTitle};
-                        background-color: ${cardinfo.colorBackground};
-                        border-radius: 0.3rem;
-                        margin: 0 0.2rem;
-                        padding: 0.1rem 0.2rem;
-                      `}
-                    >
-                      {cardinfo.cardDescription.split(",")[0].split(" ")[1]}
-                    </div>
-                  ))}
+                  {getLimitedCardInfos(sortCards(markerInfo.cards)).map(
+                    (cardinfo) => (
+                      <div
+                        className={css`
+                          color: ${cardinfo.colorTitle};
+                          border: 0.1rem solid ${cardinfo.colorTitle};
+                          background-color: ${cardinfo.colorBackground};
+                          border-radius: 0.3rem;
+                          margin: 0 0.2rem;
+                          padding: 0.1rem 0.2rem;
+                        `}
+                      >
+                        {
+                          cardinfo.card.cardDescription
+                            .split(",")[0]
+                            .split(" ")[1]
+                        }
+                      </div>
+                    )
+                  )}
                 </div>
               </CustomOverlayMap>
             </>
           ))}
       </Map>
-      <MenuBar position={position} onClick={clickMenuBar}>
+      <div
+        // MenuBar
+        className={css`
+          position: absolute;
+          bottom: ${isMenuBarClicked
+            ? `-${window.innerHeight * 0.3}px`
+            : `-${window.innerHeight * 0.8}px`};
+          z-index: 2;
+          width: 100%;
+          height: 100vh;
+          background-color: white;
+          border-top-left-radius: 20px;
+          border-top-right-radius: 20px;
+          box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.2);
+          padding-top: 0.3rem;
+        `}
+        onClick={clickMenuBar}
+      >
         {clickedPlace && (
           <div
             className={css`
               padding: 0.6rem;
               display: flex;
               justify-content: center;
+              padding-top: 1rem;
+              margin-top: 1.5rem;
             `}
           >
             <div
               className={css`
-                width: 80%;
+                width: 50%;
                 /* height: 13.627rem; */
                 background-color: white;
                 display: flex;
@@ -430,23 +484,139 @@ const MapPage = () => {
                   display: flex;
                   flex-direction: row;
                   width: 100%;
-                  justify-content: space-evenly;
+                  line-height: 1.3rem;
+                  margin-bottom: 0.5rem;
                 `}
               >
-                <div className={``}>{clickedPlace.name}</div>
-                <div className={``}>{clickedPlace.merchantCategory}</div>
+                <div
+                  // 상호명
+                  className={css`
+                    font-weight: 500;
+                    font-size: 1.3rem;
+                    margin-right: 0.5rem;
+                  `}
+                >
+                  {clickedPlace.name}
+                </div>
+                <div
+                  // 카테고리
+                  className={css`
+                    font-weight: 200;
+                    font-size: 1rem;
+                  `}
+                >
+                  {merchantCategory2categoryName(clickedPlace.merchantCategory)}
+                </div>
               </div>
-              <div className={``}>{clickedPlace.address}</div>
+              <div
+                // 도로명주소
+                className={css`
+                  display: flex;
+                  flex-direction: row;
+                  width: 100%;
+                  font-size: 0.9rem;
+                `}
+              >
+                {clickedPlace.address}
+              </div>
+            </div>
+            <div
+              className={css`
+                width: 25%;
+                background-color: #f6f6f6;
+                border: 1px solid #bbbbbb;
+                border-radius: 2rem;
+                font-size: 1.1rem;
+                height: 2.6rem;
+                justify-content: center;
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+                margin-left: 2rem;
+                cursor: pointer;
+              `}
+              onClick={() => (window.location.href = clickedPlace.placeUrl)}
+            >
+              추가 정보
             </div>
           </div>
         )}
-        {/* <div>카드혜택</div>
-        {clickedPlace.cardInfos &&
-          clickedPlace.cardInfos.map((info, index) => (
-            <CardInfo key={index} data={info} />
-          ))} */}
-      </MenuBar>
+        {isMenuBarClicked && (
+          <>
+            <div
+              className={css`
+                display: flex;
+                width: 100%;
+                padding-left: 1.6rem;
+                padding-top: 1rem;
+                padding-bottom: 0.5rem;
+                font-size: 1.5rem;
+                font-weight: 800;
+              `}
+            >
+              카드 혜택
+            </div>
+            {clickedPlace?.cards && (
+              <div
+                className={css`
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  width: 100%;
+                  overflow-y: auto; // 수직 스크롤 추가
+                  max-height: 22rem;
+                `}
+              >
+                {clickedPlace.cards.map((info, index) => (
+                  <div
+                    className={css`
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      width: 85%;
+                    `}
+                    onClick={() => {
+                      console.log("[MODAL SETUP DATA]", {
+                        ...info.card,
+                        cardNo: info.cardNo,
+                        cardExpiryDate: info.cardNo,
+                        colorTitle: info.colorTitle,
+                        colorBackground: info.colorBackground,
+                        cardBenefits: info.card.cardBenefitsInfo,
+                      });
+                      setModalData({
+                        ...info.card,
+                        cardNo: info.cardNo,
+                        cardExpiryDate: info.cardNo,
+                        colorTitle: info.colorTitle,
+                        colorBackground: info.colorBackground,
+                        cardBenefits: info.card.cardBenefitsInfo,
+                      });
+                      setShowModal(true);
+                    }}
+                  >
+                    <CardInfo
+                      key={index}
+                      backgroundColor={"#F6F6F6"}
+                      data={{
+                        card: {
+                          ...info.card,
+                          cardNo: info.cardNo,
+                          cardExpiryDate: info.cardNo,
+                          colorTitle: info.colorTitle,
+                          colorBackground: info.colorBackground,
+                        },
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
       <NavBar isSelected={"Map"} />
+      {showModal && <CardModal setShowModal={setShowModal} data={modalData} />}
     </MapPageStyle>
   );
 };
