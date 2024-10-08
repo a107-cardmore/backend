@@ -7,6 +7,7 @@ import a107.cardmore.domain.card.dto.CardResponseDto;
 import a107.cardmore.domain.card.entity.Card;
 import a107.cardmore.domain.card.repository.CardRepository;
 import a107.cardmore.domain.card.service.CardModuleService;
+import a107.cardmore.domain.recommend.dto.CardMapResponseDto;
 import a107.cardmore.domain.recommend.dto.CardRecommendResponseDto;
 import a107.cardmore.domain.recommend.dto.MapRequestDto;
 import a107.cardmore.domain.recommend.dto.MapResponseDto;
@@ -48,7 +49,7 @@ public class RecommendService {
     private final UserRepository userRepository;
 
     public List<MapResponseDto> discountCardRecommend(List<MapRequestDto> mapRequestDtoList, Long userId) {
-        User user = userRepository.findById(userId).orElse(null);   //Todo: moduleService로 바꾸기
+        User user = userRepository.findById(userId).orElse(null); // Todo: moduleService로 바꾸기
         List<CardResponseRestTemplateDto> userCardList = restTemplateUtil.inquireSignUpCreditCardList(user.getUserKey()); //유저의 카드 목록
         List<CardResponseDto> userCardListInfo = getUserCardListInfo(userCardList, userId); //혜택까지 담긴 유저의 카드 목록
 
@@ -81,6 +82,7 @@ public class RecommendService {
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
                 .address(place.getAddress())
+                .placeUrl(place.getPlaceUrl())
                 .build();
 
             if (!topCards.isEmpty()) {
@@ -94,72 +96,29 @@ public class RecommendService {
                         // merchantCategory와 discountRate를 합친 문자열 생성
                         String discountRateString = benefitsInfo.getMerchantCategory() + " " + benefitsInfo.getDiscountRate().intValue() + "%";
                         // mapResponseDto에 discountDescription 설정
-                        mapResponseDto.setDiscountRate(discountRateString);
+//                        mapResponseDto.setDiscountRate(discountRateString);
                     });
 
-                // 각 카드를 복사해서 새로운 리스트에 저장
-                List<CardResponseDto> updatedCards = new ArrayList<>();
+                // 각 카드를 CardMapResponseDto로 변환하여 새로운 리스트에 저장
+                List<CardMapResponseDto> updatedCards = new ArrayList<>();
                 for (CardResponseDto card : topCards) {
-                    StringBuilder descriptionBuilder = new StringBuilder();
-
-                    List<CardBenefitResponseDto> benefits = new ArrayList<>(card.getCardBenefits());
-
-                    // 먼저 place.merchantCategory와 일치하는 혜택을 추가
-                    benefits.stream()
-                        .filter(benefitsInfo -> benefitsInfo.getCategoryId()
-                            .equals(place.getMerchantCategory().getValue()))
-                        .findFirst()
-                        .ifPresent(benefitsInfo -> {
-                            descriptionBuilder.append(benefitsInfo.getMerchantCategory())
-                                .append(" ")
-                                .append(benefitsInfo.getDiscountRate())
-                                .append("% 할인, ");
-                            benefits.remove(benefitsInfo); // 일치하는 혜택은 리스트에서 제거
-                        });
-
-                    // 나머지 혜택을 할인율 순으로 정렬하여 추가
-                    benefits.stream()
-                        .sorted(Comparator.comparingDouble(CardBenefitResponseDto::getDiscountRate).reversed())
-                        .forEach(benefitsInfo -> {
-                            descriptionBuilder.append(benefitsInfo.getMerchantCategory())
-                                .append(" ")
-                                .append(benefitsInfo.getDiscountRate())
-                                .append("% 할인, ");
-                        });
-
-                    // 마지막에 추가된 ", " 제거
-                    if (!descriptionBuilder.isEmpty()) {
-                        descriptionBuilder.setLength(descriptionBuilder.length() - 2);  // 끝에서 두 글자(", ")를 제거
-                    }
-
-                    // CardResponseDto 복사하여 description 추가
-                    CardResponseDto copiedCard = CardResponseDto.builder()
-                        .cardId(card.getCardId())
-                        .companyId(card.getCompanyId())
-                        .companyName(card.getCompanyName())
+                    CardMapResponseDto cardMapResponseDto = CardMapResponseDto.builder()
+                        .card(CardProductResponseRestTemplateDto.fromCardResponseDto(card)) // CardProductResponseRestTemplateDto로 변환
                         .cardNo(card.getCardNo())
-                        .cardName(card.getCardName())
-                        .cardUniqueNo(card.getCardUniqueNo())
-                        .cvc(card.getCvc())
-                        .cardExpiryDate(card.getCardExpiryDate())
-                        .cardDescription(descriptionBuilder.toString()) // 복사본에 description 추가
+                        .expireDate(card.getCardExpiryDate())
                         .colorBackground(card.getColorBackground())
                         .colorTitle(card.getColorTitle())
-                        .isSelected(card.getIsSelected())
-                        .limitRemaining(card.getLimitRemaining())
-                        .performanceRemaining(card.getPerformanceRemaining())
-                        .cardBenefits(card.getCardBenefits())  // 기존 혜택 복사
                         .build();
 
-                    updatedCards.add(copiedCard);  // 복사된 카드 추가
+                    updatedCards.add(cardMapResponseDto);
                 }
 
-                mapResponseDto.setCardInfos(updatedCards);
-                placeWithCard.add(mapResponseDto);  // 최종 MapResponseDto를 placeWithCard에 추가
+                mapResponseDto.setCards(updatedCards); // 새로운 CardMapResponseDto 리스트 설정
+                placeWithCard.add(mapResponseDto); // 최종 MapResponseDto를 placeWithCard에 추가
             }
         }
-        return placeWithCard;
 
+        return placeWithCard;
     }
 
     /**
@@ -169,9 +128,9 @@ public class RecommendService {
      */
     public List<CardResponseDto> getUserCardListInfo(List<CardResponseRestTemplateDto> userCardList, Long userId) {
         // userId로 조회한 카드 리스트
-        List<Card> userOwnedCards = cardRepository.findCardsByUserId(userId);   //TODO: moduleService로 교체
+        List<Card> userOwnedCards = cardRepository.findCardsByUserId(userId); //TODO: moduleService로 교체
 
-        //모든 카드목록 조회
+        // 모든 카드목록 조회
         List<CardProductResponseRestTemplateDto> creditCardList = restTemplateUtil.inquireCreditCardList();
 
         return creditCardList.stream()
@@ -186,14 +145,35 @@ public class RecommendService {
 
                 // 카드와 카드 상품 정보를 바탕으로 CardResponseDto 생성
                 if (matchedCard != null) {
-                    return new CardResponseDto(matchedCard, creditCard);
+                    return CardResponseDto.builder()
+                        .cardId(matchedCard.getId())
+                        .companyId(matchedCard.getCompany().getCompanyNo())
+                        .companyName(matchedCard.getCompany().getName())
+                        .cardNo(matchedCard.getCardNo())
+                        .cardUniqueNo(matchedCard.getCardUniqueNo())
+                        .cvc(matchedCard.getCvc())
+                        .cardExpiryDate(matchedCard.getCardExpiryDate())
+                        .cardName(creditCard.getCardName())
+                        .cardDescription(creditCard.getCardDescription())
+                        .colorBackground(matchedCard.getColorBackground())
+                        .colorTitle(matchedCard.getColorTitle())
+                        .isSelected(matchedCard.getIsSelected())
+                        .limitRemaining(matchedCard.getLimitRemaining())
+                        .performanceRemaining(matchedCard.getPerformanceRemaining())
+                        .cardTypeCode(creditCard.getCardTypeCode())  // 추가된 필드
+                        .cardTypeName(creditCard.getCardTypeName())  // 추가된 필드
+                        .cardBenefits(creditCard.getCardBenefitsInfo().stream()
+                            .map(CardBenefitResponseDto::new) // CardBenefitsInfo -> CardBenefitResponseDto 변환
+                            .collect(Collectors.toList()))
+                        .build();
                 } else {
                     return null; // 매칭되는 카드가 없으면 null 반환
                 }
             })
-            .filter(Objects::nonNull) // null 값은 제외
+//            .filter(Objects::nonNull) // null 값은 제외
             .collect(Collectors.toList());
     }
+
 
     /**
      * 사용자에게 새로운 카드를 추천해주는 로직
