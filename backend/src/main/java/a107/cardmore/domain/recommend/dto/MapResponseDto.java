@@ -22,8 +22,8 @@ public class MapResponseDto {
     private MerchantCategory merchantCategory;
     private double latitude;
     private double longitude;
-    private String discountRate;
     private String address;
-    List<CardResponseDto> cardInfos;
+    private String placeUrl;
+    List<CardMapResponseDto> cards;
 
 }

@@ -17,6 +17,7 @@ public class MapRequestDto {
     private double latitude;
     private double longitude;
     private String address;
+    private String placeUrl;
 
 }
 

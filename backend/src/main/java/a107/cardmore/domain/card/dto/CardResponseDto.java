@@ -22,6 +22,8 @@ public class CardResponseDto {
     private String cardNo;
     private String cardName;
     private String cardUniqueNo;
+    private String cardTypeCode;
+    private String cardTypeName;
     private String cvc;
     private String cardExpiryDate;
     private String cardDescription;
