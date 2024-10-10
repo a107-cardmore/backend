@@ -444,8 +444,8 @@ const MapPage = () => {
           bottom: ${clickedPlace
             ? isMenuBarClicked
               ? `-${window.innerHeight * 0.2}px`
-              : `-${window.innerHeight * 0.7}px`
-            : `-${window.innerHeight * 0.9}px`};
+              : `-${window.innerHeight * 0.8}px`
+            : `-${window.innerHeight * 1.0}px`};
           z-index: 2;
           width: 100%;
           height: 100vh;
