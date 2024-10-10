@@ -61,7 +61,7 @@ const { kakao } = window;
 const MapPage = () => {
   // console.log("[MAPPAGE RENDERING]");
   // 초기 정보 받아올 때
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   // 모달 관련 states
   const [showModal, setShowModal] = useState(false);
@@ -192,10 +192,26 @@ const MapPage = () => {
 
   //------------ 여기까지 Keyword 관련 함수 -----------------
 
+  const [isMountedNowLocation, setIsMountedNowLocation] = useState(false);
   useEffect(() => {
-    getPlacesInWindow();
-    setLoading(false);
-  }, []);
+    // 첫 화면에서 nowLocation이 세팅되면 정보를 가져오게 구현
+    if (isMountedNowLocation) {
+      getPlacesInWindow();
+    } else {
+      setIsMountedNowLocation(true);
+    }
+    // setLoading(false);
+  }, [nowLocation]);
+
+  const [isMountedSelectedCategory, setIsMountedSelectedCategory] =
+    useState(false);
+  useEffect(() => {
+    if (isMountedSelectedCategory) {
+      getPlacesInWindow();
+    } else {
+      setIsMountedSelectedCategory(true);
+    }
+  }, [selectedCategory]);
 
   // 현재 위치 기준으로 정보 가져오기
   const getPlacesInWindow = () => {
@@ -216,6 +232,7 @@ const MapPage = () => {
     } else {
       throw new Error(`Invalid category: ${selectedCategory}`);
     }
+    console.log("[ps]", ps);
     ps.categorySearch(categoryCode, setPlacesSearchIW, {
       useMapBounds: true,
       size: 5,
@@ -228,14 +245,18 @@ const MapPage = () => {
   };
 
   const setPlacesSearchIW = (data, status) => {
+    console.log("[status]", status);
     if (status === kakao.maps.services.Status.OK) {
       // console.log("[PLACE DATA FROM KAKAOMAP API]", data);
       getCardRecommendation(data).then((res) => {
         setMarkers(res);
       });
+    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+      setMarkers([]);
     }
   };
 
+  // @deprecated
   const addPlacesSearchIW = (data, status) => {
     if (status === kakao.maps.services.Status.OK) {
       // console.log("[PLACE DATA FROM KAKAOMAP API]", data);
@@ -263,10 +284,10 @@ const MapPage = () => {
         placeUrl: data[i].place_url,
       });
     }
-    // console.log("[mapRequestDtos]", mapRequestDtos);
+    console.log("[mapRequestDtos]", mapRequestDtos);
     if (window.sessionStorage.getItem("accessToken")) {
       const res = await getRecommendedCards(mapRequestDtos);
-      // console.log("axios response data :", res.result);
+      console.log("axios response data :", res.result);
       if (res) {
         return res.result;
       }
@@ -290,9 +311,9 @@ const MapPage = () => {
     return null;
   };
 
-  // useEffect(() => {
-  //   console.log("Updated markers:", markers);
-  // }, [markers]);
+  useEffect(() => {
+    console.log("Updated markers:", markers);
+  }, [markers]);
 
   // useEffect(() => {
   //   console.log("Updated clickedPlace:", clickedPlace);
@@ -320,16 +341,20 @@ const MapPage = () => {
         Number(b.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0])
       ) {
         return 1;
-      }
-      if (
+      } else if (
         Number(
           a.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0]
         ) >
         Number(b.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0])
       ) {
         return -1;
+      } else {
+        if (a.card.cardUniqueNo > b.card.cardUniqueNo) {
+          return 1;
+        } else {
+          return -1;
+        }
       }
-      return 0;
     });
     return sortedRes;
   };
@@ -572,6 +597,17 @@ const MapPage = () => {
                   width: 100%;
                   overflow-y: auto; // 수직 스크롤 추가
                   max-height: 22rem;
+
+                  ::-webkit-scrollbar {
+                    width: 0.4rem;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    background-color: #dedede; /* 스크롤바 색상 */
+                    border-radius: 1rem; /* 스크롤바 모서리 둥글게 */
+                  }
+                  ::-webkit-scrollbar-corner {
+                    background-color: transparent; /* 배경색을 투명하게 설정 */
+                  }
                 `}
               >
                 {clickedPlace.cards.map((info, index) => (
