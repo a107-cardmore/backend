@@ -301,6 +301,10 @@ const MapPage = () => {
   const merchantCategory2categoryName = (merchantCategory) => {
     if (merchantCategory === "LIFE") {
       return "생활";
+    } else if (merchantCategory === "MARKET") {
+      return "마트";
+    } else if (merchantCategory === "REFUELING") {
+      return "주유소";
     } else {
       return merchantCategory;
     }
@@ -505,6 +509,7 @@ const MapPage = () => {
                   className={css`
                     font-weight: 200;
                     font-size: 1rem;
+                    min-width: 3rem;
                   `}
                 >
                   {merchantCategory2categoryName(clickedPlace.merchantCategory)}
@@ -543,7 +548,7 @@ const MapPage = () => {
             </div>
           </div>
         )}
-        {isMenuBarClicked && (
+        {clickedPlace && isMenuBarClicked && (
           <>
             <div
               className={css`
