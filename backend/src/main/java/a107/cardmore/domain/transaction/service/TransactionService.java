@@ -168,7 +168,7 @@ public class TransactionService {
                 //할인 금액 계산
                 double discountRate = cardProduct.getCardBenefitsInfo().stream().filter(s->s.getCategoryName().equals(merchant.getCategoryName())).findFirst().orElseThrow(()->new BadRequestException("카테고리가 존재하지 않습니다.")).getDiscountRate();
                 Long discountPrice = (long) (requestDto.getPaymentBalance() * discountRate / 100);
-                Long price = totalDiscountPrice +discountPrice <cardProduct.getMaxBenefitLimit()? totalDiscountPrice +discountPrice : cardProduct.getMaxBenefitLimit();
+                Long price = totalDiscountPrice +discountPrice <cardProduct.getMaxBenefitLimit()? discountPrice : cardProduct.getMaxBenefitLimit();
 
                 Discount discount = Discount.builder()
                         .card(card)

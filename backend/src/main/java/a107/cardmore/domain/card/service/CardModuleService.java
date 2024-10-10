@@ -58,7 +58,7 @@ public class CardModuleService {
 
     public List<Card> findCardsByUser(User user){
         List<Company> companies = companyRepository.findAllByUser(user);
-        return companies.stream().flatMap(company -> cardRepository.findAllByCompany(company).stream()).collect(Collectors.toList());
+        return companies.stream().flatMap(company -> cardRepository.findAllByCompanyAndIsSelectedTrue(company).stream()).collect(Collectors.toList());
     }
 
     public Card findCardById(Long id){
