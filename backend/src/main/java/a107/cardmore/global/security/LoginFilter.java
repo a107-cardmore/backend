@@ -22,11 +22,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
-        System.out.println("request : " + request);
+//        System.out.println("request : " + request);
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 
-        System.out.println(username);
+//        System.out.println(username);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
@@ -35,12 +35,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-        System.out.println("success");
+//        System.out.println("success");
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         String username = customUserDetails.getUsername();
 
-        System.out.println("customUserDetails" + customUserDetails.getUsername());
+//        System.out.println("customUserDetails" + customUserDetails.getUsername());
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -58,7 +58,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed){
-        System.out.println("fail");
+//        System.out.println("fail");
         response.setStatus(401);
     }
 }

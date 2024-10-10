@@ -78,7 +78,7 @@ public class CardService {
         List<CardResponseDto> mySelectedCards = new ArrayList<>();
 
         for(Card card : userCard){
-            System.out.println("cardId : " + card.getId());
+//            System.out.println("cardId : " + card.getId());
             if(!card.getIsSelected()) continue;
             for(CardProductResponseRestTemplateDto restCard : cards){
                 if(restCard.getCardUniqueNo().equals(card.getCardUniqueNo())){
@@ -99,7 +99,7 @@ public class CardService {
                 .filter(myCard -> !existingCardNos.contains(myCard.getCardNo()))
                 .forEach(myCard -> {
                     // userCards에서 myCard의 cardNo와 같은 값을 가진 Company 찾기
-                    System.out.println("myCard : " + myCard.getCardNo());
+//                    System.out.println("myCard : " + myCard.getCardNo());
                     Company company = companyModuleService.findUserCompany(myCard.getCardIssuerCode(), user);
                     cardModuleService.saveCard(company, myCard);
                 });
