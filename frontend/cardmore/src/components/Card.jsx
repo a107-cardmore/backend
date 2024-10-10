@@ -23,6 +23,7 @@ function Card({ data, setShowModal, isSelected }) {
         align-items: center;
         box-shadow: 0 0 5px rgb(0, 0, 0, 0.15);
         box-sizing: border-box;
+        cursor: pointer;
       `}
     >
       <div
@@ -52,6 +53,9 @@ function Card({ data, setShowModal, isSelected }) {
             viewBox="0 0 32 32"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className={css`
+              cursor: pointer;
+            `}
             onClick={_clickArrow}
           >
             <circle

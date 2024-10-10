@@ -5,10 +5,10 @@ export const getCards = async () => {
     const response = await axios.get("/cards").then((res) => {
       return res.data;
     });
-    console.log("[IN AXIOS] get Cards", response);
+    // console.log("[IN AXIOS] get Cards", response);
     return response;
   } catch (error) {
-    console.error("[IN AXIOS] get card error : ", error);
+    // console.error("[IN AXIOS] get card error : ", error);
   }
 };
 
@@ -17,9 +17,9 @@ export const getUser = async () => {
     const response = await axios.get("/users").then((res) => {
       return res.data;
     });
-    console.log("[IN AXIOS] get Users", response);
+    // console.log("[IN AXIOS] get Users", response);
     return response;
   } catch (error) {
-    console.error("[IN AXIOS] get user error : ", error);
+    // console.error("[IN AXIOS] get user error : ", error);
   }
 };

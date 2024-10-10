@@ -41,8 +41,9 @@ function DiscountPage() {
   const getDate = () => {
     const currentDate = new Date();
     setYear(currentDate.getFullYear());
-    setMonth(currentDate.getMonth());
-    console.log(currentDate.getFullYear(), currentDate.getMonth());
+    setMonth(currentDate.getMonth() + 1);
+    // console.log(currentDate);
+    // console.log(currentDate.getFullYear(), currentDate.getMonth());
   };
 
   const getDiscountInfo = async () => {
@@ -51,10 +52,12 @@ function DiscountPage() {
         year: year,
         month: month,
       };
-      console.log(time);
+      // console.log(time);
       const response = await discountHistory(time).then((res) => {
-        console.log(res.result);
-        return res.result;
+        // console.log(res.result);
+        if (res) {
+          return res.result;
+        }
       });
       setDiscountData(response);
     }
@@ -73,8 +76,10 @@ function DiscountPage() {
 
   const getInfo = async () => {
     const discountResponse = await discountAll().then((res) => {
-      console.log("[Main Page] discount response : ", res.result);
-      return res.result;
+      // console.log("[Main Page] discount response : ", res.result);
+      if (res) {
+        return res.result;
+      }
     });
     setDiscount(discountResponse);
   };
@@ -110,10 +115,11 @@ function DiscountPage() {
           position: absolute;
           top: 1.3rem;
           right: 1rem;
+          cursor: pointer;
         `}
         src="X.svg"
         alt=""
-        onClick={() => navigate("/main")}
+        onClick={() => navigate("/")}
       />
       <div
         className={css`
@@ -135,7 +141,7 @@ function DiscountPage() {
           flex-direction: column;
           width: 17.56rem;
           padding: 0 2rem;
-          height: 8.627rem;
+          height: 8rem;
           border-radius: 1.3rem;
           align-items: center;
           margin-top: 2rem;
@@ -148,13 +154,13 @@ function DiscountPage() {
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            margin-top: 1.5rem;
+            margin-top: 1.3rem;
           `}
         >
           <div
             className={css`
               color: white;
-              font-size: 1.3rem;
+              font-size: 1.2rem;
             `}
           >
             이번달 받은 혜택
@@ -162,9 +168,13 @@ function DiscountPage() {
         </div>
         <div
           className={css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            font-size: 2rem;
-            margin-top: 1.1rem;
+            font-size: 2.2rem;
+            font-weight: 600;
+            height: 60%;
           `}
         >
           총{" "}
@@ -199,7 +209,14 @@ function DiscountPage() {
             margin-bottom: 1rem;
           `}
         >
-          <img src="/LeftArrow.svg" alt="" onClick={() => nextMonth(-1)} />
+          <img
+            src="/LeftArrow.svg"
+            alt=""
+            onClick={() => nextMonth(-1)}
+            className={css`
+              cursor: pointer;
+            `}
+          />
           <div
             className={css`
               color: #6c6c6c;
@@ -209,7 +226,14 @@ function DiscountPage() {
           >
             {year}. {month}.
           </div>
-          <img src="/RightArrow.svg" alt="" onClick={() => nextMonth(1)} />
+          <img
+            src="/RightArrow.svg"
+            alt=""
+            onClick={() => nextMonth(1)}
+            className={css`
+              cursor: pointer;
+            `}
+          />
         </div>
         <div
           className={css`
@@ -228,6 +252,7 @@ function DiscountPage() {
               border-radius: 1rem;
               color: ${!filtered ? "#f6f6f6" : "#979797"};
               box-shadow: 0 5.2px 6.5px rgb(0, 0, 0, 0.1);
+              cursor: pointer;
             `}
             onClick={() => setFiltered(false)}
           >
@@ -263,6 +288,7 @@ function DiscountPage() {
                     padding: 0 1rem;
                     margin-right: 0.5rem;
                     border-radius: 1rem;
+                    cursor: pointer;
                     color: ${filtered && selectedCardIndex === index
                       ? "#f6f6f6"
                       : "#979797"};
@@ -282,13 +308,41 @@ function DiscountPage() {
           position: absolute;
           bottom: 20vh;
           display: flex;
+          /* height: 30%; */
           flex-direction: column;
           justify-content: center;
           align-items: center;
         `}
       >
-        {discountData && (
+        {discountData && discountData.cardNames.length > 0 ? (
           <DiscountChart data={filtered ? filteredData : discountData} />
+        ) : (
+          <div
+            className={css`
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 40%;
+            `}
+          >
+            <img
+              src="/Empty.svg"
+              className={css`
+                width: 7rem;
+              `}
+              alt=""
+            ></img>
+            <p
+              className={css`
+                color: #6b6b6b;
+                font-size: 1.2rem;
+                font-weight: 600;
+              `}
+            >
+              혜택 내역이 존재하지 않습니다.
+            </p>
+          </div>
         )}
       </div>
       <NavBar isSelected={"Home"} />

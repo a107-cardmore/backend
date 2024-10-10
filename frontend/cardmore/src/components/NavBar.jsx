@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 //   border-radius: 2rem;
 // `;
 
-function NavBar({isSelected}) {
+function NavBar({ isSelected }) {
   // const [isSelected, setIsSelected] = useState("Home");
   const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ function NavBar({isSelected}) {
 
   const goToHome = () => {
     // setIsSelected("Home");
-    navigate("/main");
+    navigate("/");
   };
 
   const goToMap = () => {
@@ -60,6 +60,7 @@ function NavBar({isSelected}) {
           display: flex;
           justify-content: center;
           align-items: center;
+          cursor: pointer;
         `}
         onClick={() => goToMyPage()}
       >
@@ -83,6 +84,7 @@ function NavBar({isSelected}) {
           display: flex;
           justify-content: center;
           align-items: center;
+          cursor: pointer;
         `}
         onClick={() => goToHome()}
       >
@@ -107,6 +109,7 @@ function NavBar({isSelected}) {
           display: flex;
           justify-content: center;
           align-items: center;
+          cursor: pointer;
         `}
         onClick={() => goToMap()}
       >

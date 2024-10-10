@@ -285,9 +285,13 @@ const MapPage = () => {
       });
     }
     console.log("[mapRequestDtos]", mapRequestDtos);
-    const res = await getRecommendedCards(mapRequestDtos);
-    console.log("axios response data :", res.result);
-    return res.result;
+    if (window.sessionStorage.getItem("accessToken")) {
+      const res = await getRecommendedCards(mapRequestDtos);
+      console.log("axios response data :", res.result);
+      if (res) {
+        return res.result;
+      }
+    }
   };
 
   const categoryCode2merchantCategory = (categoryCode) => {

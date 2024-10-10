@@ -51,7 +51,7 @@ function MyPage() {
   //결제 내역
   useEffect(() => {
     if (transaction !== null) {
-      console.log(transaction);
+      // console.log(transaction);
 
       setSelectedCardNameList(
         transaction.result.cardNameList.map((name, index) => {
@@ -213,6 +213,7 @@ function MyPage() {
               font-size: 0.8rem;
               padding: 5px;
               background-color: #555555;
+              cursor: pointer;
             `}
             onClick={() => navigate("/recommend")}
           >

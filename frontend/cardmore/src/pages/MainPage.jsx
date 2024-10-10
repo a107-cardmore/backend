@@ -36,51 +36,64 @@ function MainPage() {
   };
 
   useEffect(() => {
-    console.log("startIndex", startIndex);
+    // console.log("startIndex", startIndex);
     if (startIndex > isSelected) {
       setIsSelected(10000);
     }
   }, [startIndex]);
 
   useEffect(() => {
-    console.log("isSelected", isSelected);
+    // console.log("isSelected", isSelected);
   }, [isSelected]);
 
-  const handleScroll = (e) => {
-    const scrollDirection = e.deltaY > 0 ? "down" : "up"; // deltaY를 이용하여 스크롤 방향을 확인
-
-    if (scrollDirection === "down" && cards) {
-      setStartIndex((prevIndex) => Math.min(prevIndex + 1, cards.length - 3)); // 아래로 스크롤 시 증가
-    } else {
-      setStartIndex((prevIndex) => Math.max(prevIndex - 1, 1)); // 위로 스크롤 시 감소
-    }
-  };
+  useEffect(() => {
+    getInfo();
+  }, []);
 
   useEffect(() => {
+    const handleScroll = (e) => {
+      const scrollDirection = e.deltaY > 0 ? "down" : "up"; // deltaY를 이용하여 스크롤 방향을 확인
+
+      if (scrollDirection === "down" && cards) {
+        setStartIndex((prevIndex) => Math.min(prevIndex + 1, cards.length - 3)); // 아래로 스크롤 시 증가
+      } else {
+        setStartIndex((prevIndex) => Math.max(prevIndex - 1, 1)); // 위로 스크롤 시 감소
+      }
+    };
     window.addEventListener("wheel", handleScroll); // 스크롤 이벤트 등록
-    getInfo();
+    // 페이지 로드 후 처음 스크롤이 자동으로 발생하도록 상태 설정
+    setStartIndex(1); // 또는 적절한 값으로 초기 설정
+
     return () => {
       window.removeEventListener("wheel", handleScroll); // 컴포넌트 언마운트 시 이벤트 제거
     };
-  }, []);
+  }, [cards]);
 
   const getInfo = async () => {
-    const cardResponse = await getCards().then((res) => {
-      console.log("[Main Page] card response", res.result);
-      return res.result;
+    await getCards().then((res) => {
+      // console.log("[Main Page] card response", res.result);
+      if (res) {
+        const cardsInfos = res.result.map((card, index) => ({
+          ...card,
+          key: index + 1,
+        }));
+        setCards(cardsInfos);
+      }
     });
-    const discountResponse = await discountAll().then((res) => {
-      console.log("[Main Page] discount response : ", res.result);
-      return res.result;
+    await discountAll().then((res) => {
+      // console.log("[Main Page] discount response : ", res.result);
+      if (res) {
+        setDiscount(res.result);
+        // return res.result;
+      }
     });
-    const userResponse = await getUser().then((res) => {
-      console.log("[Main Page] user response", res.result);
-      return res.result;
+    await getUser().then((res) => {
+      // console.log("[Main Page] user response", res.result);
+      if (res) {
+        setUser(res.result);
+        // return res.result;
+      }
     });
-
-    setUser(userResponse);
-    setCards(cardResponse.map((card, index) => ({ ...card, key: index + 1 })));
-    setDiscount(discountResponse);
   };
 
   return (
@@ -97,18 +110,18 @@ function MainPage() {
     >
       <div
         className={css`
-          font-size: 4rem;
+          font-size: 3.8rem;
           width: 80%;
           font-family: "Pretendard";
           font-weight: 700;
-          margin-top: 2rem;
+          margin-top: 1.7rem;
         `}
       >
         Hello,
       </div>
       <div
         className={css`
-          font-size: 3.3rem;
+          font-size: 3.2rem;
           width: 80%;
           display: flex;
           justify-content: flex-end;
@@ -125,9 +138,9 @@ function MainPage() {
           flex-direction: column;
           align-items: center;
           width: 90%;
-          height: 45vh;
+          height: 39vh;
           overflow: hidden;
-          margin-top: 0.7rem;
+          margin-top: 0.5rem;
         `}
       >
         <div
@@ -149,7 +162,7 @@ function MainPage() {
               box-shadow: 0 0 5px rgb(0, 0, 0, 0.15);
               box-sizing: border-box;
             `}
-            onClick={() => console.log("???")}
+            // onClick={() => console.log("???")}
           >
             <div
               className={css`
@@ -177,6 +190,9 @@ function MainPage() {
                 viewBox="0 0 32 32"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className={css`
+                  cursor: pointer;
+                `}
                 onClick={_addCard}
               >
                 <circle
@@ -257,6 +273,9 @@ function MainPage() {
             viewBox="0 0 32 32"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className={css`
+              cursor: pointer;
+            `}
             onClick={() => {
               navigate("/discount");
             }}

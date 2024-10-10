@@ -64,15 +64,21 @@ function CompanySelectPage() {
 
   const getCompanyList = async () => {
     const response = await getCardAll().then((res) => {
-      return res;
+      if (res) {
+        return res;
+      }
     });
-    console.log(response.result);
-    setCompanies(
-      response.result.map((company) => {
-        const logo = logos.find((logo) => logo.companyNo === Number(company.companyNo));
-        return { ...company, logoUrl: logo ? logo.logoUrl : "" };
-      })
-    );
+    // console.log(response.result);
+    if (response) {
+      setCompanies(
+        response.result.map((company) => {
+          const logo = logos.find(
+            (logo) => logo.companyNo === Number(company.companyNo)
+          );
+          return { ...company, logoUrl: logo ? logo.logoUrl : "" };
+        })
+      );
+    }
   };
 
   const selectedCompany = async () => {
@@ -82,12 +88,14 @@ function CompanySelectPage() {
     const data = {
       companiesSelectedInfos: companiesSelected,
     };
-    console.log(data);
+    // console.log(data);
     const response = await sendCompany(data).then((res) => {
-      console.log(res.success);
-      return res.success;
+      // console.log(res.success);
+      if (res) {
+        return res.success;
+      }
     });
-    console.log(response);
+    // console.log(response);
     if (response) {
       navigate("/card-select");
     }

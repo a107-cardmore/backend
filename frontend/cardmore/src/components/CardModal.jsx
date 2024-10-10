@@ -3,7 +3,7 @@ import { css } from "@emotion/css";
 import BarcodeItem from "./BarcodeItem";
 
 function CardModal({ setShowModal, data }) {
-  console.log("[MODAL DATA]", data);
+  // console.log("[MODAL DATA]", data);
   const handleScroll = (event) => {
     event.stopPropagation(); // 스크롤 이벤트 전파 중단
   };
