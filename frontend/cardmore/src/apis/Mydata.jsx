@@ -28,14 +28,14 @@ export const sendCompany = async (data) => {
 
 export const sendCard = async (data) => {
   try {
-    console.log(data);
+    // console.log(data);
     const response = axios.post("/cards/card", data).then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       return res.data;
     });
-    console.log("[IN AXIOS] send card response", response);
+    // console.log("[IN AXIOS] send card response", response);
     return response;
   } catch (error) {
-    console.log("send card fail : ", error);
+    // console.log("send card fail : ", error);
   }
 };

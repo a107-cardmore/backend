@@ -20,6 +20,7 @@ export const getRecommendedCards = async (mapRequestDtos) => {
       .post("/recommends/discount", mapRequestDtos)
       .then((res) => {
         // console.log("resres", res);
+        
         return res.data;
       });
     // console.log("[IN AXIOS] get Cards", response);

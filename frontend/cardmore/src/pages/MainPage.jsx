@@ -67,20 +67,30 @@ function MainPage() {
   const getInfo = async () => {
     const cardResponse = await getCards().then((res) => {
       // console.log("[Main Page] card response", res.result);
-      return res.result;
+      if (res) {
+        return res.result;
+      }
     });
     const discountResponse = await discountAll().then((res) => {
       // console.log("[Main Page] discount response : ", res.result);
-      return res.result;
+      if (res) {
+        return res.result;
+      }
     });
     const userResponse = await getUser().then((res) => {
       // console.log("[Main Page] user response", res.result);
-      return res.result;
+      if (res) {
+        return res.result;
+      }
     });
 
-    setUser(userResponse);
-    setCards(cardResponse.map((card, index) => ({ ...card, key: index + 1 })));
-    setDiscount(discountResponse);
+    if (userResponse && cardResponse && discountResponse) {
+      setUser(userResponse);
+      setCards(
+        cardResponse.map((card, index) => ({ ...card, key: index + 1 }))
+      );
+      setDiscount(discountResponse);
+    }
   };
 
   return (

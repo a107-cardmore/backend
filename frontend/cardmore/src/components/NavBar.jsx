@@ -18,7 +18,7 @@ function NavBar({ isSelected }) {
 
   const goToHome = () => {
     // setIsSelected("Home");
-    navigate("/main");
+    navigate("/");
   };
 
   const goToMap = () => {
