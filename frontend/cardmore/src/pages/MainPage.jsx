@@ -46,51 +46,54 @@ function MainPage() {
     // console.log("isSelected", isSelected);
   }, [isSelected]);
 
-  const handleScroll = (e) => {
-    const scrollDirection = e.deltaY > 0 ? "down" : "up"; // deltaY를 이용하여 스크롤 방향을 확인
-
-    if (scrollDirection === "down" && cards) {
-      setStartIndex((prevIndex) => Math.min(prevIndex + 1, cards.length - 3)); // 아래로 스크롤 시 증가
-    } else {
-      setStartIndex((prevIndex) => Math.max(prevIndex - 1, 1)); // 위로 스크롤 시 감소
-    }
-  };
+  useEffect(() => {
+    getInfo();
+  }, []);
 
   useEffect(() => {
+    const handleScroll = (e) => {
+      const scrollDirection = e.deltaY > 0 ? "down" : "up"; // deltaY를 이용하여 스크롤 방향을 확인
+
+      if (scrollDirection === "down" && cards) {
+        setStartIndex((prevIndex) => Math.min(prevIndex + 1, cards.length - 3)); // 아래로 스크롤 시 증가
+      } else {
+        setStartIndex((prevIndex) => Math.max(prevIndex - 1, 1)); // 위로 스크롤 시 감소
+      }
+    };
     window.addEventListener("wheel", handleScroll); // 스크롤 이벤트 등록
-    getInfo();
+    // 페이지 로드 후 처음 스크롤이 자동으로 발생하도록 상태 설정
+    setStartIndex(1); // 또는 적절한 값으로 초기 설정
+
     return () => {
       window.removeEventListener("wheel", handleScroll); // 컴포넌트 언마운트 시 이벤트 제거
     };
-  }, []);
+  }, [cards]);
 
   const getInfo = async () => {
-    const cardResponse = await getCards().then((res) => {
+    await getCards().then((res) => {
       // console.log("[Main Page] card response", res.result);
       if (res) {
-        return res.result;
+        const cardsInfos = res.result.map((card, index) => ({
+          ...card,
+          key: index + 1,
+        }));
+        setCards(cardsInfos);
       }
     });
-    const discountResponse = await discountAll().then((res) => {
+    await discountAll().then((res) => {
       // console.log("[Main Page] discount response : ", res.result);
       if (res) {
-        return res.result;
+        setDiscount(res.result);
+        // return res.result;
       }
     });
-    const userResponse = await getUser().then((res) => {
+    await getUser().then((res) => {
       // console.log("[Main Page] user response", res.result);
       if (res) {
-        return res.result;
+        setUser(res.result);
+        // return res.result;
       }
     });
-
-    if (userResponse && cardResponse && discountResponse) {
-      setUser(userResponse);
-      setCards(
-        cardResponse.map((card, index) => ({ ...card, key: index + 1 }))
-      );
-      setDiscount(discountResponse);
-    }
   };
 
   return (
@@ -135,7 +138,7 @@ function MainPage() {
           flex-direction: column;
           align-items: center;
           width: 90%;
-          height: 40vh;
+          height: 39vh;
           overflow: hidden;
           margin-top: 0.5rem;
         `}
