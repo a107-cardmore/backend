@@ -193,8 +193,8 @@ const MapPage = () => {
   //------------ 여기까지 Keyword 관련 함수 -----------------
 
   const [isMountedNowLocation, setIsMountedNowLocation] = useState(false);
-
   useEffect(() => {
+    // 첫 화면에서 nowLocation이 세팅되면 정보를 가져오게 구현
     if (isMountedNowLocation) {
       getPlacesInWindow();
     } else {
@@ -202,6 +202,16 @@ const MapPage = () => {
     }
     // setLoading(false);
   }, [nowLocation]);
+
+  const [isMountedSelectedCategory, setIsMountedSelectedCategory] =
+    useState(false);
+  useEffect(() => {
+    if (isMountedSelectedCategory) {
+      getPlacesInWindow();
+    } else {
+      setIsMountedSelectedCategory(true);
+    }
+  }, [selectedCategory]);
 
   // 현재 위치 기준으로 정보 가져오기
   const getPlacesInWindow = () => {
@@ -235,11 +245,14 @@ const MapPage = () => {
   };
 
   const setPlacesSearchIW = (data, status) => {
+    console.log("[status]", status);
     if (status === kakao.maps.services.Status.OK) {
       // console.log("[PLACE DATA FROM KAKAOMAP API]", data);
       getCardRecommendation(data).then((res) => {
         setMarkers(res);
       });
+    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+      setMarkers([]);
     }
   };
 
@@ -271,9 +284,9 @@ const MapPage = () => {
         placeUrl: data[i].place_url,
       });
     }
-    // console.log("[mapRequestDtos]", mapRequestDtos);
+    console.log("[mapRequestDtos]", mapRequestDtos);
     const res = await getRecommendedCards(mapRequestDtos);
-    // console.log("axios response data :", res.result);
+    console.log("axios response data :", res.result);
     return res.result;
   };
 
