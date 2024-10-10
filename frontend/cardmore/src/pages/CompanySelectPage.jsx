@@ -66,7 +66,7 @@ function CompanySelectPage() {
     const response = await getCardAll().then((res) => {
       return res;
     });
-    console.log(response.result);
+    // console.log(response.result);
     setCompanies(
       response.result.map((company) => {
         const logo = logos.find((logo) => logo.companyNo === Number(company.companyNo));
@@ -82,12 +82,12 @@ function CompanySelectPage() {
     const data = {
       companiesSelectedInfos: companiesSelected,
     };
-    console.log(data);
+    // console.log(data);
     const response = await sendCompany(data).then((res) => {
-      console.log(res.success);
+      // console.log(res.success);
       return res.success;
     });
-    console.log(response);
+    // console.log(response);
     if (response) {
       navigate("/card-select");
     }

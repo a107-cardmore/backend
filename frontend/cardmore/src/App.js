@@ -16,10 +16,10 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<IndexPage />}></Route>
+        <Route path="/" element={<LoginPage />}></Route>
         <Route path="/main" element={<MainPage />}></Route>
         <Route path="/map" element={<MapPage />}></Route>
-        <Route path="/login" element={<LoginPage />}></Route>
+        {/* <Route path="/login" element={<LoginPage />}></Route> */}
         <Route path="/signin" element={<SignInPage />}></Route>
         <Route path="/mypage" element={<MyPage />}></Route>
         <Route path="/mydata" element={<MyDataAgreePage />}></Route>

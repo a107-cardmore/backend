@@ -51,7 +51,7 @@ function MyPage() {
   //결제 내역
   useEffect(() => {
     if (transaction !== null) {
-      console.log(transaction);
+      // console.log(transaction);
 
       setSelectedCardNameList(
         transaction.result.cardNameList.map((name, index) => {

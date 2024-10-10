@@ -36,14 +36,14 @@ function MainPage() {
   };
 
   useEffect(() => {
-    console.log("startIndex", startIndex);
+    // console.log("startIndex", startIndex);
     if (startIndex > isSelected) {
       setIsSelected(10000);
     }
   }, [startIndex]);
 
   useEffect(() => {
-    console.log("isSelected", isSelected);
+    // console.log("isSelected", isSelected);
   }, [isSelected]);
 
   const handleScroll = (e) => {
@@ -66,15 +66,15 @@ function MainPage() {
 
   const getInfo = async () => {
     const cardResponse = await getCards().then((res) => {
-      console.log("[Main Page] card response", res.result);
+      // console.log("[Main Page] card response", res.result);
       return res.result;
     });
     const discountResponse = await discountAll().then((res) => {
-      console.log("[Main Page] discount response : ", res.result);
+      // console.log("[Main Page] discount response : ", res.result);
       return res.result;
     });
     const userResponse = await getUser().then((res) => {
-      console.log("[Main Page] user response", res.result);
+      // console.log("[Main Page] user response", res.result);
       return res.result;
     });
 
@@ -97,18 +97,18 @@ function MainPage() {
     >
       <div
         className={css`
-          font-size: 4rem;
+          font-size: 3.8rem;
           width: 80%;
           font-family: "Pretendard";
           font-weight: 700;
-          margin-top: 2rem;
+          margin-top: 1.7rem;
         `}
       >
         Hello,
       </div>
       <div
         className={css`
-          font-size: 3.3rem;
+          font-size: 3.2rem;
           width: 80%;
           display: flex;
           justify-content: flex-end;
@@ -125,9 +125,9 @@ function MainPage() {
           flex-direction: column;
           align-items: center;
           width: 90%;
-          height: 45vh;
+          height: 40vh;
           overflow: hidden;
-          margin-top: 0.7rem;
+          margin-top: 0.5rem;
         `}
       >
         <div
@@ -149,7 +149,7 @@ function MainPage() {
               box-shadow: 0 0 5px rgb(0, 0, 0, 0.15);
               box-sizing: border-box;
             `}
-            onClick={() => console.log("???")}
+            // onClick={() => console.log("???")}
           >
             <div
               className={css`

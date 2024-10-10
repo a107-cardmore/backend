@@ -122,7 +122,7 @@ function LoginPage() {
         <SquareButton
           name={"로그인하기"}
           onClick={() => {
-            console.log("UserId:", userId, "Password:", password);
+            // console.log("UserId:", userId, "Password:", password);
             login();
           }}
         />

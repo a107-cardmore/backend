@@ -26,7 +26,7 @@ function CardRecommendPage() {
           },
         };
       });
-      console.log("[PAGE] card info : ", updatedCardInfo);
+      // console.log("[PAGE] card info : ", updatedCardInfo);
       return updatedCardInfo;
     });
     setCardInfo(response);

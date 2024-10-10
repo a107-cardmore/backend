@@ -1,12 +1,12 @@
 import { css } from "@emotion/css";
 import Card from "./Card";
 
-function CardInfo({ data }) {
-  console.log(data);
+function CardInfo({ data, backgroundColor }) {
+  // console.log("[CARD INFO]", data);
   return (
     <div
       className={css`
-        background-color: #ffffff;
+        background-color: ${backgroundColor ? `${backgroundColor}` : "#ffffff"};
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -19,12 +19,12 @@ function CardInfo({ data }) {
     >
       <div
         className={css`
-          width: 20%;
+          width: 16%;
         `}
       >
         <div
           className={css`
-            transform: scale(0.4);
+            transform: scale(0.38);
           `}
         >
           <Card data={data.card} />
@@ -34,7 +34,7 @@ function CardInfo({ data }) {
         className={css`
           display: flex;
           flex-direction: column;
-          width: 48%;
+          width: 51%;
           margin-right: 0.5rem;
         `}
       >
@@ -57,10 +57,10 @@ function CardInfo({ data }) {
         >
           <div
             className={css`
-              max-height: 4rem;
+              max-height: 3.8rem;
               overflow: scroll;
               ::-webkit-scrollbar {
-                width: 0.3rem;
+                width: 0.2rem;
               }
               ::-webkit-scrollbar-thumb {
                 background-color: #d9d9d9; /* 스크롤바 색상 */

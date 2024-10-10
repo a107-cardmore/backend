@@ -42,8 +42,8 @@ function DiscountPage() {
     const currentDate = new Date();
     setYear(currentDate.getFullYear());
     setMonth(currentDate.getMonth()+1);
-    console.log(currentDate);
-    console.log(currentDate.getFullYear(), currentDate.getMonth());
+    // console.log(currentDate);
+    // console.log(currentDate.getFullYear(), currentDate.getMonth());
   };
 
   const getDiscountInfo = async () => {
@@ -52,9 +52,9 @@ function DiscountPage() {
         year: year,
         month: month,
       };
-      console.log(time);
+      // console.log(time);
       const response = await discountHistory(time).then((res) => {
-        console.log(res.result);
+        // console.log(res.result);
         return res.result;
       });
       setDiscountData(response);
@@ -74,7 +74,7 @@ function DiscountPage() {
 
   const getInfo = async () => {
     const discountResponse = await discountAll().then((res) => {
-      console.log("[Main Page] discount response : ", res.result);
+      // console.log("[Main Page] discount response : ", res.result);
       return res.result;
     });
     setDiscount(discountResponse);
@@ -137,7 +137,7 @@ function DiscountPage() {
           flex-direction: column;
           width: 17.56rem;
           padding: 0 2rem;
-          height: 8.627rem;
+          height: 8rem;
           border-radius: 1.3rem;
           align-items: center;
           margin-top: 2rem;
@@ -150,13 +150,13 @@ function DiscountPage() {
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            margin-top: 1.5rem;
+            margin-top: 1.3rem;
           `}
         >
           <div
             className={css`
               color: white;
-              font-size: 1.3rem;
+              font-size: 1.2rem;
             `}
           >
             이번달 받은 혜택
@@ -164,9 +164,13 @@ function DiscountPage() {
         </div>
         <div
           className={css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            font-size: 2rem;
-            margin-top: 1.1rem;
+            font-size: 2.2rem;
+            font-weight: 600;
+            height: 60%;
           `}
         >
           총{" "}
