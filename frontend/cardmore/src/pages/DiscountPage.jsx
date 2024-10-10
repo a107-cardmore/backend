@@ -139,7 +139,7 @@ function DiscountPage() {
           background-color: black;
           display: flex;
           flex-direction: column;
-          width: 17.56rem;
+          width: 17rem;
           padding: 0 2rem;
           height: 8rem;
           border-radius: 1.3rem;

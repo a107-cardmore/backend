@@ -151,7 +151,7 @@ function MainPage() {
         >
           <div
             className={css`
-              width: 21rem;
+              width: 20.5rem;
               padding: 0 1.5rem;
               height: 13.627rem;
               border-radius: 1rem;
@@ -241,7 +241,7 @@ function MainPage() {
           background-color: black;
           display: flex;
           flex-direction: column;
-          width: 17.56rem;
+          width: 17rem;
           padding: 0 2rem;
           height: 7.7rem;
           border-radius: 1.3rem;
