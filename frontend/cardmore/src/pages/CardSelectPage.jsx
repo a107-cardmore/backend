@@ -16,7 +16,9 @@ function CardSelectPage() {
   const getCardList = async () => {
     const response = await getCardAll().then((res) => {
       // console.log(res.result);
-      return res.result;
+      if (res) {
+        return res.result;
+      }
     });
     if (response) {
       await setCards(
@@ -79,7 +81,7 @@ function CardSelectPage() {
     });
     // console.log(response);
     if (response) {
-      navigate("/main");
+      navigate("/");
     }
   };
 
@@ -135,7 +137,8 @@ function CardSelectPage() {
           {cards &&
             cards.map(
               (company, CompIndex) =>
-                company.isSelected && company.cards.length > 0 && (
+                company.isSelected &&
+                company.cards.length > 0 && (
                   <li
                     key={CompIndex}
                     className={css`

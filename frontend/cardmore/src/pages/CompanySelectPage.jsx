@@ -64,15 +64,21 @@ function CompanySelectPage() {
 
   const getCompanyList = async () => {
     const response = await getCardAll().then((res) => {
-      return res;
+      if (res) {
+        return res;
+      }
     });
     // console.log(response.result);
-    setCompanies(
-      response.result.map((company) => {
-        const logo = logos.find((logo) => logo.companyNo === Number(company.companyNo));
-        return { ...company, logoUrl: logo ? logo.logoUrl : "" };
-      })
-    );
+    if (response) {
+      setCompanies(
+        response.result.map((company) => {
+          const logo = logos.find(
+            (logo) => logo.companyNo === Number(company.companyNo)
+          );
+          return { ...company, logoUrl: logo ? logo.logoUrl : "" };
+        })
+      );
+    }
   };
 
   const selectedCompany = async () => {
@@ -85,7 +91,9 @@ function CompanySelectPage() {
     // console.log(data);
     const response = await sendCompany(data).then((res) => {
       // console.log(res.success);
-      return res.success;
+      if (res) {
+        return res.success;
+      }
     });
     // console.log(response);
     if (response) {

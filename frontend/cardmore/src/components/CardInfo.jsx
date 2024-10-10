@@ -34,7 +34,7 @@ function CardInfo({ data, backgroundColor }) {
         className={css`
           display: flex;
           flex-direction: column;
-          width: 51%;
+          width: 50%;
           margin-right: 0.5rem;
         `}
       >

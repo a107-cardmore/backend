@@ -27,7 +27,7 @@ function LoginPage() {
       return res;
     });
     if (response) {
-      navigate("/main");
+      navigate("/");
     } else {
       setLoginFail(true);
     }

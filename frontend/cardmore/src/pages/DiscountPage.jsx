@@ -41,7 +41,7 @@ function DiscountPage() {
   const getDate = () => {
     const currentDate = new Date();
     setYear(currentDate.getFullYear());
-    setMonth(currentDate.getMonth()+1);
+    setMonth(currentDate.getMonth() + 1);
     // console.log(currentDate);
     // console.log(currentDate.getFullYear(), currentDate.getMonth());
   };
@@ -55,7 +55,9 @@ function DiscountPage() {
       // console.log(time);
       const response = await discountHistory(time).then((res) => {
         // console.log(res.result);
-        return res.result;
+        if (res) {
+          return res.result;
+        }
       });
       setDiscountData(response);
     }
@@ -75,7 +77,9 @@ function DiscountPage() {
   const getInfo = async () => {
     const discountResponse = await discountAll().then((res) => {
       // console.log("[Main Page] discount response : ", res.result);
-      return res.result;
+      if (res) {
+        return res.result;
+      }
     });
     setDiscount(discountResponse);
   };
@@ -115,7 +119,7 @@ function DiscountPage() {
         `}
         src="X.svg"
         alt=""
-        onClick={() => navigate("/main")}
+        onClick={() => navigate("/")}
       />
       <div
         className={css`

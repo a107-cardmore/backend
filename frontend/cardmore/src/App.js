@@ -11,13 +11,34 @@ import MyPage from "./pages/MyPage";
 import CardSelectPage from "./pages/CardSelectPage";
 import DiscountPage from "./pages/DiscountPage";
 import CardRecommendPage from "./pages/CardRecommendPage";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const AccessToken = window.sessionStorage.getItem("accessToken");
+
+  const checkLocation = (locationName) => {
+    return location.pathname.startsWith(locationName);
+  }
+
+  useEffect(() => {
+    // console.log(checkLocation("/signin"));
+    // console.log(checkLocation("/"));
+    if (!checkLocation("/login") && !checkLocation("/signin")) {
+      // console.log(AccessToken);
+      if (!AccessToken || AccessToken == null) {
+        navigate("/login");
+      }
+    }
+  }, [location.pathname])
+
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<LoginPage />}></Route>
-        <Route path="/main" element={<MainPage />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/" element={<MainPage />}></Route>
         <Route path="/map" element={<MapPage />}></Route>
         {/* <Route path="/login" element={<LoginPage />}></Route> */}
         <Route path="/signin" element={<SignInPage />}></Route>

@@ -13,21 +13,23 @@ function CardRecommendPage() {
 
   const getRecommendCard = async () => {
     const response = await getRecommends().then((res) => {
-      const updatedCardInfo = res.result.map((item) => {
-        return {
-          ...item,
-          card: {
-            ...item.card,
-            cardNo: "0000000000000000",
-            cardExpiryDate: "00000000",
-            colorBackground: item.colorBackground,
-            colorTitle: item.colorTitle,
-            cvc: "000,",
-          },
-        };
-      });
-      // console.log("[PAGE] card info : ", updatedCardInfo);
-      return updatedCardInfo;
+      if (res) {
+        const updatedCardInfo = res.result.map((item) => {
+          return {
+            ...item,
+            card: {
+              ...item.card,
+              cardNo: "0000000000000000",
+              cardExpiryDate: "00000000",
+              colorBackground: item.colorBackground,
+              colorTitle: item.colorTitle,
+              cvc: "000,",
+            },
+          };
+        });
+        // console.log("[PAGE] card info : ", updatedCardInfo);
+        return updatedCardInfo;
+      }
     });
     setCardInfo(response);
   };
