@@ -30,7 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +56,7 @@ public class RecommendService {
         List<CardResponseDto> userCardListInfo = getUserCardListInfo(userCardList, userId); //혜택까지 담긴 유저의 카드 목록
 
         List<MapResponseDto> placeWithCard = new ArrayList<>();
-
+        
         // 카드별 할인율 계산
         for (MapRequestDto place : mapRequestDtoList) {
             Map<CardResponseDto, Double> discountRate = new HashMap<>();
@@ -136,41 +138,36 @@ public class RecommendService {
         return creditCardList.stream()
             .filter(creditCard -> userCardList.stream()
                 .anyMatch(userCard -> userCard.getCardUniqueNo().equals(creditCard.getCardUniqueNo())))
-            .map(creditCard -> {
+            .flatMap(creditCard -> {
                 // 유저가 소유한 카드와 매칭되는 카드 찾기
-                Card matchedCard = userOwnedCards.stream()
+                Optional<Card> matchedCardOpt = userOwnedCards.stream()
                     .filter(userCard -> userCard.getCardUniqueNo().equals(creditCard.getCardUniqueNo()))
-                    .findFirst()
-                    .orElse(null);
+                    .findFirst();
 
                 // 카드와 카드 상품 정보를 바탕으로 CardResponseDto 생성
-                if (matchedCard != null) {
-                    return CardResponseDto.builder()
-                        .cardId(matchedCard.getId())
-                        .companyId(matchedCard.getCompany().getCompanyNo())
-                        .companyName(matchedCard.getCompany().getName())
-                        .cardNo(matchedCard.getCardNo())
-                        .cardUniqueNo(matchedCard.getCardUniqueNo())
-                        .cvc(matchedCard.getCvc())
-                        .cardExpiryDate(matchedCard.getCardExpiryDate())
-                        .cardName(creditCard.getCardName())
-                        .cardDescription(creditCard.getCardDescription())
-                        .colorBackground(matchedCard.getColorBackground())
-                        .colorTitle(matchedCard.getColorTitle())
-                        .isSelected(matchedCard.getIsSelected())
-                        .limitRemaining(matchedCard.getLimitRemaining())
-                        .performanceRemaining(matchedCard.getPerformanceRemaining())
-                        .cardTypeCode(creditCard.getCardTypeCode())  // 추가된 필드
-                        .cardTypeName(creditCard.getCardTypeName())  // 추가된 필드
-                        .cardBenefits(creditCard.getCardBenefitsInfo().stream()
-                            .map(CardBenefitResponseDto::new) // CardBenefitsInfo -> CardBenefitResponseDto 변환
-                            .collect(Collectors.toList()))
-                        .build();
-                } else {
-                    return null; // 매칭되는 카드가 없으면 null 반환
-                }
+                return matchedCardOpt.stream().map(matchedCard -> CardResponseDto.builder()
+                    .cardId(matchedCard.getId())
+                    .companyId(matchedCard.getCompany().getCompanyNo())
+                    .companyName(matchedCard.getCompany().getName())
+                    .cardNo(matchedCard.getCardNo())
+                    .cardUniqueNo(matchedCard.getCardUniqueNo())
+                    .cvc(matchedCard.getCvc())
+                    .cardExpiryDate(matchedCard.getCardExpiryDate())
+                    .cardName(creditCard.getCardName())
+                    .cardDescription(creditCard.getCardDescription())
+                    .colorBackground(matchedCard.getColorBackground())
+                    .colorTitle(matchedCard.getColorTitle())
+                    .isSelected(matchedCard.getIsSelected())
+                    .limitRemaining(matchedCard.getLimitRemaining())
+                    .performanceRemaining(matchedCard.getPerformanceRemaining())
+                    .cardTypeCode(creditCard.getCardTypeCode())  // 추가된 필드
+                    .cardTypeName(creditCard.getCardTypeName())  // 추가된 필드
+                    .cardBenefits(creditCard.getCardBenefitsInfo().stream()
+                        .map(
+                            CardBenefitResponseDto::new) // CardBenefitsInfo -> CardBenefitResponseDto 변환
+                        .collect(Collectors.toList()))
+                    .build());
             })
-//            .filter(Objects::nonNull) // null 값은 제외
             .collect(Collectors.toList());
     }
 
