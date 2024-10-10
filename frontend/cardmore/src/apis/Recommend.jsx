@@ -23,7 +23,7 @@ export const getRecommendedCards = async (mapRequestDtos) => {
 
         return res.data;
       });
-    console.log("[IN AXIOS] get Cards", response);
+    // console.log("[IN AXIOS] get Cards", response);
     return response;
   } catch (error) {
     // console.error("[IN AXIOS] get card error : ", error);

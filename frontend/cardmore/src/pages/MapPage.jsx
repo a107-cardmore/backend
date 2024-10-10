@@ -230,7 +230,7 @@ const MapPage = () => {
     } else {
       throw new Error(`Invalid category: ${category}`);
     }
-    console.log("[[categoryCode]]", categoryCode);
+    // console.log("[[categoryCode]]", categoryCode);
     return categoryCode;
   };
 
@@ -238,7 +238,7 @@ const MapPage = () => {
   const getPlacesInWindow = () => {
     var ps = new kakao.maps.services.Places(map);
     let categoryCode = categoryName2categoryCode(selectedCategory);
-    console.log("[ps]", ps);
+    // console.log("[ps]", ps);
     ps.categorySearch(categoryCode, setPlacesSearchIW, {
       useMapBounds: true,
       size: 5,
@@ -251,20 +251,20 @@ const MapPage = () => {
   };
 
   const setPlacesSearchIW = (data, status) => {
-    console.log("[status]", status);
+    // console.log("[status]", status);
     if (status === kakao.maps.services.Status.OK) {
       // console.log("[PLACE DATA FROM KAKAOMAP API]", data);
       getCardRecommendation(data).then((res) => {
-        console.log("[RES]", res);
+        // console.log("[RES]", res);
         const sortDescRes = res.map((place) => {
           // 새로운 배열로 반환
-          console.log("[place]", place);
+          // console.log("[place]", place);
           return {
             ...place, // place의 나머지 속성 복사
             cards: place.cards.map((card) => {
               // cards 배열의 각 요소도 복사
-              console.log(card.card.cardDescription);
-              console.log(selectedCategory);
+              // console.log(card.card.cardDescription);
+              // console.log(selectedCategory);
               return {
                 ...card, // card의 나머지 속성 복사
                 card: {
@@ -279,7 +279,7 @@ const MapPage = () => {
           };
         });
         //
-        console.log("[sortDescRes]", sortDescRes);
+        // console.log("[sortDescRes]", sortDescRes);
         setMarkers(sortDescRes);
       });
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -315,10 +315,10 @@ const MapPage = () => {
         placeUrl: data[i].place_url,
       });
     }
-    console.log("[mapRequestDtos]", mapRequestDtos);
+    // console.log("[mapRequestDtos]", mapRequestDtos);
     if (window.sessionStorage.getItem("accessToken")) {
       const res = await getRecommendedCards(mapRequestDtos);
-      console.log("axios response data :", res.result);
+      // console.log("axios response data :", res.result);
       if (res) {
         return res.result;
       }
@@ -342,9 +342,9 @@ const MapPage = () => {
     return null;
   };
 
-  useEffect(() => {
-    console.log("Updated markers:", markers);
-  }, [markers]);
+  // useEffect(() => {
+  //   console.log("Updated markers:", markers);
+  // }, [markers]);
 
   const merchantCategory2categoryName = (merchantCategory) => {
     if (merchantCategory === "LIFE") {
