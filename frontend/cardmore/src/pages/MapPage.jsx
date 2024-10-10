@@ -213,25 +213,31 @@ const MapPage = () => {
     }
   }, [selectedCategory]);
 
+  const categoryName2categoryCode = (category) => {
+    let categoryCode = null;
+    if (category === "카페") {
+      categoryCode = "CE7";
+    } else if (category === "음식점") {
+      categoryCode = "FD6";
+    } else if (category === "문화시설") {
+      categoryCode = "CT1";
+    } else if (category === "대형마트") {
+      categoryCode = "MT1";
+    } else if (category === "편의점") {
+      categoryCode = "CS2";
+    } else if (category === "주유소") {
+      categoryCode = "OL7";
+    } else {
+      throw new Error(`Invalid category: ${category}`);
+    }
+    console.log("[[categoryCode]]", categoryCode);
+    return categoryCode;
+  };
+
   // 현재 위치 기준으로 정보 가져오기
   const getPlacesInWindow = () => {
     var ps = new kakao.maps.services.Places(map);
-    let categoryCode = null;
-    if (selectedCategory === "카페") {
-      categoryCode = "CE7";
-    } else if (selectedCategory === "음식점") {
-      categoryCode = "FD6";
-    } else if (selectedCategory === "문화시설") {
-      categoryCode = "CT1";
-    } else if (selectedCategory === "대형마트") {
-      categoryCode = "MT1";
-    } else if (selectedCategory === "편의점") {
-      categoryCode = "CS2";
-    } else if (selectedCategory === "주유소") {
-      categoryCode = "OL7";
-    } else {
-      throw new Error(`Invalid category: ${selectedCategory}`);
-    }
+    let categoryCode = categoryName2categoryCode(selectedCategory);
     console.log("[ps]", ps);
     ps.categorySearch(categoryCode, setPlacesSearchIW, {
       useMapBounds: true,
@@ -249,7 +255,32 @@ const MapPage = () => {
     if (status === kakao.maps.services.Status.OK) {
       // console.log("[PLACE DATA FROM KAKAOMAP API]", data);
       getCardRecommendation(data).then((res) => {
-        setMarkers(res);
+        console.log("[RES]", res);
+        const sortDescRes = res.map((place) => {
+          // 새로운 배열로 반환
+          console.log("[place]", place);
+          return {
+            ...place, // place의 나머지 속성 복사
+            cards: place.cards.map((card) => {
+              // cards 배열의 각 요소도 복사
+              console.log(card.card.cardDescription);
+              console.log(selectedCategory);
+              return {
+                ...card, // card의 나머지 속성 복사
+                card: {
+                  ...card.card, // card.card의 나머지 속성 복사
+                  cardDescription: reSortCardDescription(
+                    card.card.cardDescription,
+                    selectedCategory
+                  ), // cardDescription만 수정
+                },
+              };
+            }),
+          };
+        });
+        //
+        console.log("[sortDescRes]", sortDescRes);
+        setMarkers(sortDescRes);
       });
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
       setMarkers([]);
@@ -315,10 +346,6 @@ const MapPage = () => {
     console.log("Updated markers:", markers);
   }, [markers]);
 
-  // useEffect(() => {
-  //   console.log("Updated clickedPlace:", clickedPlace);
-  // }, [clickedPlace]);
-
   const merchantCategory2categoryName = (merchantCategory) => {
     if (merchantCategory === "LIFE") {
       return "생활";
@@ -331,21 +358,81 @@ const MapPage = () => {
     }
   };
 
+  const cardMoreCategory2KakaoCategory = (category) => {
+    let kakaoCategory = null;
+    if (category === "카페") {
+      kakaoCategory = "생활";
+    } else if (category === "음식점") {
+      kakaoCategory = "생활";
+    } else if (category === "문화시설") {
+      kakaoCategory = "생활";
+    } else if (category === "대형마트") {
+      kakaoCategory = "마트";
+    } else if (category === "편의점") {
+      kakaoCategory = "마트";
+    } else if (category === "주유소") {
+      kakaoCategory = "주유";
+    } else {
+      throw new Error(`Invalid category: ${category}`);
+    }
+    return kakaoCategory;
+  };
+
+  const reSortCardDescription = (cardDescription, category) => {
+    let cardDescriptionList = cardDescription.split(", ");
+    const choosed = cardDescriptionList.filter((str) => {
+      const cat_name = str.split(" ")[0].trim(); // 공백 제거
+      const categoryName = cardMoreCategory2KakaoCategory(category).trim(); // 공백 제거
+      return cat_name === categoryName; // 엄격한 비교 사용
+    });
+    cardDescriptionList = cardDescriptionList.filter((str) => {
+      const cat_name = str.split(" ")[0].trim(); // 공백 제거
+      const categoryName = cardMoreCategory2KakaoCategory(category).trim(); // 공백 제거
+      return cat_name !== categoryName; // 엄격한 비교 사용
+    });
+
+    if (choosed.length > 0) {
+      cardDescriptionList.unshift(choosed[0]);
+    }
+    return cardDescriptionList.join(", ");
+  };
+
+  const getPercentageFromCardDescription = (cardDescription, category) => {
+    // (카드 설명, 맵에서 선택된 카테고리)
+    const choosed = cardDescription.split(", ").filter((str) => {
+      // console.log("[SELECTED CATEGORY]", category);
+      // console.log("[cardDescription]", cardDescription);
+
+      const cat_name = str.split(" ")[0];
+      return cat_name === cardMoreCategory2KakaoCategory(category);
+    });
+    // console.log("[CHOOSED]", choosed);
+    if (choosed.length > 0) {
+      return choosed[0].split(" ")[1];
+    } else {
+      return null;
+    }
+  };
+
   const sortCards = (res) => {
     // console.log("[IN SORT FUNCTION]", res);
     const sortedRes = res.sort((a, b) => {
       if (
         Number(
-          a.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0]
+          a.card.cardDescription.split(", ")[0].split(" ")[1].split("%")[0]
         ) <
-        Number(b.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0])
+        Number(
+          b.card.cardDescription.split(", ")[0].split(" ")[1].split("%")[0]
+        )
       ) {
         return 1;
       } else if (
         Number(
-          a.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0]
+          a.card.cardDescription.split(", ")[0].split(" ")[1].split("%")[0]
         ) >
-        Number(b.card.cardDescription.split(",")[0].split(" ")[1].split("%")[0])
+        Number(
+          b.card.cardDescription.split(", ")[0].split(" ")[1].split("%")[0]
+        )
       ) {
         return -1;
       } else {
@@ -356,6 +443,7 @@ const MapPage = () => {
         }
       }
     });
+    // console.log("[SORT]", sortedRes);
     return sortedRes;
   };
 
@@ -445,26 +533,25 @@ const MapPage = () => {
                     flex-direction: row;
                   `}
                 >
-                  {getLimitedCardInfos(sortCards(markerInfo.cards)).map(
-                    (cardinfo) => (
-                      <div
-                        className={css`
-                          color: ${cardinfo.colorTitle};
-                          border: 0.1rem solid ${cardinfo.colorTitle};
-                          background-color: ${cardinfo.colorBackground};
-                          border-radius: 0.3rem;
-                          margin: 0 0.2rem;
-                          padding: 0.1rem 0.2rem;
-                        `}
-                      >
-                        {
-                          cardinfo.card.cardDescription
-                            .split(",")[0]
-                            .split(" ")[1]
-                        }
-                      </div>
-                    )
-                  )}
+                  {getLimitedCardInfos(
+                    sortCards(markerInfo.cards, selectedCategory)
+                  ).map((cardinfo) => (
+                    <div
+                      className={css`
+                        color: ${cardinfo.colorTitle};
+                        border: 0.1rem solid ${cardinfo.colorTitle};
+                        background-color: ${cardinfo.colorBackground};
+                        border-radius: 0.3rem;
+                        margin: 0 0.2rem;
+                        padding: 0.1rem 0.2rem;
+                      `}
+                    >
+                      {getPercentageFromCardDescription(
+                        cardinfo.card.cardDescription,
+                        selectedCategory
+                      )}
+                    </div>
+                  ))}
                 </div>
               </CustomOverlayMap>
             </>
