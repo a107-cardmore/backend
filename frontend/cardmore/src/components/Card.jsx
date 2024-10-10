@@ -12,7 +12,7 @@ function Card({ data, setShowModal, isSelected }) {
   return (
     <div
       className={css`
-        width: 21rem;
+        width: 20.5rem;
         padding: 0 1.5rem;
         height: 13rem;
         border-radius: 1rem;
