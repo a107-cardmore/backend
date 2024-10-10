@@ -5,24 +5,24 @@ export const getCardAll = async () => {
     const response = await axios.get("/cards/all").then((res) => {
       return res.data;
     });
-    console.log("[IN AXIOS] mydata get card all", response);
+    // console.log("[IN AXIOS] mydata get card all", response);
     return response;
   } catch (error) {
-    console.error("get card all fail : ", error);
+    // console.error("get card all fail : ", error);
   }
 };
 
 export const sendCompany = async (data) => {
   try {
-    console.log(data);
+    // console.log(data);
     const response = await axios.post("/cards/company", data).then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       return res.data;
     });
-    console.log("[IN AXIOS] send company response", response);
+    // console.log("[IN AXIOS] send company response", response);
     return response;
   } catch (error) {
-    console.log("send company fail : ", error);
+    // console.log("send company fail : ", error);
   }
 };
 

@@ -53,7 +53,7 @@ function SignInPage() {
     const response = await register(data).then((res) => {
       return res;
     });
-    console.log(response);
+    // console.log(response);
     if (response) {
       if (response.success) {
         login();
@@ -75,7 +75,7 @@ function SignInPage() {
     if (response) {
       navigate("/mydata");
     } else {
-      console.log("회원가입 중 로그인 실패!");
+      // console.log("회원가입 중 로그인 실패!");
     }
   };
 

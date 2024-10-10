@@ -15,7 +15,7 @@ function CardSelectPage() {
 
   const getCardList = async () => {
     const response = await getCardAll().then((res) => {
-      console.log(res.result);
+      // console.log(res.result);
       return res.result;
     });
     if (response) {
@@ -72,12 +72,12 @@ function CardSelectPage() {
     const data = {
       cardsSelectedInfos: cardsSelected,
     };
-    console.log(data);
+    // console.log(data);
     const response = await sendCard(data).then((res) => {
-      console.log(res.success);
+      // console.log(res.success);
       return res.success;
     });
-    console.log(response);
+    // console.log(response);
     if (response) {
       navigate("/main");
     }
