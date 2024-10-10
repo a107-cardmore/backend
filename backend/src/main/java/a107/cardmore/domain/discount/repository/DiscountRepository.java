@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface DiscountRepository extends JpaRepository<Discount,Long> {
     Optional<Discount> findByCardId(Long cardId);
-    Optional<Discount> findAllByCategoryIdAndCardId(String categoryId, Long cardId);
+    Optional<List<Discount>> findAllByCategoryIdAndCardId(String categoryId, Long cardId);
 
     @Query(value = "select d.merchantCategory, d.card, sum(d.price) as totalAmount " +
             "from Discount d " +

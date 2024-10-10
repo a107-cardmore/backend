@@ -4,6 +4,8 @@ import a107.cardmore.domain.discount.entity.Discount;
 import a107.cardmore.domain.discount.repository.DiscountRepository;
 import a107.cardmore.global.exception.BadRequestException;
 import a107.cardmore.util.constant.MerchantCategory;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,8 @@ public class DiscountModuleService {
     }
 
     public Long findPriceByCategoryAndCardId(String categoryId, Long cardId) {
-        return discountRepository.findAllByCategoryIdAndCardId(categoryId,cardId).stream().mapToLong(Discount::getPrice).sum();
+
+        return discountRepository.findAllByCategoryIdAndCardId(categoryId,cardId).orElse(new ArrayList<Discount>()).stream().mapToLong(Discount::getPrice).sum();
     }
 
     public Discount saveDiscount(Discount discount) {
