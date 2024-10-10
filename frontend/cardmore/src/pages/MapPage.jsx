@@ -102,11 +102,6 @@ const MapPage = () => {
             },
             isLoading: false,
           }));
-          console.log(
-            "lat, lng",
-            position.coords.latitude,
-            position.coords.longitude
-          );
           setMapCenter({
             lat: position.coords.latitude, // 위도
             lng: position.coords.longitude, // 경도
@@ -233,7 +228,7 @@ const MapPage = () => {
 
   const setPlacesSearchIW = (data, status) => {
     if (status === kakao.maps.services.Status.OK) {
-      console.log("[PLACE DATA FROM KAKAOMAP API]", data);
+      // console.log("[PLACE DATA FROM KAKAOMAP API]", data);
       getCardRecommendation(data).then((res) => {
         setMarkers(res);
       });
@@ -242,7 +237,7 @@ const MapPage = () => {
 
   const addPlacesSearchIW = (data, status) => {
     if (status === kakao.maps.services.Status.OK) {
-      console.log("[PLACE DATA FROM KAKAOMAP API]", data);
+      // console.log("[PLACE DATA FROM KAKAOMAP API]", data);
       getCardRecommendation(data).then((res) => {
         let tempMarkers = markers;
         for (var i = 0; i < res.length; i++) {
@@ -267,9 +262,9 @@ const MapPage = () => {
         placeUrl: data[i].place_url,
       });
     }
-    console.log("[mapRequestDtos]", mapRequestDtos);
+    // console.log("[mapRequestDtos]", mapRequestDtos);
     const res = await getRecommendedCards(mapRequestDtos);
-    console.log("axios response data :", res.result);
+    // console.log("axios response data :", res.result);
     return res.result;
   };
 
@@ -290,13 +285,13 @@ const MapPage = () => {
     return null;
   };
 
-  useEffect(() => {
-    console.log("Updated markers:", markers);
-  }, [markers]);
+  // useEffect(() => {
+  //   console.log("Updated markers:", markers);
+  // }, [markers]);
 
-  useEffect(() => {
-    console.log("Updated clickedPlace:", clickedPlace);
-  }, [clickedPlace]);
+  // useEffect(() => {
+  //   console.log("Updated clickedPlace:", clickedPlace);
+  // }, [clickedPlace]);
 
   const merchantCategory2categoryName = (merchantCategory) => {
     if (merchantCategory === "LIFE") {
@@ -576,14 +571,6 @@ const MapPage = () => {
                       width: 85%;
                     `}
                     onClick={() => {
-                      console.log("[MODAL SETUP DATA]", {
-                        ...info.card,
-                        cardNo: info.cardNo,
-                        cardExpiryDate: info.cardNo,
-                        colorTitle: info.colorTitle,
-                        colorBackground: info.colorBackground,
-                        cardBenefits: info.card.cardBenefitsInfo,
-                      });
                       setModalData({
                         ...info.card,
                         cardNo: info.cardNo,
