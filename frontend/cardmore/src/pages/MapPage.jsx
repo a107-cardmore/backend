@@ -48,7 +48,7 @@ const InputField = styled.input`
 
 const CategoryContainer = styled.div`
   position: absolute;
-  top: 5.5rem;
+  top: 1.5rem;
   width: 90%;
   display: flex;
   flex-direction: row;
@@ -331,7 +331,7 @@ const MapPage = () => {
 
   return (
     <MapPageStyle onClick={() => setIsMenuBarClicked(false)}>
-      <InputField onChange={handleKeyword} />
+      {/*<InputField onChange={handleKeyword} />*/}
       <CategoryContainer>
         {["카페", "음식점", "편의점", "주유소", "문화시설", "대형마트"].map(
           (text) => (
