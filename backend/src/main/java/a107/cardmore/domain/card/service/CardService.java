@@ -35,10 +35,10 @@ public class CardService {
         List<CardProductResponseRestTemplateDto> cards = restTemplateUtil.inquireCreditCardList();
 
         // myCards와 Card Repository update
-        updateUserCards(myCards, cardModuleService.findCardsByUser(user), user);
+        updateUserCards(myCards, cardModuleService.findAllCardsByUser(user), user);
 
         // 카드사 정보 list로 만들어 놓기
-        List<Card> userCards = cardModuleService.findCardsByUser(user);
+        List<Card> userCards = cardModuleService.findAllCardsByUser(user);
         List<CompanyCardListResponseDto> companyCards = new ArrayList<>();
 
         for(Company company : companyModuleService.findUserCompanies(user)){
@@ -72,7 +72,7 @@ public class CardService {
     public List<CardResponseDto> getUserSelectedCardInfo(String email) {
         User user  = userModuleService.getUserByEmail(email);
 
-        List<Card> userCard = cardModuleService.findCardsByUser(user);
+        List<Card> userCard = cardModuleService.findSelectedCardsByUser(user);
         List<CardProductResponseRestTemplateDto> cards = restTemplateUtil.inquireCreditCardList();
 
         List<CardResponseDto> mySelectedCards = new ArrayList<>();

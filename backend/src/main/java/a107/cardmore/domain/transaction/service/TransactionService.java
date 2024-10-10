@@ -4,7 +4,6 @@ import a107.cardmore.domain.bank.dto.InquireCreditCardTransactionListRequestDto;
 import a107.cardmore.domain.card.dto.CardColorInfo;
 import a107.cardmore.domain.card.entity.Card;
 import a107.cardmore.domain.card.service.CardModuleService;
-import a107.cardmore.domain.company.entity.Company;
 import a107.cardmore.domain.company.service.CompanyModuleService;
 import a107.cardmore.domain.discount.entity.Discount;
 import a107.cardmore.domain.discount.service.DiscountModuleService;
@@ -59,7 +58,7 @@ public class TransactionService {
         User user = userModuleService.getUserByEmail(email);
 
         //내 카드 목록
-        List<Card> myCardList = cardModuleService.findCardsByUser(user);
+        List<Card> myCardList = cardModuleService.findSelectedCardsByUser(user);
         List<CardResponseRestTemplateDto> inquireCardList = restTemplateUtil.inquireSignUpCreditCardList(user.getUserKey());
 
         //추가한 카드 목록

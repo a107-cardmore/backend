@@ -56,9 +56,14 @@ public class CardModuleService {
         return cardColorMap.get(cardUniqueNo);
     }
 
-    public List<Card> findCardsByUser(User user){
+    public List<Card> findSelectedCardsByUser(User user){
         List<Company> companies = companyRepository.findAllByUser(user);
         return companies.stream().flatMap(company -> cardRepository.findAllByCompanyAndIsSelectedTrue(company).stream()).collect(Collectors.toList());
+    }
+
+    public List<Card> findAllCardsByUser(User user){
+        List<Company> companies = companyRepository.findAllByUser(user);
+        return companies.stream().flatMap(company -> cardRepository.findAllByCompany(company).stream()).collect(Collectors.toList());
     }
 
     public Card findCardById(Long id){
