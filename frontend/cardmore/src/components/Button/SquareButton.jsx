@@ -12,6 +12,7 @@ function SquareButton({ name, onClick, marginTop }) {
         font-size: 1rem;
         font-weight: bold;
         box-shadow: 0 0 10px rgb(0 0 0 / 20%);
+        cursor: pointer;
         &:hover {
           color: black;
           background-color: #b0ffa3;
