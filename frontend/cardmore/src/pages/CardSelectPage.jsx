@@ -148,6 +148,7 @@ function CardSelectPage() {
                       color: #959595;
                       list-style: none;
                       padding-left: 1.3rem;
+                      cursor: pointer;
                       &:not(:first-child) {
                         padding-top: 1rem;
                         border-top: 1px solid #dcdcdc;
@@ -179,6 +180,7 @@ function CardSelectPage() {
                                   <img
                                     className={css`
                                       margin: 0.5rem;
+                                      cursor: pointer;
                                     `}
                                     onClick={(e) => {
                                       cardSelect(e, CompIndex, CardIndex);
@@ -190,6 +192,7 @@ function CardSelectPage() {
                                   <img
                                     className={css`
                                       margin: 0.5rem;
+                                      cursor: pointer;
                                     `}
                                     onClick={(e) => {
                                       cardSelect(e, CompIndex, CardIndex);

@@ -155,6 +155,7 @@ function CompanySelectPage() {
             <img
               className={css`
                 margin: 0.5rem;
+                cursor: pointer;
               `}
               onClick={selectAllToggle}
               src="/Selected.svg"
@@ -164,6 +165,7 @@ function CompanySelectPage() {
             <img
               className={css`
                 margin: 0.5rem;
+                cursor: pointer;
               `}
               onClick={selectAllToggle}
               src="/Unselected.svg"
@@ -202,6 +204,7 @@ function CompanySelectPage() {
               <img
                 className={css`
                   margin: 0.5rem;
+                  cursor: pointer;
                 `}
                 onClick={() => {
                   companySelect(index);
@@ -213,6 +216,7 @@ function CompanySelectPage() {
               <img
                 className={css`
                   margin: 0.5rem;
+                  cursor: pointer;
                 `}
                 onClick={() => {
                   companySelect(index);

@@ -130,6 +130,7 @@ function MyDataAgreePage() {
                 className={css`
                   width: 1rem;
                   margin: 0.5rem;
+                  cursor: pointer;
                 `}
                 src="/Selected.svg"
                 alt=""
@@ -142,6 +143,7 @@ function MyDataAgreePage() {
                 className={css`
                   width: 1rem;
                   margin: 0.5rem;
+                  cursor: pointer;
                 `}
                 src="/Unselected.svg"
                 alt=""
