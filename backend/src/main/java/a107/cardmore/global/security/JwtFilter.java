@@ -25,20 +25,20 @@ public class JwtFilter extends OncePerRequestFilter {
 
         //Authorization 헤더 검증
         if(authorization == null || !authorization.startsWith("Bearer ")){
-            System.out.println("token null");
+//            System.out.println("token null");
             filterChain.doFilter(request, response);
 
             // 조건이 해당되면 메소드 종료(필수)
             return;
         }
 
-        System.out.println("authorization now");
+//        System.out.println("authorization now");
         //Bearer 부분 제거 후 순수 토큰만 획득
         String token = authorization.split(" ")[1];
 
         // 토큰 소멸 사건 검증
         if(jwtUtil.isExpired(token)){
-            System.out.println("token expired");
+//            System.out.println("token expired");
             filterChain.doFilter(request, response);
 
             // 조건에 해당되면 메소드 종료(필수)
@@ -48,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
         // 토큰에서 username과 role 획득
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
-        System.out.println("username: " + username);
+//        System.out.println("username: " + username);
 
         // UserDto 값 set
         User user = new User(username,"temp", role);
@@ -60,7 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
-        System.out.println("tttttt: "+SecurityContextHolder.getContext().getAuthentication().getName());
+//        System.out.println("tttttt: "+SecurityContextHolder.getContext().getAuthentication().getName());
 
         filterChain.doFilter(request, response);
     }

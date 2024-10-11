@@ -9,6 +9,6 @@ import lombok.Setter;
 public class MerchantResponseRestTemplateDto {
     private String categoryId;
     private String categoryName;
-    private Integer merchantId;
+    private Long merchantId;
     private String merchantName;
 }

@@ -35,10 +35,16 @@ public class Card {
     private Company company;
 
     @Column(nullable = false)
-    private String cardNo;
+    private String cardNo; // user 카드 식별
 
     @Column(nullable = false)
-    private Boolean isSelected = false;
+    private String cardUniqueNo; // 상품 식별
+
+    @Column(nullable = false)
+    private String cvc;
+
+    @Column(nullable = false)
+    private String cardExpiryDate;
 
     @Column(nullable = false)
     private Long limitRemaining;
@@ -46,6 +52,25 @@ public class Card {
     @Column(nullable = false)
     private Long performanceRemaining;
 
+    @Column
+    private String colorBackground;
+
+    @Column
+    private String colorTitle;
+
     @Column(nullable = false)
+    @Builder.Default
+    private Boolean isSelected = false;
+
+    @Column(nullable = false)
+    @Builder.Default
     private Boolean isDeleted = false;
+
+    public void changeIsSelected(Boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    public void changeLimitRemaining(Long limitRemaining) {
+        this.limitRemaining = limitRemaining;
+    }
 }
